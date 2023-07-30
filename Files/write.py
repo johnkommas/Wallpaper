@@ -174,7 +174,8 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
             image_editable.text(pots, time, (255, 255, 255), font=store_info)
         for time, pots in zip(lato_elapsed_time, lato_potitions):
             image_editable.text(pots, time, (255, 255, 255), font=store_info)
-
+            
+    time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
     glue_images(f"{path}/green.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 160), resize=4)
 
