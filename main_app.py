@@ -20,7 +20,7 @@ wp_logger = logging.getLogger()
 wp_logger.setLevel("WARNING")
 
 
-def delete_all_files_inside_folder(folder):
+def delete_all_files_inside_folder(folder: str) -> None:
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         try:
