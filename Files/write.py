@@ -108,6 +108,29 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     image_editable.text((9000, 6300), f"Times Rafi:  ({a} Docs) - ({b} Lines)", (255, 255, 255),
                         font=store_info)
 
+    # WRITE PRODUCT INFO
+    image_editable.text(
+        (9000, 400),
+        f"New Prices: {product_info.get('price_change')}",
+        (255, 255, 255),
+        font=store_info,
+    )
+    image_editable.text(
+        (9000, 550), f"New Products: {product_info.get('new_product')}", (255, 255, 255), font=store_info
+    )
+    image_editable.text(
+        (9000, 850),
+        f"Special Offers: {product_info.get('special_price')}",
+        (255, 255, 255),
+        font=store_info,
+    )
+    # image_editable.text(
+    #     (9000, 1000),
+    #     f"Unique Products: {product_info.get('customer_prefer')}",
+    #     (255, 255, 255),
+    #     font=store_info,
+    # )
+
 
     if flag == 'a00':
         swift = 1650
