@@ -3,7 +3,7 @@ import os
 import shutil
 import logging
 import sys
-
+import concurrent.futures
 from Private import sql_connect, stores_sensitive_info
 from Files import sql, plot, write
 from datetime import datetime
@@ -46,40 +46,62 @@ def get_online_status(user, store):
 def run(file, flag):
     connection = sql_connect.connect()
 
-    start = time.process_time()
     start_ = time.perf_counter()
     today = datetime.now()
-    df_sales_elounda = pd.read_sql_query(
-        sql.sales_elounda(today.year - 5, today.month, today.day), sql_connect.connect()
-    )
-    df_sales_elounda_today = pd.read_sql_query(
-        sql.sales_elounda_today(today.year, today.month, today.day),
-        connection
-    )
 
-    # df_best_products_sales_today = pd.read_sql_query(sql.today_products(today.year, today.month, today.day),
-    #                                            sql_connect.connect())
+    # Use a ThreadPoolExecutor to run execute_query_and_get_count in parallel for each query.
+    # Moved sql execution to a separate function
+    def execute_query(query, connection):
+        return pd.read_sql_query(query, connection)
+
+    # Each query and its respective connection are kept as tuple in a list.
+    # In case the all queries are to be executed on the same connection, replace `sql_connect.connect()` and `connection` with your preferred connection.
+    queries = [
+        (
+            sql.sales_elounda(today.year - 5, today.month, today.day),
+            sql_connect.connect(),
+        ),
+        (sql.sales_elounda_today(today.year, today.month, today.day), connection),
+        (sql.sales_elounda_graph(today.year - 5, today.month), connection),
+    ]
+
+    # Use a ThreadPoolExecutor to run execute_query in parallel for each query
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        dfs = executor.map(lambda query: execute_query(*query), queries)
+
+    df_sales_elounda, df_sales_elounda_today, df = dfs
 
     # print(df_best_products_sales_today)
     a = df_sales_elounda.TurnOver[df_sales_elounda.YEAR == today.year].values[0]
     b = df_sales_elounda_today.values[0][0]
     c = df_sales_elounda
 
-    # ΑΝΑΛΥΤΙΚΟΣ ΤΖΙΡΟΣ ΕΝΑΡΞΗ
-    df = pd.read_sql_query(
-        sql.sales_elounda_graph(today.year - 5, today.month), connection)
-    df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
+    df["DATE"] = df.apply(
+        lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1
+    )
     df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
 
-    def run_query(query, connection):
-        return pd.read_sql_query(query, connection).COUNT.iloc[0]
+    # Define a function to execute the SQL query and get the count.
+    def execute_query_and_get_count(query, connection):
+        df = pd.read_sql_query(query, connection)
+        return df.COUNT.iloc[0] if not df.empty else 0
 
-    product_info = {
-        "price_change": run_query(sql.price_changes_today(), connection),
-        "new_product": run_query(sql.new_products(), connection),
-        "special_price": run_query(sql.special_price(), connection),
-        # "customer_prefer": run_query(sql.customer_prefer(), connection),
+    # Define a dictionary to store your queries; Keys will be used as keys in the final dict too.
+    queries = {
+        "price_change": sql.price_changes_today(),
+        "new_product": sql.new_products(),
+        "special_price": sql.special_price(),
+        "customer_prefer": sql.customer_prefer(),
     }
+
+    # Use a ThreadPoolExecutor to run execute_query_and_get_count in parallel for each query.
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        product_info = {
+            key: executor.submit(
+                execute_query_and_get_count, query, connection
+            ).result()
+            for key, query in queries.items()
+        }
 
     pda = pd.read_sql_query(sql.pda_alert(), connection)
     user_status = []
@@ -87,30 +109,18 @@ def run(file, flag):
     elapsed_time = []
     lato_elapsed_time = []
 
-    if flag == "a00":
-        # GET PRODUCT INFO
-
-        price_change = pd.read_sql_query(
-            sql.price_changes_today(), connection)
-        new_product = pd.read_sql_query(sql.new_products(), connection)
-        special_price = pd.read_sql_query(sql.special_price(), connection)
-        customer_prefer = pd.read_sql_query(sql.customer_prefer(), connection)
-        product_info = {
-            "price_change": price_change.COUNT.iloc[0],
-            "new_product": new_product.COUNT.iloc[0],
-            "special_price": special_price.COUNT.iloc[0],
-            "customer_prefer": customer_prefer.COUNT.iloc[0],
-        }
-    elif flag == "a000":
+    if flag == "a000":
         # Tree map
         df = pd.read_sql_query(
-            sql.quantity_for_tree_map(today.year, today.month), connection)
+            sql.quantity_for_tree_map(today.year, today.month), connection
+        )
         plot.make_wordcloud(df, path)
         plot.tree_map(df, path)
 
     elif flag == "a01":
         users = stores_sensitive_info.EM_users
         lato_users = stores_sensitive_info.LATO_users
+
         for user in users:
             status, date = get_online_status(user, connection)
             diff = today - date
@@ -167,7 +177,6 @@ def run(file, flag):
     # sales = df['SALES'].values
     # plot.randar_chart(categories, sales, path)
 
-    stop = time.process_time()
     stop_ = time.perf_counter()
 
     return start_, stop_, df_sales_elounda_today.values[0][0]
