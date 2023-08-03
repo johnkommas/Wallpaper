@@ -392,7 +392,7 @@ FROM ESFIPricelistItem
                    on ESFIPricelistItem.fItemGID = ESFIItem.GID
          INNER JOIN ESFIPricelist
                     on ESFIPricelistItem.fPricelistGID = ESFIPricelist.GID
-WHERE GETDATE() BETWEEN  ValidFromDate AND ValidToDate
+WHERE convert(varchar, GETDATE(), 102) BETWEEN  convert(varchar, ValidFromDate, 102) AND convert(varchar, ValidToDate, 102)
     """
 
 
