@@ -111,7 +111,7 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     # WRITE PRODUCT INFO
     image_editable.text(
         (9000, 400),
-        f"New Prices: {product_info.get('price_change')}",
+        f"Price Changes: {product_info.get('price_change')}",
         (255, 255, 255),
         font=store_info,
     )
