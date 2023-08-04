@@ -28,7 +28,7 @@ def offline(emoji, path, offline_path):
 
 
 def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
-        product_info, user_status, elapsed_time, lato_user_status, lato_elapsed_time):
+        product_info, user_status, elapsed_time, lato_user_status, lato_elapsed_time, customers):
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
@@ -55,8 +55,9 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     grey = (44, 40, 41)
     white = (255, 255, 255)
     blue = (26, 55, 110)
-    red = (255, 0, 0)
-    green = (132, 233, 0)
+    red = (238, 0, 0)
+    pink = (255, 134, 179)
+    green = (68, 255, 115)
     orange = (255, 87, 51)
 
     # WRITING STORE INFO
@@ -69,6 +70,18 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
                         white, font=store_info)
 
     image_editable.text((4000, 150), f'REFRESHING DATA EVERY MINUTE :  {timed}', white, font=store_info)
+
+    # WRITING CUSTOMERS DATA
+    x = 5600
+    for i, year in enumerate(customers.YEAR):
+        y_year = 490
+        y = 640
+        color = pink if customers.COUNT.iloc[i] == customers.COUNT.min() else customers.COLOR.iloc[i]
+        image_editable.text((x, y_year), str(year), color, font=store_info)
+        image_editable.text((x, y), str(customers.COUNT.iloc[i]), color, font=store_info)
+        x += 500
+
+
 
     # WRITING YEARS
     x = 500
