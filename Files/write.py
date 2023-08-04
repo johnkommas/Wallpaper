@@ -48,6 +48,7 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     number_font_parse = ImageFont.truetype('DIN Condensed Bold.ttf', 250)
     dates_font_parse = ImageFont.truetype('DIN Condensed Bold.ttf', 80)
     store_info = ImageFont.truetype('25191766905.ttf', 120)
+    store_info_small = ImageFont.truetype('25191766905.ttf', 100)
     image_editable = ImageDraw.Draw(my_image)
 
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
@@ -76,9 +77,12 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     for i, year in enumerate(customers.YEAR):
         y_year = 490
         y = 640
+        y_percent = 790
         color = pink if customers.COUNT.iloc[i] == customers.COUNT.min() else customers.COLOR.iloc[i]
         image_editable.text((x, y_year), str(year), color, font=store_info)
         image_editable.text((x, y), str(customers.COUNT.iloc[i]), color, font=store_info)
+        if customers.COUNT.iloc[i] != customers.COUNT.max():
+            image_editable.text((x, y_percent), f'({(round(100 * customers.COUNT.iloc[i]/customers.COUNT.max())) - 100}%)', color, font=store_info_small)
         x += 500
 
 
