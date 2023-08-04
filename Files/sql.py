@@ -416,3 +416,32 @@ id IN ('ESLOGIN','ESLOGOUT')
 AND UserID = '{user}'
 ORDER BY EDate DESC
     """
+
+
+def count_customers():
+    return f"""
+WITH BASE AS (
+    SELECT
+        ESDCreated AS date_created
+    FROM
+        ESFIDocumentTrade
+    WHERE
+        fShippingPurposeCode = N'ΠΩΛΗΣΗ'
+        AND fADSiteGID = N'86947579-6885-4E86-914E-46378DB3794F'
+        AND (ADCode LIKE N'ΤΔΑ%' OR ADCode LIKE N'ΑΠΛ%')
+        AND ESDCreated >= DATEADD(YEAR, -6, GETDATE())
+        AND DATEPART(MONTH, ESDCreated) = DATEPART(MONTH, GETDATE())
+        AND DATEPART(DAY, ESDCreated) = DATEPART(DAY, GETDATE())
+        AND CAST(ESDCreated AS time) <= CAST(GETDATE() AS time)
+)
+
+SELECT
+    COUNT(*) AS 'COUNT',
+    DATEPART(YEAR, date_created) AS 'YEAR'
+FROM
+    BASE
+GROUP BY
+    DATEPART(YEAR, date_created)
+ORDER BY
+    'YEAR'
+    """
