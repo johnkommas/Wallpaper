@@ -63,13 +63,18 @@ def run(file, flag):
         ),
         (sql.sales_elounda_today(today.year, today.month, today.day), connection),
         (sql.sales_elounda_graph(today.year - 5, today.month), connection),
+        (sql.count_customers(), connection)
     ]
 
     # Use a ThreadPoolExecutor to run execute_query in parallel for each query
     with concurrent.futures.ThreadPoolExecutor() as executor:
         dfs = executor.map(lambda query: execute_query(*query), queries)
 
-    df_sales_elounda, df_sales_elounda_today, df = dfs
+    df_sales_elounda, df_sales_elounda_today, df, customers = dfs
+
+    today_live_customers = customers.COUNT[customers.YEAR == datetime.now().year].iloc[0]
+    customers['COLOR'] = customers['COUNT'].apply(lambda x: 'green' if x >= today_live_customers else 'orange')
+
 
     # print(df_best_products_sales_today)
     a = df_sales_elounda.TurnOver[df_sales_elounda.YEAR == today.year].values[0]
@@ -166,6 +171,7 @@ def run(file, flag):
         elapsed_time,
         lato_user_status,
         lato_elapsed_time,
+        customers
     )
     print("🟢", end="")
 
@@ -194,6 +200,7 @@ while True:
     # files = ['a0', 'a00', 'a000', 'a0000', 'a1', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
     # files = ['a0', 'a00', 'a000', 'a01', 'l' ]
     files = ["a0", "l", "a01"]
+    # files = ["a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
         print("[🔴]", end="")
