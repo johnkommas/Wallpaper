@@ -4,7 +4,7 @@ import pandas as pd
 import squarify
 from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw
-from datetime import timedelta
+from datetime import timedelta, datetime
 # from scipy.ndimage.filters import gaussian_filter1d
 import seaborn as sns
 from wordcloud import WordCloud, ImageColorGenerator
@@ -272,3 +272,46 @@ def pda():
 
 
 # pda()
+
+def customers_graph(df):
+    df_live = df[df.YEAR == datetime.now().year]
+    df_past = df[df.YEAR == datetime.now().year - 1]
+
+    def add_numbers(X, Y):
+        for (a,b,) in zip(X, Y):
+            label = f"{b}\nEUR"
+            # this method is called for each point
+            plt.annotate(
+                label,  # this is the text
+                (a, b),  # this is the point to label
+                textcoords="offset points",  # how to position the text
+                xytext=(0, 10),  # distance from text to points (x,y)
+                ha="center",
+                color="white",
+            )  # horizontal alignment can be left, right or center
+
+    with plt.rc_context({'axes.edgecolor': 'white', 'xtick.color': 'white', 'ytick.color': 'white'}):
+        plt.rcParams["font.family"] = "monospace"
+        plt.rcParams["font.monospace"] = ["FreeMono"]
+        plt.figure(figsize=(22, 5), dpi=450, facecolor='#1a376e')
+        plt.subplot()
+    # colors = [plt.cm.Spectral(i / float(len(X))) for i in range(len(X))]
+    colors = ['#FF5732', '#00F059']
+
+    X = df_past["HOUR"].to_list()
+    Y = df_past["COUNT"].to_list()
+    plt.plot(X, Y, alpha=0.9, color=colors[0])
+    # add_numbers(X, Y)
+
+    X = df_live["HOUR"].to_list()
+    Y = df_live["COUNT"].to_list()
+    plt.plot(X, Y, alpha=0.9, color=colors[1])
+    # add_numbers(X, Y)
+    plt.box(False)
+    plt.tight_layout()
+    img_file = f"test.png"
+    plt.savefig(img_file, transparent=True)
+    plt.close()
+
+
+
