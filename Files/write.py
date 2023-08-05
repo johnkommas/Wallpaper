@@ -7,6 +7,7 @@ from PIL import Image, ImageFont, ImageDraw
 import pathlib
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
+from Private import stores_sensitive_info as ssi
 
 
 def offline(emoji, path, offline_path):
@@ -28,7 +29,7 @@ def offline(emoji, path, offline_path):
 
 
 def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
-        product_info, user_status, elapsed_time, lato_user_status, lato_elapsed_time, customers, customers_month):
+        product_info, status_users_elounda, status_users_lato, customers, customers_month):
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
@@ -235,11 +236,16 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
                           (8469 - 250, 3250 - 20 - calibrate_y),
                           (9160 - 200, 3080 + calibrate_y)]
 
-        for time, pots in zip(elapsed_time, potitions):
-            image_editable.text(pots, time, (255, 255, 255), font=store_info)
-        for time, pots in zip(lato_elapsed_time, lato_potitions):
-            image_editable.text(pots, time, (255, 255, 255), font=store_info)
-            
+
+        for pot, user in zip(potitions, ssi.EM_users):
+            data = status_users_elounda['elapsed_time'][status_users_elounda.UserID == user].iloc[0]
+            image_editable.text(pot, data, (255, 255, 255), font=store_info)
+
+        for pot, user in zip(lato_potitions, ssi.LATO_users):
+            data = status_users_lato["elapsed_time"][status_users_lato.UserID == user].iloc[0]
+            image_editable.text(pot, data, (255, 255, 255), font=store_info)
+
+
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
     glue_images(f"{path}/green.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 160), resize=4)
@@ -256,10 +262,12 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     elif flag == 'a01':
         potitions = [(9204, 5142), (8469, 5322), (4378, 5142), (5816, 5142), (5071, 5322), (1908, 5322), (7768, 5142)]
         lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
-        for status, pots in zip(user_status, potitions):
-            glue_images(f"{path}/{status}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
-        for status, pots in zip(lato_user_status, lato_potitions):
-            glue_images(f"{path}/{status}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
+        for user, pots in zip(ssi.EM_users, potitions):
+            color = status_users_elounda['COLOR'][status_users_elounda.UserID == user].iloc[0]
+            glue_images(f"{path}/{color}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
+        for user, pots in zip(ssi.LATO_users, lato_potitions):
+            color = status_users_lato["COLOR"][status_users_lato.UserID == user].iloc[0]
+            glue_images(f"{path}/{color}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
 
     delete_all_files_inside_folder(f"{path_2}/")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}.jpg")
