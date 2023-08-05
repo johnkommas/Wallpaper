@@ -411,10 +411,18 @@ WHERE   ESFIItemEntry_ESFIItemPeriodics.fSiteGID= '86947579-6885-4E86-914E-46378
 
 def check_online_user(user):
     return f"""
-SELECT TOP 1 * from ES00EventLog WHERE
-id IN ('ESLOGIN','ESLOGOUT')
-AND UserID = '{user}'
-ORDER BY EDate DESC
+WITH RankedRecords AS (
+    SELECT *,
+    ROW_NUMBER() OVER(PARTITION BY UserID ORDER BY EDate DESC) as rn
+    FROM ES00EventLog
+    WHERE
+    id IN ('ESLOGIN','ESLOGOUT')
+    AND UserID in {user}
+    AND DATEPART (YEAR, EDate) = DATEPART (YEAR, GETDATE())
+)
+SELECT *
+FROM RankedRecords
+WHERE rn = 1
     """
 
 
