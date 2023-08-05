@@ -4,6 +4,9 @@ import shutil
 import logging
 import sys
 import concurrent.futures
+
+import numpy as np
+
 from Private import sql_connect, stores_sensitive_info
 from Files import sql, plot, write
 from datetime import datetime
@@ -34,13 +37,7 @@ def delete_all_files_inside_folder(folder: str) -> None:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def get_online_status(user, store):
-    df = pd.read_sql_query(sql.check_online_user(user), store)
-    if df.ID[0] == "ESLOGIN":
-        result = "green"
-    else:
-        result = "red"
-    return result, df["EDate"]
+
 
 
 def run(file, flag):
@@ -115,11 +112,8 @@ def run(file, flag):
         }
 
     pda = pd.read_sql_query(sql.pda_alert(), connection)
-    user_status = []
-    lato_user_status = []
-    elapsed_time = []
-    lato_elapsed_time = []
-
+    status_users_elounda = pd.DataFrame
+    status_users_lato = pd.DataFrame
     if flag == "a000":
         # Tree map
         df = pd.read_sql_query(
@@ -129,33 +123,33 @@ def run(file, flag):
         plot.tree_map(df, path)
 
     elif flag == "a01":
-        users = stores_sensitive_info.EM_users
-        lato_users = stores_sensitive_info.LATO_users
+        def calc(df):
+            if df["DIFF"].total_seconds() < 86400:  # less than one day in seconds
+                hours = df["DIFF"].seconds // 3600
+                minutes = (df["DIFF"].seconds // 60) % 60
+                return f"{hours}h.{minutes}m"
 
-        for user in users:
-            status, date = get_online_status(user, connection)
-            diff = today - date
-            user_status.append(status)
-            if diff[0].components.days == 0:
-                elapsed_time.append(
-                    f"{diff[0].components.hours}h.{diff[0].components.minutes}m"
-                )
-            elif diff[0].components.days == 1:
-                elapsed_time.append(f"{diff[0].components.days}Day")
+            elif df["DIFF"].total_seconds() < 172800:  # less than two days in seconds
+                return "1Day"
+
             else:
-                elapsed_time.append(f"{diff[0].components.days}Days")
-        for user in lato_users:
-            status, date = get_online_status(user, sql_connect.connect_lato())
-            diff = today - date
-            lato_user_status.append(status)
-            if diff[0].components.days == 0:
-                lato_elapsed_time.append(
-                    f"{diff[0].components.hours}h.{diff[0].components.minutes}m"
-                )
-            elif diff[0].components.days == 1:
-                lato_elapsed_time.append(f"{diff[0].components.days}Day")
-            else:
-                lato_elapsed_time.append(f"{diff[0].components.days}Days")
+                days = df["DIFF"].days
+                return f"{days}Days"
+
+        def complete_df(df):
+            df['COLOR'] = np.where(df['ID'] == 'ESLOGOUT', 'red', 'green')
+            df['DIFF'] = today - df['EDate']
+            df['elapsed_time'] = df.apply(lambda row: calc(row), axis=1)
+            return df
+
+
+
+        elounda_users = tuple(stores_sensitive_info.EM_users)
+        lato_users = tuple(stores_sensitive_info.LATO_users)
+
+        status_users_elounda = complete_df(pd.read_sql_query(sql.check_online_user(elounda_users), connection))
+        status_users_lato = complete_df(pd.read_sql_query(sql.check_online_user(lato_users), sql_connect.connect_lato()))
+
 
     timed = datetime.now().strftime("%d . %m . %Y   %H : %M : %S")
     print(" 🟢", end="")
@@ -173,10 +167,8 @@ def run(file, flag):
         flag,
         pda,
         product_info,
-        user_status,
-        elapsed_time,
-        lato_user_status,
-        lato_elapsed_time,
+        status_users_elounda,
+        status_users_lato,
         customers,
         customers_month
     )
