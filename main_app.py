@@ -63,17 +63,23 @@ def run(file, flag):
         ),
         (sql.sales_elounda_today(today.year, today.month, today.day), connection),
         (sql.sales_elounda_graph(today.year - 5, today.month), connection),
-        (sql.count_customers(), connection)
+        (sql.count_customers(), connection),
+        (sql.count_customers_month(), connection)
     ]
 
     # Use a ThreadPoolExecutor to run execute_query in parallel for each query
     with concurrent.futures.ThreadPoolExecutor() as executor:
         dfs = executor.map(lambda query: execute_query(*query), queries)
 
-    df_sales_elounda, df_sales_elounda_today, df, customers = dfs
+    df_sales_elounda, df_sales_elounda_today, df, customers, customers_month = dfs
 
-    today_live_customers = customers.COUNT[customers.YEAR == datetime.now().year].iloc[0]
-    customers['COLOR'] = customers['COUNT'].apply(lambda x: 'green' if x >= today_live_customers else 'orange')
+    max_live_customers = customers.COUNT.max()
+    customers['COLOR'] = customers['COUNT'].apply(lambda x: 'green' if x >= max_live_customers else 'orange')
+
+    max_live_customers_month = customers_month.COUNT.max()
+    customers_month["COLOR"] = customers_month["COUNT"].apply(
+        lambda x: "green" if x >= max_live_customers_month else "orange"
+    )
 
 
     # print(df_best_products_sales_today)
@@ -171,7 +177,8 @@ def run(file, flag):
         elapsed_time,
         lato_user_status,
         lato_elapsed_time,
-        customers
+        customers,
+        customers_month
     )
     print("🟢", end="")
 
