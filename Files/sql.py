@@ -420,28 +420,42 @@ ORDER BY EDate DESC
 
 def count_customers():
     return f"""
-WITH BASE AS (
-    SELECT
-        ESDCreated AS date_created
-    FROM
-        ESFIDocumentTrade
-    WHERE
+    
+SELECT
+    COUNT(*) AS 'COUNT',
+    DATEPART(YEAR, ESDCreated) AS 'YEAR'
+FROM
+    ESFIDocumentTrade
+   WHERE
         fShippingPurposeCode = N'ΠΩΛΗΣΗ'
         AND fADSiteGID = N'86947579-6885-4E86-914E-46378DB3794F'
         AND (ADCode LIKE N'ΤΔΑ%' OR ADCode LIKE N'ΑΠΛ%')
-        AND ESDCreated >= DATEADD(YEAR, -6, GETDATE())
+        AND  DATEPART(YEAR, ESDCreated) >= DATEPART(YEAR, GETDATE()) - 5
         AND DATEPART(MONTH, ESDCreated) = DATEPART(MONTH, GETDATE())
         AND DATEPART(DAY, ESDCreated) = DATEPART(DAY, GETDATE())
-        AND CAST(ESDCreated AS time) <= CAST(GETDATE() AS time)
-)
+        AND convert(varchar, ESDCreated, 108) <= convert(varchar, getdate(), 108)
+GROUP BY
+    DATEPART(YEAR, ESDCreated)
+ORDER BY
+    2
+    """
 
+def count_customers_month():
+    return f"""
 SELECT
     COUNT(*) AS 'COUNT',
-    DATEPART(YEAR, date_created) AS 'YEAR'
+    DATEPART(YEAR, ESDCreated) AS 'YEAR'
 FROM
-    BASE
+    ESFIDocumentTrade
+   WHERE
+        fShippingPurposeCode = N'ΠΩΛΗΣΗ'
+        AND fADSiteGID = N'86947579-6885-4E86-914E-46378DB3794F'
+        AND (ADCode LIKE N'ΤΔΑ%' OR ADCode LIKE N'ΑΠΛ%')
+        AND  DATEPART(YEAR, ESDCreated) >= DATEPART(YEAR, GETDATE()) - 5
+        AND DATEPART(MONTH, ESDCreated) = DATEPART(MONTH, GETDATE())
+        AND DATEPART(DAY, ESDCreated) <= DATEPART(DAY, GETDATE())
 GROUP BY
-    DATEPART(YEAR, date_created)
+    DATEPART(YEAR, ESDCreated)
 ORDER BY
-    'YEAR'
+    2
     """
