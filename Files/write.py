@@ -28,7 +28,7 @@ def offline(emoji, path, offline_path):
 
 
 def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
-        product_info, user_status, elapsed_time, lato_user_status, lato_elapsed_time, customers):
+        product_info, user_status, elapsed_time, lato_user_status, lato_elapsed_time, customers, customers_month):
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
@@ -73,17 +73,42 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     image_editable.text((4000, 150), f'REFRESHING DATA EVERY MINUTE :  {timed}', white, font=store_info)
 
     # WRITING CUSTOMERS DATA
-    x = 5600
-    for i, year in enumerate(customers.YEAR):
+    x = 5380
+    for year in range(datetime.now().year - 5, datetime.now().year + 1):
         y_year = 490
+        image_editable.text((x, y_year), str(year), white, font=store_info)
+        x += 550
+
+    x = 5380
+    for i, year in enumerate(customers.YEAR):
+        # y_year = 490
         y = 640
         y_percent = 790
         color = pink if customers.COUNT.iloc[i] == customers.COUNT.min() else customers.COLOR.iloc[i]
-        image_editable.text((x, y_year), str(year), color, font=store_info)
+        # image_editable.text((x, y_year), str(year), color, font=store_info)
         image_editable.text((x, y), str(customers.COUNT.iloc[i]), color, font=store_info)
         if customers.COUNT.iloc[i] != customers.COUNT.max():
             image_editable.text((x, y_percent), f'({(round(100 * customers.COUNT.iloc[i]/customers.COUNT.max())) - 100}%)', color, font=store_info_small)
-        x += 500
+        x += 550
+
+    x = 5380
+    for i, year in enumerate(customers_month.YEAR):
+        y = 1090
+        y_percent = 1230
+        color = (
+            pink
+            if customers_month.COUNT.iloc[i] == customers_month.COUNT.min()
+            else customers_month.COLOR.iloc[i]
+        )
+        image_editable.text((x, y), str(customers_month.COUNT.iloc[i]), color, font=store_info)
+        if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
+            image_editable.text(
+                (x, y_percent),
+                f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)",
+                color,
+                font=store_info_small,
+            )
+        x += 550
 
 
 
