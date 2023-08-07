@@ -71,11 +71,11 @@ def run(file, flag):
     df_sales_elounda, df_sales_elounda_today, df, customers, customers_month = dfs
 
     max_live_customers = customers.COUNT.max()
-    customers['COLOR'] = customers['COUNT'].apply(lambda x: 'green' if x >= max_live_customers else 'orange')
+    customers['COLOR'] = customers['COUNT'].apply(lambda x: 'white' if x >= max_live_customers else 'orange')
 
     max_live_customers_month = customers_month.COUNT.max()
     customers_month["COLOR"] = customers_month["COUNT"].apply(
-        lambda x: "green" if x >= max_live_customers_month else "orange"
+        lambda x: "white" if x >= max_live_customers_month else "orange"
     )
 
 
@@ -198,8 +198,8 @@ timers = {"a0": 0, "l": 0, "a01": 0}
 while True:
     # files = ['a0', 'a00', 'a000', 'a0000', 'a1', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
     # files = ['a0', 'a00', 'a000', 'a01', 'l' ]
-    files = ["a0", "l", "a01"]
-    # files = ["a01"]
+    # files = ["a0", "l", "a01"]
+    files = ["a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
         print("[🔴]", end="")
