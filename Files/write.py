@@ -241,13 +241,14 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
                           (8469 - 250, 3250 - 20 - calibrate_y),
                           (9160 - 200, 3080 + calibrate_y)]
 
-
+        # print()
+        # print(status_users_elounda.UserID)
         for pot, user in zip(potitions, ssi.EM_users):
-            data = status_users_elounda['elapsed_time'][status_users_elounda.UserID == user].iloc[0]
+            data = status_users_elounda['elapsed_time'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
         for pot, user in zip(lato_potitions, ssi.LATO_users):
-            data = status_users_lato["elapsed_time"][status_users_lato.UserID == user].iloc[0]
+            data = status_users_lato["elapsed_time"][status_users_lato.UserID.str.startswith(user)].iloc[0]
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
 
@@ -268,10 +269,10 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
         potitions = [(9204, 5142), (8469, 5322), (4378, 5142), (5816, 5142), (5071, 5322), (1908, 5322), (7768, 5142)]
         lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
         for user, pots in zip(ssi.EM_users, potitions):
-            color = status_users_elounda['COLOR'][status_users_elounda.UserID == user].iloc[0]
+            color = status_users_elounda['COLOR'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
             glue_images(f"{path}/{color}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
         for user, pots in zip(ssi.LATO_users, lato_potitions):
-            color = status_users_lato["COLOR"][status_users_lato.UserID == user].iloc[0]
+            color = status_users_lato["COLOR"][status_users_lato.UserID.str.startswith(user)].iloc[0]
             glue_images(f"{path}/{color}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
 
     delete_all_files_inside_folder(f"{path_2}/")
