@@ -37,7 +37,23 @@ def delete_all_files_inside_folder(folder: str) -> None:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
+def filter_data(df):
+    """
+    Όταν ένας χρήτης έκανε login δύο φορές και στην συνέχεια έκανε logout από το ένα η τελυταία εγγραφή είναι logout αλλά ο χρήστης είναι ακόμα συνδεδεμένος
+    έτσι αυτό το φίλτρο φτιάχτηκε για να λύσει αυτό το πρόβλημα.
+    :param df:
+    :return:
+    """
+    df['UserID'] = df['UserID'].str.strip()
+    df = df.drop_duplicates(subset=['WSID'], keep='first')
 
+    filtered_df_in = df[df.ID == 'ESLOGIN'].groupby('UserID').first().reset_index()
+    logged = filtered_df_in.UserID.to_list()
+
+    filtered_df_out = df[(df.ID == 'ESLOGOUT') & (~(df.UserID.isin(logged)))].groupby('UserID').first().reset_index()
+
+    df = pd.concat([filtered_df_in, filtered_df_out], ignore_index=True)
+    return df
 
 
 def run(file, flag):
@@ -148,7 +164,9 @@ def run(file, flag):
         lato_users = tuple(stores_sensitive_info.LATO_users)
 
         status_users_elounda = complete_df(pd.read_sql_query(sql.check_online_user(elounda_users), connection))
+        status_users_elounda = filter_data(status_users_elounda)
         status_users_lato = complete_df(pd.read_sql_query(sql.check_online_user(lato_users), sql_connect.connect_lato()))
+        status_users_lato = filter_data(status_users_lato)
 
 
     timed = datetime.now().strftime("%d . %m . %Y   %H : %M : %S")
