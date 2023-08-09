@@ -217,7 +217,7 @@ while True:
     # files = ['a0', 'a00', 'a000', 'a0000', 'a1', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
     # files = ['a0', 'a00', 'a000', 'a01', 'l' ]
     files = ["a0", "l", "a01"]
-    files = ["a01"]
+    # files = ["a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
         print("[🔴]", end="")
