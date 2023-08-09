@@ -422,7 +422,24 @@ WITH RankedRecords AS (
 )
 SELECT *
 FROM RankedRecords
-WHERE rn = 1
+WHERE rn <= 10
+    """
+
+
+def fix_check_online_user(user):
+    return f"""
+WITH RankedRecords AS (
+    SELECT *,
+    ROW_NUMBER() OVER(PARTITION BY UserID ORDER BY EDate DESC) as rn
+    FROM ES00EventLog
+    WHERE
+    id IN ('ESLOGIN','ESLOGOUT')
+    AND UserID in {user}
+    AND DATEPART (YEAR, EDate) = DATEPART (YEAR, GETDATE())
+)
+SELECT *
+FROM RankedRecords
+WHERE rn <= 10
     """
 
 
