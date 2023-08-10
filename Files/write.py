@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from Private import stores_sensitive_info as ssi
 import pandas as pd
+import time as mtime
 
 
 pd.set_option('display.max_columns', None)
@@ -252,6 +253,8 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
 
+
+
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
     glue_images(f"{path}/green.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 160), resize=4)
@@ -268,12 +271,15 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     elif flag == 'a01':
         potitions = [(9204, 5142), (8469, 5322), (4378, 5142), (5816, 5142), (5071, 5322), (1908, 5322), (7768, 5142)]
         lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
+        my_image = Image.open(f"{path}/TEMP/{file_in}_{time}.jpg")
         for user, pots in zip(ssi.EM_users, potitions):
             color = status_users_elounda['COLOR'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
-            glue_images(f"{path}/{color}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
+            my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
         for user, pots in zip(ssi.LATO_users, lato_potitions):
             color = status_users_lato["COLOR"][status_users_lato.UserID.str.startswith(user)].iloc[0]
-            glue_images(f"{path}/{color}.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=pots, resize=4)
+            my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
+        my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
+
 
     delete_all_files_inside_folder(f"{path_2}/")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}.jpg")
@@ -313,6 +319,14 @@ def glue_images(pda_image, path, xy, resize):
     image_editable = ImageDraw.Draw(my_image)
     my_image.save(path)
 
+
+def paste_image(my_image, overlay_image, xy, resize):
+    overlay = Image.open(overlay_image)
+    width, height = overlay.size
+    overlay = overlay.resize((width // resize, height // resize))
+    my_image.paste(overlay, xy, mask=overlay)
+    image_editable = ImageDraw.Draw(my_image)
+    return my_image
 
 def delete_all_files_inside_folder(folder):
     for filename in os.listdir(folder):
