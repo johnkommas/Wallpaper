@@ -57,6 +57,7 @@ def filter_data(df):
 
 
 def run(file, flag):
+    print(f"🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
     connection = sql_connect.connect()
 
     start_ = time.perf_counter()
@@ -170,7 +171,7 @@ def run(file, flag):
 
 
     timed = datetime.now().strftime("%d . %m . %Y   %H : %M : %S")
-    print(" 🟢", end="")
+    print(f"🟢 IMAGE @{datetime.now().strftime('%H:%M:%S')} ", end="")
     write.run(
         a,
         b,
@@ -190,7 +191,6 @@ def run(file, flag):
         customers,
         customers_month
     )
-    print("🟢", end="")
 
     # Randar Plot ΕΝΑΡΞΗ
     # df = pd.read_sql_query(sql.randar_query(today.year, today.month), sql_connect.connect())
@@ -220,7 +220,6 @@ while True:
     # files = ["a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
-        print("[🔴]", end="")
 
         HOST_UP = (
             True
@@ -230,7 +229,6 @@ while True:
             == 0
             else False
         )
-        print(f"[🟢][{HOST_UP}]", end="")
         try:
             if HOST_UP:
                 time.sleep(timers.get(file))
@@ -242,7 +240,7 @@ while True:
 
                 times += 1
                 print(
-                    f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: {CBLUE}{sales}€{CEND} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND} SLEPT FOR {timers.get(file)}s",
+                    f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: {CBLUE}{sales}€{CEND} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
                     end="",
                 )
             else:

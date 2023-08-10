@@ -16,6 +16,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
 pd.set_option('display.max_rows', None)
 
+
 def offline(emoji, path, offline_path):
     delete_all_files_inside_folder(offline_path)
     file = f"{emoji}/red.png"
