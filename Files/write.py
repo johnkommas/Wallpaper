@@ -24,7 +24,7 @@ def offline(emoji, path, offline_path):
         width, height = overlay.size
         overlay = overlay.resize((width // 4, height // 4))
         my_image.paste(overlay, (550, 160), mask=overlay)
-        image_editable = ImageDraw.Draw(my_image)
+        # image_editable = ImageDraw.Draw(my_image)
         my_image.save(f"{offline_path}/{dfile}")
     delete_all_files_inside_folder(path)
     for dfile in os.listdir(offline_path):
@@ -37,7 +37,6 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
-
 
     years = []
     for i in df_years:
@@ -108,12 +107,12 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     x = 500
     check_year = today.year - 5
     for i, year in enumerate(years):
-        image_editable.text((x + 400, 900), dates_for_every_year[i], white, font=dates_font_parse)  # ημερες
+        image_editable.text((x + 400, 900), dates_for_every_year[i], white, font=dates_font_parse)
         if year != str(check_year):
-            image_editable.text((x, 400), str(check_year), (255, 255, 255), font=title_font_year)  # χρονιες
+            image_editable.text((x, 400), str(check_year), (255, 255, 255), font=title_font_year)
             x += 660
             data.insert(i, 0)
-        image_editable.text((x, 400), year, (255, 255, 255), font=title_font_year)  # χρονίες
+        image_editable.text((x, 400), year, (255, 255, 255), font=title_font_year)
         x += 660
         check_year += 1
 
@@ -155,7 +154,6 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     for info_text in product_info_texts:
         text = f"{info_text['text_prefix']}: {product_info.get(info_text['info_key'])}"
         image_editable.text((9000, info_text['y']), text, (255, 255, 255), font=store_info)
-
 
     if flag == 'a00':
         swift = 1650
@@ -208,7 +206,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
                      (4378 + 100 - calibrate_x, 5142 + calibrate_y),
                      (5816 - calibrate_x, 5142 + calibrate_y),
                      (5071 + 50 - calibrate_x, 5322 - 20 - calibrate_y),
-                     (1908 + 120 - calibrate_x, 5322 -20 - calibrate_y),
+                     (1908 + 120 - calibrate_x, 5322 - 20 - calibrate_y),
                      (7768 + 100 - calibrate_x, 5142 + calibrate_y)]
 
         lato_potitions = [(4410 - 250, 3080 + calibrate_y),
@@ -264,7 +262,7 @@ def get_pda_data(df, str_a):
     try:
         a = df[df.TYPE == str_a].DOCS.iloc[0]
         b = df[df.TYPE == str_a].LINES.iloc[0]
-    except Exception as e:
+    except IndexError as e:
         pass
     finally:
         return a, b
@@ -289,7 +287,7 @@ def glue_images(pda_image, path, xy, resize):
     width, height = overlay.size
     overlay = overlay.resize((width // resize, height // resize))
     my_image.paste(overlay, xy, mask=overlay)
-    image_editable = ImageDraw.Draw(my_image)
+    # image_editable = ImageDraw.Draw(my_image)
     my_image.save(path)
 
 
@@ -298,7 +296,7 @@ def paste_image(my_image, overlay_image, xy, resize):
     width, height = overlay.size
     overlay = overlay.resize((width // resize, height // resize))
     my_image.paste(overlay, xy, mask=overlay)
-    image_editable = ImageDraw.Draw(my_image)
+    # image_editable = ImageDraw.Draw(my_image)
     return my_image
 
 
