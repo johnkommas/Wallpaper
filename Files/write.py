@@ -2,19 +2,16 @@
 import os
 import shutil
 from Files import plot
-import numpy as np
 from PIL import Image, ImageFont, ImageDraw
-import pathlib
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from Private import stores_sensitive_info as ssi
 import pandas as pd
-import time as mtime
 
 
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 1000)
-pd.set_option('display.max_rows', None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.width", 1000)
+pd.set_option("display.max_rows", None)
 
 
 def offline(emoji, path, offline_path):
@@ -22,63 +19,52 @@ def offline(emoji, path, offline_path):
     file = f"{emoji}/red.png"
     dir_list = os.listdir(path)
     for dfile in dir_list:
-        my_image = Image.open(f'{path}/{dfile}')
+        my_image = Image.open(f"{path}/{dfile}")
         overlay = Image.open(file)
         width, height = overlay.size
         overlay = overlay.resize((width // 4, height // 4))
         my_image.paste(overlay, (550, 160), mask=overlay)
         image_editable = ImageDraw.Draw(my_image)
-        my_image.save(f'{offline_path}/{dfile}')
+        my_image.save(f"{offline_path}/{dfile}")
     delete_all_files_inside_folder(path)
     for dfile in os.listdir(offline_path):
         shutil.copy2(f"{offline_path}/{dfile}", f"{path}/{dfile}")
     delete_all_files_inside_folder(offline_path)
 
 
-def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
+def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
         product_info, status_users_elounda, status_users_lato, customers, customers_month):
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
-    tziros_month = str(int(tziros_month))
-    tziros_today = str(int(tziros_today))
+
 
     years = []
     for i in df_years:
         years.append(str(i))
-    # print(years)
 
-    my_image = Image.open(f'{path}/{file_in}.jpg')
-    title_font = ImageFont.truetype('Avenir Next.ttc', 110)
-    title_font_year = ImageFont.truetype('Avenir Next.ttc', 200)
-    number_font_month = ImageFont.truetype('DIN Condensed Bold.ttf', 380)
-    number_font_today = ImageFont.truetype('DIN Condensed Bold.ttf', 250)
-    number_font_parse = ImageFont.truetype('DIN Condensed Bold.ttf', 250)
-    dates_font_parse = ImageFont.truetype('DIN Condensed Bold.ttf', 80)
-    store_info = ImageFont.truetype('25191766905.ttf', 120)
-    store_info_small = ImageFont.truetype('25191766905.ttf', 100)
+    my_image = Image.open(f"{path}/{file_in}.jpg")
+    title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
+    number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
+    dates_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 80)
+    store_info = ImageFont.truetype("25191766905.ttf", 120)
+    store_info_small = ImageFont.truetype("25191766905.ttf", 100)
     image_editable = ImageDraw.Draw(my_image)
 
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
     dates_for_every_year = get_date_for_every_year(specific_date)
-    grey = (44, 40, 41)
+    # grey = (44, 40, 41)
     white = (255, 255, 255)
-    blue = (26, 55, 110)
-    red = (238, 0, 0)
+    # blue = (26, 55, 110)
+    # red = (238, 0, 0)
     pink = (255, 134, 179)
-    green = (68, 255, 115)
+    # green = (68, 255, 115)
     orange = (255, 87, 51)
 
     # WRITING STORE INFO
-    image_editable.text((520, 150),
-                        f'        ELOUNDA MARKET',
-                        white, font=store_info)
-
-    image_editable.text((9000, 150),
-                        f'TODAY SALES:  {int(sales)}€',
-                        white, font=store_info)
-
-    image_editable.text((4000, 150), f'REFRESHING DATA EVERY MINUTE :  {timed}', white, font=store_info)
+    image_editable.text((520, 150), f"        ELOUNDA MARKET", white, font=store_info)
+    image_editable.text((9000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info)
+    image_editable.text((4000, 150), f"REFRESHING DATA EVERY MINUTE :  {timed}", white, font=store_info)
 
     # WRITING CUSTOMERS DATA
     x = 5380
@@ -118,8 +104,6 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
             )
         x += 550
 
-
-
     # WRITING YEARS
     x = 500
     check_year = today.year - 5
@@ -144,42 +128,33 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
 
         x = [y + 660 for y in x]
 
-    time = datetime.now().strftime("%d%m%Y%H%M%S")
-    a, b = get_pda_data(online_order, 'ΑΓΟΡΕΣ')
-    image_editable.text((500, 6300), f"Agores:  ({a} Docs) - ({b} Lines)", (255, 255, 255), font=store_info)
-    a, b = get_pda_data(online_order, 'ΕΠΙΣΤΡΟΦΕΣ')
-    image_editable.text((2500, 6300), f"Epistrofes:  ({a} Docs) - ({b} Lines)", (255, 255, 255), font=store_info)
-    a, b = get_pda_data(online_order, 'ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ')
-    image_editable.text((4600, 6300), f"Endodiakinisi:  ({a} Docs) - ({b} Lines)", (255, 255, 255), font=store_info)
-    a, b = get_pda_data(online_order, 'ΠΑΡΑΓΓΕΛΙΕΣ')
-    image_editable.text((6600, 6300), f"Paraggelia:  ({a} Docs) - ({b} Lines)", (255, 255, 255),
-                        font=store_info)
-    a, b = get_pda_data(online_order, 'ΡΑΦΙ ΤΙΜΕΣ')
-    image_editable.text((9000, 6300), f"Times Rafi:  ({a} Docs) - ({b} Lines)", (255, 255, 255),
-                        font=store_info)
+    pda_data_list = [
+        {"pda_data": "ΑΓΟΡΕΣ", "x": 500, "y": 6300, "text_prefix": "Agores"},
+        {"pda_data": "ΕΠΙΣΤΡΟΦΕΣ", "x": 2500, "y": 6300, "text_prefix": "Epistrofes"},
+        {"pda_data": "ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ", "x": 4600, "y": 6300, "text_prefix": "Endodiakinisi"},
+        {"pda_data": "ΠΑΡΑΓΓΕΛΙΕΣ", "x": 6600, "y": 6300, "text_prefix": "Paraggelia"},
+        {"pda_data": "ΡΑΦΙ ΤΙΜΕΣ", "x": 9000, "y": 6300, "text_prefix": "Times Rafi"},
+    ]
+    
+    for data in pda_data_list:
+        a, b = get_pda_data(online_order, data["pda_data"])
+        image_editable.text(
+            (data["x"], data["y"]),
+            f"{data['text_prefix']}:  ({a} Docs) - ({b} Lines)",
+            (255, 255, 255),
+            font=store_info,
+        )
 
     # WRITE PRODUCT INFO
-    image_editable.text(
-        (9000, 400),
-        f"Price Changes: {product_info.get('price_change')}",
-        (255, 255, 255),
-        font=store_info,
-    )
-    image_editable.text(
-        (9000, 550), f"New Products: {product_info.get('new_product')}", (255, 255, 255), font=store_info
-    )
-    image_editable.text(
-        (9000, 850),
-        f"Special Offers: {product_info.get('special_price')}",
-        (255, 255, 255),
-        font=store_info,
-    )
-    # image_editable.text(
-    #     (9000, 1000),
-    #     f"Unique Products: {product_info.get('customer_prefer')}",
-    #     (255, 255, 255),
-    #     font=store_info,
-    # )
+    product_info_texts = [
+        {'info_key': 'price_change', 'y': 400, 'text_prefix': 'Price Changes'},
+        {'info_key': 'new_product', 'y': 550, 'text_prefix': 'New Products'},
+        {'info_key': 'special_price', 'y': 850, 'text_prefix': 'Special Offers'}
+    ]
+
+    for info_text in product_info_texts:
+        text = f"{info_text['text_prefix']}: {product_info.get(info_text['info_key'])}"
+        image_editable.text((9000, info_text['y']), text, (255, 255, 255), font=store_info)
 
 
     if flag == 'a00':
@@ -228,13 +203,13 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
     elif flag == 'a01':
         calibrate_y = 700
         calibrate_x = 300
-        potitions = [(9204 + 150 - calibrate_x, 5142 + calibrate_y), #giota
-                     (8469 - calibrate_x, 5322 - 20 - calibrate_y), # maria kout
-                     (4378 + 100 - calibrate_x, 5142 + calibrate_y), # kyriakos
-                     (5816 - calibrate_x, 5142 + calibrate_y), # michalis kout
-                     (5071 + 50 - calibrate_x, 5322 - 20 - calibrate_y), # rapanaki
-                     (1908 + 120 - calibrate_x, 5322 -20 - calibrate_y), # kommas
-                     (7768 + 100- calibrate_x, 5142 + calibrate_y)] # xnaraki
+        potitions = [(9204 + 150 - calibrate_x, 5142 + calibrate_y),
+                     (8469 - calibrate_x, 5322 - 20 - calibrate_y),
+                     (4378 + 100 - calibrate_x, 5142 + calibrate_y),
+                     (5816 - calibrate_x, 5142 + calibrate_y),
+                     (5071 + 50 - calibrate_x, 5322 - 20 - calibrate_y),
+                     (1908 + 120 - calibrate_x, 5322 -20 - calibrate_y),
+                     (7768 + 100 - calibrate_x, 5142 + calibrate_y)]
 
         lato_potitions = [(4410 - 250, 3080 + calibrate_y),
                           (5100 - 200, 3250 - 20 - calibrate_y),
@@ -252,9 +227,6 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
         for pot, user in zip(lato_potitions, ssi.LATO_users):
             data = status_users_lato["elapsed_time"][status_users_lato.UserID.str.startswith(user)].iloc[0]
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
-
-
-
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
@@ -281,31 +253,31 @@ def run(tziros_month, tziros_today, df, file_in, specific_date, path, path_2, sa
             my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
         my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
 
-
     delete_all_files_inside_folder(f"{path_2}/")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}_2.jpg")
 
 
 def get_pda_data(df, str_a):
+    a = 0
+    b = 0
     try:
         a = df[df.TYPE == str_a].DOCS.iloc[0]
         b = df[df.TYPE == str_a].LINES.iloc[0]
     except Exception as e:
-        a = 0
-        b = 0
+        pass
     finally:
         return a, b
 
 
 def get_date_for_every_year(specific_date):
-    english = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    greek = ['(ΔΕ)', '(ΤΡ)', '(ΤΕ)', '(ΠΕ)', '(ΠΑ)', '(ΣΑ)', '(ΚΥ)']
+    english = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    greek = ["(ΔΕ)", "(ΤΡ)", "(ΤΕ)", "(ΠΕ)", "(ΠΑ)", "(ΣΑ)", "(ΚΥ)"]
     today = specific_date
     x = []
     for i in range(0, 6):
         a = today - relativedelta(years=i)
-        eng = (a.strftime("%a"))
+        eng = a.strftime("%a")
         x.append(greek[english.index(eng)])
     x.reverse()
     return x
@@ -329,6 +301,7 @@ def paste_image(my_image, overlay_image, xy, resize):
     image_editable = ImageDraw.Draw(my_image)
     return my_image
 
+
 def delete_all_files_inside_folder(folder):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
@@ -338,4 +311,4 @@ def delete_all_files_inside_folder(folder):
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            print(f'Failed to delete {file_path}. Reason: {e}')
+            print(f"Failed to delete {file_path}. Reason: {e}")
