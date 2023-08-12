@@ -95,10 +95,6 @@ def run(file, flag):
         lambda x: "white" if x >= max_live_customers_month else "orange"
     )
 
-
-    # print(df_best_products_sales_today)
-    a = df_sales_elounda.TurnOver[df_sales_elounda.YEAR == today.year].values[0]
-    b = df_sales_elounda_today.values[0][0]
     c = df_sales_elounda
 
     df["DATE"] = df.apply(
@@ -169,36 +165,10 @@ def run(file, flag):
         status_users_lato = complete_df(pd.read_sql_query(sql.check_online_user(lato_users), sql_connect.connect_lato()))
         status_users_lato = filter_data(status_users_lato)
 
-
     timed = datetime.now().strftime("%d . %m . %Y   %H : %M : %S")
     print(f"🟢 IMAGE @{datetime.now().strftime('%H:%M:%S')} ", end="")
-    write.run(
-        a,
-        b,
-        c,
-        file,
-        today,
-        path,
-        path_2,
-        df_sales_elounda_today.values[0][0],
-        timed,
-        df,
-        flag,
-        pda,
-        product_info,
-        status_users_elounda,
-        status_users_lato,
-        customers,
-        customers_month
-    )
-
-    # Randar Plot ΕΝΑΡΞΗ
-    # df = pd.read_sql_query(sql.randar_query(today.year, today.month), sql_connect.connect())
-    # df.dropna(inplace=True)
-    # # print(df)
-    # categories = df['BRAND'].values
-    # sales = df['SALES'].values
-    # plot.randar_chart(categories, sales, path)
+    write.run(c, file, today, path, path_2, df_sales_elounda_today.values[0][0], timed,
+              df, flag, pda, product_info, status_users_elounda, status_users_lato, customers,customers_month)
 
     stop_ = time.perf_counter()
 
