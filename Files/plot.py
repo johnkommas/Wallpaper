@@ -5,8 +5,6 @@ import squarify
 from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw
 from datetime import timedelta, datetime
-# from scipy.ndimage.filters import gaussian_filter1d
-import seaborn as sns
 from wordcloud import WordCloud, ImageColorGenerator
 from scipy.ndimage import gaussian_gradient_magnitude
 
@@ -24,16 +22,12 @@ def run_daily(all_years, specific_day, path_a, path_b):
 
     date_range = pd.date_range(first_day, last_day, freq="D")
     date = [i.strftime('%d/%m/%Y') for i in date_range]
-    date_all = [int(i.strftime('%d')) for i in date_range]
-    # print('date_all = ', date_all)
-    x = list(df["DATE"].values)
+    x = df["DATE"].to_list()
     x_all = list(all_years['DAY'].unique())
-    # print("x_all =", x_all)
-    y = list(df["TurnOver"].values)
+    y = df["TurnOver"].to_list()
     y_all = []
     for day in all_years.DAY.unique():
         y_all.append(round(all_years['TurnOver'][all_years.DAY == day].mean(), 2))
-    # print('y_all = ', y_all)
     X = date
     Y = []
     Y_all = []
@@ -46,32 +40,22 @@ def run_daily(all_years, specific_day, path_a, path_b):
             counter += 1
         else:
             Y.append(0)
-    # print(len(x_all))
-    # print(x_all)
     for i in x_all:
-        # print("ok")
         try:
             Y_all[i - 1] = y_all[counter_all]
-            # print(Y_all)
             counter_all += 1
         except:
             pass
-    # print(Y_all)
-    y_all_mean = round(np.mean(y_all), 2)
-    y_mean = round(np.mean(y), 2)
+
     with plt.rc_context({'axes.edgecolor': 'white', 'xtick.color': 'white', 'ytick.color': 'white'}):
         plt.rcParams["font.family"] = "monospace"
         plt.rcParams["font.monospace"] = ["FreeMono"]
         plt.figure(figsize=(22, 5), dpi=450, facecolor='#1a376e')
         plt.subplot()
-    # colors = [plt.cm.Spectral(i / float(len(X))) for i in range(len(X))]
     colors = '#FF5732'
     plt.bar(X, Y, alpha=0.9, color=colors)
-    # ysmoothed = gaussian_filter1d(Y_all, sigma=2)
     plt.plot(X, Y_all, alpha=0.9, color='red')
-    # plt.plot(X, ysmoothed, alpha=0.9, color='green')
     plt.fill_between(X, Y_all, alpha=.1, color='white')
-    # plt.fill_between(X, Y_all, alpha=.2, where=(Y <= Y_all), color='green')
     for a, b, in zip(X, Y):
         label = f"{b}\nEUR"
         # this method is called for each point
@@ -84,7 +68,6 @@ def run_daily(all_years, specific_day, path_a, path_b):
 
                      )  # horizontal alignment can be left, right or center
     plt.xticks(ticks=date, labels=[f"{i.strftime('%a')}\n{i.strftime('%d/%m')}" for i in date_range])
-    # plt.grid(True, alpha=0.4)
     plt.box(False)
     plt.tight_layout()
     img_file = f"{path_a}"
@@ -102,7 +85,6 @@ def glue_images_2(path_a, path_b):
     my_image.paste(overlay, (343, 4000), mask=overlay)
     image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
-    # my_image.save(f"{path}/roll/final.jpg")
 
 
 def randar_chart(categories, sales, path):
@@ -139,14 +121,6 @@ def glue_images_3(path):
     image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path}/roll/finale.jpg")
 
-    # img_file = f"{path}/mytable.png"
-    # my_image = Image.open(f"{path}/roll/finale.jpg")
-    # overlay = Image.open(img_file)
-    # width, height = overlay.size
-    # overlay = overlay.resize((width * 6, height * 6))
-    # my_image.paste(overlay, (600, 1500), mask=overlay)
-    # image_editable = ImageDraw.Draw(my_image)
-
     my_image.save(f"{path}/roll/finale.jpg")
     my_image.save(f"{path}/roll/finale_a.jpg")
     my_image.save(f"{path}/roll/finale_b.jpg")
@@ -166,9 +140,6 @@ def tree_map(df, path):
             axis=1)
 
         sizes = df['SALES'].values.tolist()
-        # colors = [plt.cm.Blues(i / float(len(labels))) for i in range(len(labels))]
-        # colors = [plt.cm.gist_gray(i / float(len(labels))) for i in range(len(labels))]
-        colors = [plt.cm.Spectral(i / float(len(labels))) for i in range(len(labels))]
         colors = [plt.cm.viridis(i / float(len(labels))) for i in range(len(labels))]
 
         # Draw Plot
