@@ -1,18 +1,15 @@
 #  Copyright (c) Ioannis E. Kommas 2022. All Rights Reserved
+import concurrent.futures
+import logging
 import os
 import shutil
-import logging
 import sys
-import concurrent.futures
-
-import numpy as np
-
-from Private import sql_connect, stores_sensitive_info
-from Files import sql, plot, write
-from datetime import datetime
-import pandas as pd
 import time
-import atexit
+import numpy as np
+import pandas as pd
+from Files import sql, plot, write
+from Private import sql_connect, stores_sensitive_info
+from datetime import datetime
 
 path = f"{stores_sensitive_info.OneDrivePath}/Pictures/Wallpaper/in"
 path_2 = f"{stores_sensitive_info.OneDrivePath}/Pictures/Wallpaper/roll"
@@ -71,10 +68,7 @@ def run(file, flag):
     # Each query and its respective connection are kept as tuple in a list.
     # In case the all queries are to be executed on the same connection, replace `sql_connect.connect()` and `connection` with your preferred connection.
     queries = [
-        (
-            sql.sales_elounda(today.year - 5, today.month, today.day),
-            sql_connect.connect(),
-        ),
+        (sql.sales_elounda(today.year - 5, today.month, today.day), connection),
         (sql.sales_elounda_today(today.year, today.month, today.day), connection),
         (sql.sales_elounda_graph(today.year - 5, today.month), connection),
         (sql.count_customers(), connection),
@@ -187,7 +181,7 @@ while True:
     # files = ['a0', 'a00', 'a000', 'a0000', 'a1', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
     # files = ['a0', 'a00', 'a000', 'a01', 'l' ]
     files = ["a0", "l", "a01"]
-    # files = ["a01"]
+    # files = ["a0", "a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
 
