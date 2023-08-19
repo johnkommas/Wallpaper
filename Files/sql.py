@@ -358,7 +358,7 @@ SELECT      count(distinct IMP_MobileDocumentHeaders.Code)                     A
 
 def price_changes_today():
     return f"""
-select isnull(count(ESFIItem.Code),0)                                       AS COUNT
+select count(DISTINCT ESFIItem.Code)                                       AS COUNT
 FROM ESFIItem
     LEFT JOIN ES00HistoryLogRawData
         ON ESFIItem.GID = ES00HistoryLogRawData.fPK
@@ -374,7 +374,7 @@ AND convert(varchar, ES00HistoryLogRawData.HDate, 102) = convert(varchar, getdat
 def new_products():
     return f"""
     select 
-    isnull(count(ESFIItem.Code),0)                                      AS COUNT
+    count(DISTINCT ESFIItem.Code)                                     AS COUNT
 FROM ESFIItem
 LEFT JOIN ESFIItemEntry_ESFIItemPeriodics
                             ON ESFIItemEntry_ESFIItemPeriodics.fItemGID = ESFIItem.GID
