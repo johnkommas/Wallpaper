@@ -74,7 +74,7 @@ def filter_data(df):
     return df
 
 
-def run(file, flag):
+def run(temp_file, flag):
     print(f"🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
     start_ = time.perf_counter()
@@ -182,7 +182,7 @@ def run(file, flag):
     print(f"🟢 IMAGE @{datetime.now().strftime('%H:%M:%S')} ", end="")
     write.run(
         c,
-        file,
+        temp_file,
         today,
         path,
         path_2,
@@ -211,11 +211,9 @@ CEND = "\033[0m"
 times = 0
 failed = 0
 timers = {"a0": 0, "l": 0, "a01": 0}
+
 while True:
-    # files = ['a0', 'a00', 'a000', 'a0000', 'a1', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
-    # files = ['a0', 'a00', 'a000', 'a01', 'l' ]
     files = ["a0", "l", "a01"]
-    # files = ["a0", "a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
 
