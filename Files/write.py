@@ -62,17 +62,17 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
 
     # WRITING STORE INFO
     image_editable.text((520, 150), f"        ELOUNDA MARKET", white, font=store_info)
-    image_editable.text((9000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info)
     image_editable.text((4000, 150), f"REFRESHING DATA EVERY MINUTE :  {timed}", white, font=store_info)
+    image_editable.text((10000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info)
 
     # WRITING CUSTOMERS DATA
-    x = 5380
+    x = 5812
     for year in range(datetime.now().year - 5, datetime.now().year + 1):
         y_year = 490
         image_editable.text((x, y_year), str(year), white, font=store_info)
         x += 550
 
-    x = 5380
+    x = 5812
     for i, year in enumerate(customers.YEAR):
         # y_year = 490
         y = 640
@@ -84,7 +84,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
             image_editable.text((x, y_percent), f'({(round(100 * customers.COUNT.iloc[i]/customers.COUNT.max())) - 100}%)', color, font=store_info_small)
         x += 550
 
-    x = 5380
+    x = 5812
     for i, year in enumerate(customers_month.YEAR):
         y = 1090
         y_percent = 1230
@@ -153,7 +153,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
 
     for info_text in product_info_texts:
         text = f"{info_text['text_prefix']}: {product_info.get(info_text['info_key'])}"
-        image_editable.text((9000, info_text['y']), text, (255, 255, 255), font=store_info)
+        image_editable.text((10000, info_text['y']), text, (255, 255, 255), font=store_info)
 
     if flag == 'a00':
         swift = 1650
