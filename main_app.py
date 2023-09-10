@@ -213,6 +213,7 @@ failed = 0
 timers = {"a0": 0, "l": 0, "a01": 0}
 
 while True:
+    write.create_calendar()
     files = ["a0", "l", "a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
