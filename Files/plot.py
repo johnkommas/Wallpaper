@@ -328,3 +328,5 @@ def customers_graph(df):
     img_file = f"test.png"
     plt.savefig(img_file, transparent=True)
     plt.close()
+
+
