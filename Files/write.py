@@ -34,7 +34,9 @@ def offline(emoji, path, offline_path):
 
 
 def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
-        product_info, status_users_elounda, status_users_lato, customers, customers_month):
+        product_info, status_users_elounda, status_users_lato,
+        # customers, customers_month
+        ):
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
@@ -42,7 +44,6 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     years = []
     for i in df_years:
         years.append(str(i))
-
 
     my_image = Image.open(f"{path}/{file_in}.jpg")
     title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
