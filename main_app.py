@@ -221,6 +221,7 @@ write.create_calendar()
 while True:
     if datetime.now().day != calendar_check_today:
         write.create_calendar()
+        calendar_check_today = datetime.now().day
     # files = ["a0", "l", "a01"]
     files = ["a0"]
     for file in files:
