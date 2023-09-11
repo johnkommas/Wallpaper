@@ -83,9 +83,9 @@ def run(temp_file, flag):
     def fetch_data_with_params(sql_file, params=None):
         return fetch_data.get_sql_data(sql_file, params)
 
-    params_1 = {"year": today.year - 5, "month": today.month, "day": today.day}
+    params_1 = {"year": today.year - 11, "month": today.month, "day": today.day}
     params_2 = {"year": today.year, "month": today.month, "day": today.day}
-    params_3 = {"year": today.year - 5, "month": today.month}
+    params_3 = {"year": today.year - 11, "month": today.month}
 
     with ThreadPoolExecutor() as executor:
         futures = {
@@ -128,12 +128,12 @@ def run(temp_file, flag):
 
     max_live_customers = customers.COUNT.max()
     customers["COLOR"] = customers["COUNT"].apply(
-        lambda x: "white" if x >= max_live_customers else "orange"
+        lambda x: "white" if x >= max_live_customers else "#F25E49"
     )
 
     max_live_customers_month = customers_month.COUNT.max()
     customers_month["COLOR"] = customers_month["COUNT"].apply(
-        lambda x: "white" if x >= max_live_customers_month else "orange"
+        lambda x: "white" if x >= max_live_customers_month else "#F25E49"
     )
 
     c = df_sales_elounda
@@ -214,7 +214,8 @@ timers = {"a0": 0, "l": 0, "a01": 0}
 
 while True:
     write.create_calendar()
-    files = ["a0", "l", "a01"]
+    # files = ["a0", "l", "a01"]
+    files = ["a0"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
 
