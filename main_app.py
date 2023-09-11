@@ -96,8 +96,8 @@ def run(temp_file, flag):
                 fetch_data_with_params, SQL_FILES[1], params_2
             ): "df_sales_elounda_today",
             executor.submit(fetch_data_with_params, SQL_FILES[2], params_3): "df",
-            executor.submit(fetch_data_with_params, SQL_FILES[3]): "customers",
-            executor.submit(fetch_data_with_params, SQL_FILES[4]): "customers_month",
+            # executor.submit(fetch_data_with_params, SQL_FILES[3]): "customers",
+            # executor.submit(fetch_data_with_params, SQL_FILES[4]): "customers_month",
             executor.submit(fetch_data_with_params, SQL_FILES[5]): "price_change",
             executor.submit(fetch_data_with_params, SQL_FILES[6]): "new_product",
             executor.submit(fetch_data_with_params, SQL_FILES[7]): "special_price",
@@ -114,7 +114,11 @@ def run(temp_file, flag):
             except Exception as exc:
                 print(f"%r generated an exception: %s" % (df_name, exc))
 
-    df_sales_elounda, df_sales_elounda_today, df, customers, customers_month, price_change, new_product, special_price, customer_prefer, pda = (results[key] for key in ["df_sales_elounda", "df_sales_elounda_today", "df", "customers", "customers_month", "price_change", "new_product", "special_price", "customer_prefer", "pda"])
+    (df_sales_elounda, df_sales_elounda_today, df,
+     # customers, customers_month,
+     price_change, new_product, special_price, customer_prefer, pda) = (results[key] for key in ["df_sales_elounda", "df_sales_elounda_today", "df",
+                                                                                                 # "customers", "customers_month",
+                                                                                                 "price_change", "new_product", "special_price", "customer_prefer", "pda"])
 
     def get_count(temp_df):
         return temp_df.COUNT.iloc[0] if not temp_df.empty else 0
@@ -125,16 +129,16 @@ def run(temp_file, flag):
         "special_price": get_count(special_price),
         "customer_prefer": get_count(customer_prefer),
     }
-
-    max_live_customers = customers.COUNT.max()
-    customers["COLOR"] = customers["COUNT"].apply(
-        lambda x: "white" if x >= max_live_customers else "#F25E49"
-    )
-
-    max_live_customers_month = customers_month.COUNT.max()
-    customers_month["COLOR"] = customers_month["COUNT"].apply(
-        lambda x: "white" if x >= max_live_customers_month else "#F25E49"
-    )
+    # CUSTOMERS
+    # max_live_customers = customers.COUNT.max()
+    # customers["COLOR"] = customers["COUNT"].apply(
+    #     lambda x: "white" if x >= max_live_customers else "#F25E49"
+    # )
+    #
+    # max_live_customers_month = customers_month.COUNT.max()
+    # customers_month["COLOR"] = customers_month["COUNT"].apply(
+    #     lambda x: "white" if x >= max_live_customers_month else "#F25E49"
+    # )
 
     c = df_sales_elounda
 
@@ -194,8 +198,8 @@ def run(temp_file, flag):
         product_info,
         status_users_elounda,
         status_users_lato,
-        customers,
-        customers_month,
+        # customers,
+        # customers_month,
     )
 
     stop_ = time.perf_counter()
@@ -212,8 +216,11 @@ times = 0
 failed = 0
 timers = {"a0": 0, "l": 0, "a01": 0}
 
+calendar_check_today = datetime.now().day
+write.create_calendar()
 while True:
-    write.create_calendar()
+    if datetime.now().day != calendar_check_today:
+        write.create_calendar()
     # files = ["a0", "l", "a01"]
     files = ["a0"]
     for file in files:
