@@ -43,6 +43,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     for i in df_years:
         years.append(str(i))
 
+
     my_image = Image.open(f"{path}/{file_in}.jpg")
     title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
     number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
@@ -59,7 +60,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     # red = (238, 0, 0)
     pink = (255, 134, 179)
     # green = (68, 255, 115)
-    orange = (255, 87, 51)
+    orange = '#F25E49'
 
     # WRITING STORE INFO
     image_editable.text((520, 150), f"        ELOUNDA MARKET", white, font=store_info)
@@ -67,46 +68,47 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     image_editable.text((10000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info)
 
     # WRITING CUSTOMERS DATA
-    x = 5812
-    for year in range(datetime.now().year - 5, datetime.now().year + 1):
-        y_year = 490
-        image_editable.text((x, y_year), str(year), white, font=store_info)
-        x += 550
-
-    x = 5812
-    for i, year in enumerate(customers.YEAR):
-        # y_year = 490
-        y = 640
-        y_percent = 790
-        color = pink if customers.COUNT.iloc[i] == customers.COUNT.min() else customers.COLOR.iloc[i]
-        # image_editable.text((x, y_year), str(year), color, font=store_info)
-        image_editable.text((x, y), str(customers.COUNT.iloc[i]), color, font=store_info)
-        if customers.COUNT.iloc[i] != customers.COUNT.max():
-            image_editable.text((x, y_percent), f'({(round(100 * customers.COUNT.iloc[i]/customers.COUNT.max())) - 100}%)', color, font=store_info_small)
-        x += 550
-
-    x = 5812
-    for i, year in enumerate(customers_month.YEAR):
-        y = 1090
-        y_percent = 1230
-        color = (
-            pink
-            if customers_month.COUNT.iloc[i] == customers_month.COUNT.min()
-            else customers_month.COLOR.iloc[i]
-        )
-        image_editable.text((x, y), str(customers_month.COUNT.iloc[i]), color, font=store_info)
-        if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
-            image_editable.text(
-                (x, y_percent),
-                f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)",
-                color,
-                font=store_info_small,
-            )
-        x += 550
+    # x = 5812
+    # for year in range(datetime.now().year - 5, datetime.now().year + 1):
+    #     y_year = 490
+    #     image_editable.text((x, y_year), str(year), white, font=store_info)
+    #     x += 550
+    #
+    # x = 5812
+    # for i, year in enumerate(customers.YEAR):
+    #     # y_year = 490
+    #     y = 640
+    #     y_percent = 790
+    #     color = pink if customers.COUNT.iloc[i] == customers.COUNT.min() else customers.COLOR.iloc[i]
+    #     # image_editable.text((x, y_year), str(year), color, font=store_info)
+    #     image_editable.text((x, y), str(customers.COUNT.iloc[i]), color, font=store_info)
+    #     if customers.COUNT.iloc[i] != customers.COUNT.max():
+    #         image_editable.text((x, y_percent), f'({(round(100 * customers.COUNT.iloc[i]/customers.COUNT.max())) - 100}%)', color, font=store_info_small)
+    #     x += 550
+    #
+    # x = 5812
+    # for i, year in enumerate(customers_month.YEAR):
+    #     y = 1090
+    #     y_percent = 1230
+    #     color = (
+    #         pink
+    #         if customers_month.COUNT.iloc[i] == customers_month.COUNT.min()
+    #         else customers_month.COLOR.iloc[i]
+    #     )
+    #     image_editable.text((x, y), str(customers_month.COUNT.iloc[i]), color, font=store_info)
+    #     if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
+    #         image_editable.text(
+    #             (x, y_percent),
+    #             f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)",
+    #             color,
+    #             font=store_info_small,
+    #         )
+    #     x += 550
+    # END OF WRITING CUSTOMERS DATA
 
     # WRITING YEARS
     x = 500
-    check_year = today.year - 5
+    check_year = today.year - 11
     for i, year in enumerate(years):
         image_editable.text((x + 400, 900), dates_for_every_year[i], white, font=dates_font_parse)
         if year != str(check_year):
@@ -234,7 +236,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     #WRITE CALENDAR
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
-    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(1250, 1300), resize=1)
+    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(950, 1750), resize=1)
 
     if flag in ('a0', 'a0_sierra'):
         plot.run_daily(plot_df, specific_day=today, path_a=f"{path}/graph.png",
@@ -279,7 +281,7 @@ def get_date_for_every_year(specific_date):
     greek = ["(ΔΕ)", "(ΤΡ)", "(ΤΕ)", "(ΠΕ)", "(ΠΑ)", "(ΣΑ)", "(ΚΥ)"]
     today = specific_date
     x = []
-    for i in range(0, 6):
+    for i in range(0, 12):
         a = today - relativedelta(years=i)
         eng = a.strftime("%a")
         x.append(greek[english.index(eng)])
@@ -320,7 +322,6 @@ def delete_all_files_inside_folder(folder):
 
 def create_calendar():
 
-
     # Define the current month
     today = datetime.now()
     next_month = today.month + 1 if today.month != 12 else 1
@@ -332,42 +333,42 @@ def create_calendar():
     color_weekends = "grey"
     color_days = "white"
 
-    # Define a new image with a double size
-    img = Image.new("RGBA", (6800, 2400), (0, 0, 0, 0))
+    # Define a new image with reduced width to make room for smaller gaps
+    img = Image.new("RGBA", (10000, 2400), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    for month_diff in range(2):
-        month = today.month + month_diff if (today.month + month_diff) <= 12 else 1
-        year = today.year if (today.month + month_diff) <= 12 else next_year
+    for month_diff in range(4):  # Update range from 2 to 4
+        month = (today.month + month_diff - 1) % 12 + 1
+        year = today.year + ((today.month + month_diff - 1) // 12)
+
         cal_month = calendar.monthcalendar(year, month)
 
         # Month title
         month_name = calendar.month_name[month]
-        text_font = ImageFont.truetype("Arial.ttf", 120)  # Font size increased by 2
+        text_font = ImageFont.truetype("Arial.ttf", 120)
 
-        x_start = 3360 * month_diff  # New starting position for each month
-        if month_diff == 1:  # If it's second month, reduce its starting position to bring it closer to the first
-            x_start -= 920  # Change 500 to 920 for half the distance
+        # Decreased the multiplication factor to bring months closer
+        x_start = 2500 * month_diff
         draw.text((x_start, 0), month_name, fill=color_month_and_day, font=text_font)
 
         # Weekday titles
         weekdays = list(calendar.day_abbr)
         for day_no, weekday in enumerate(weekdays):
-            weekday_font = ImageFont.truetype("Arial.ttf", 80)  # Font size increased by 2
-            draw.text((x_start + day_no * 280, 160), weekday, fill=color_week_days, font=weekday_font)  # Y position increased by 80
+            weekday_font = ImageFont.truetype("Arial.ttf", 80)
+            draw.text((x_start + day_no * 280, 160), weekday, fill=color_week_days, font=weekday_font)
 
         # Days
-        day_font = ImageFont.truetype("Arial.ttf", 80)  # Font size increased by 2
+        day_font = ImageFont.truetype("Arial.ttf", 80)
         for week_no, week in enumerate(cal_month):
             for day_no, day in enumerate(week):
                 if day != 0:
-                    fill_color = color_weekends if day_no >= 5 else color_days   # For Saturday and Sunday
-                    if datetime(year, month, day).date() == today.date():  # Highlight the current day
+                    fill_color = color_weekends if day_no >= 5 else color_days
+                    if datetime(year, month, day).date() == today.date():
                         fill_color = color_month_and_day
 
                     text_width = draw.textlength(str(day), font=day_font)
-                    centered_x = x_start + day_no * 280 + 40 - text_width // 2  # Centered texts
-                    draw.text((centered_x, week_no * 120 + 440), str(day), fill=fill_color, font=day_font) # Week number enlarged and position readjusted
+                    centered_x = x_start + day_no * 280 + 40 - text_width // 2
+                    draw.text((centered_x, week_no * 120 + 440), str(day), fill=fill_color, font=day_font)
 
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
