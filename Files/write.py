@@ -34,7 +34,8 @@ def offline(emoji, path, offline_path):
 
 
 def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
-        product_info, status_users_elounda, status_users_lato,
+        product_info, status_users_elounda,
+        # status_users_lato,
         # customers, customers_month
         ):
     today = specific_date
@@ -46,6 +47,8 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
         years.append(str(i))
 
     my_image = Image.open(f"{path}/{file_in}.jpg")
+    # title_font_year = ImageFont.truetype("Futura.ttc", 200)
+    # numbers_font_year = ImageFont.truetype("Futura.ttc", 150)
     title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
     number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
     dates_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 80)
@@ -226,9 +229,9 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
             data = status_users_elounda['elapsed_time'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
-        for pot, user in zip(lato_potitions, ssi.LATO_users):
-            data = status_users_lato["elapsed_time"][status_users_lato.UserID.str.startswith(user)].iloc[0]
-            image_editable.text(pot, data, (255, 255, 255), font=store_info)
+        # for pot, user in zip(lato_potitions, ssi.LATO_users):
+        #     data = status_users_lato["elapsed_time"][status_users_lato.UserID.str.startswith(user)].iloc[0]
+        #     image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
@@ -237,28 +240,28 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     #WRITE CALENDAR
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
-    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(950, 1750), resize=1)
+    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(1200, 1150), resize=1)
 
-    if flag in ('a0', 'a0_sierra'):
+    if flag in ('a0', 'a0_sierra', 'a01'):
         plot.run_daily(plot_df, specific_day=today, path_a=f"{path}/graph.png",
                        path_b=f"{path}/TEMP/{file_in}_{time}.jpg")
-    elif flag == 'a00':
-        glue_images(f"{path}/pda.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(1200, 3000), resize=1)
-        glue_images(f"{path}/product.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(7500, 3000), resize=1)
-    elif flag == 'a000':
-        glue_images(f"{path}/words.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(30, 1800), resize=1)
-        glue_images(f"{path}/tree_map.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(4500, 400), resize=3)
-    elif flag == 'a01':
         potitions = [(9204, 5142), (8469, 5322), (4378, 5142), (5816, 5142), (5071, 5322), (1908, 5322), (7768, 5142)]
-        lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
+        # lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
         my_image = Image.open(f"{path}/TEMP/{file_in}_{time}.jpg")
         for user, pots in zip(ssi.EM_users, potitions):
             color = status_users_elounda['COLOR'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
             my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
-        for user, pots in zip(ssi.LATO_users, lato_potitions):
-            color = status_users_lato["COLOR"][status_users_lato.UserID.str.startswith(user)].iloc[0]
-            my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
+        # for user, pots in zip(ssi.LATO_users, lato_potitions):
+        #     color = status_users_lato["COLOR"][status_users_lato.UserID.str.startswith(user)].iloc[0]
+        #     my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
         my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
+    elif flag == 'a00':
+        glue_images(f"{path}/pda.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(1200, 3000), resize=1)
+        glue_images(f"{path}/product.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(7500, 3000), resize=1)
+
+    elif flag == 'a000':
+        glue_images(f"{path}/words.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(30, 1800), resize=1)
+        glue_images(f"{path}/tree_map.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(4500, 400), resize=3)
 
     delete_all_files_inside_folder(f"{path_2}/")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}.jpg")
