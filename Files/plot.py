@@ -7,7 +7,7 @@ from PIL import Image
 from datetime import timedelta, datetime
 from wordcloud import WordCloud, ImageColorGenerator
 from scipy.ndimage import gaussian_gradient_magnitude
-
+from matplotlib import font_manager
 
 def run_daily(all_years, specific_day, path_a, path_b):
     year = specific_day.year
@@ -51,19 +51,17 @@ def run_daily(all_years, specific_day, path_a, path_b):
     with plt.rc_context(
         {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
     ):
-        plt.rcParams["font.family"] = "monospace"
-        plt.rcParams["font.monospace"] = ["FreeMono"]
+        plt.rcParams["font.family"] = "Poiret One"
+        # plt.rcParams["font.monospace"] = ["FreeMono"]
         plt.figure(figsize=(22, 5), dpi=450, facecolor="#1a376e")
         plt.subplot()
+    font = font_manager.FontProperties(family="Poiret One")
     colors = "#FF5732"
     plt.bar(X, Y, alpha=0.9, color=colors)
     # plt.plot(X, Y_all, alpha=0.9, color="grey")
     # plt.fill_between(X, Y_all, alpha=0.05, color="white")
-    for (
-        a,
-        b,
-    ) in zip(X, Y):
-        label = f"{b}\nEUR" if b > 0 else ""
+    for (a, b) in zip(X, Y):
+        label = f"{b}€" if b > 0 else ""
         # this method is called for each point
         plt.annotate(
             label,  # this is the text
@@ -71,6 +69,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
             textcoords="offset points",  # how to position the text
             xytext=(0, 10),  # distance from text to points (x,y)
             ha="center",
+            fontproperties=font,
             color="white",
         )  # horizontal alignment can be left, right or center
     plt.xticks(
