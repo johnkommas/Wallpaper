@@ -172,15 +172,15 @@ def run(temp_file, flag):
             return temp_df
 
         elounda_users = tuple(stores_sensitive_info.EM_users)
-        lato_users = tuple(stores_sensitive_info.LATO_users)
+        # lato_users = tuple(stores_sensitive_info.LATO_users)
 
         em_df = fetch_data.get_sql_data(SQL_FILES[10], None, tuple_data=elounda_users)
-        lato_df = fetch_data.get_sql_data(SQL_FILES[10], None, tuple_data=lato_users, connection="2")
+        # lato_df = fetch_data.get_sql_data(SQL_FILES[10], None, tuple_data=lato_users, connection="2")
 
         status_users_elounda = complete_df(em_df)
         status_users_elounda = filter_data(status_users_elounda)
-        status_users_lato = complete_df(lato_df)
-        status_users_lato = filter_data(status_users_lato)
+        # status_users_lato = complete_df(lato_df)
+        # status_users_lato = filter_data(status_users_lato)
 
     timed = datetime.now().strftime("%d . %m . %Y   %H : %M : %S")
     print(f"🟢 IMAGE @{datetime.now().strftime('%H:%M:%S')} ", end="")
@@ -197,7 +197,7 @@ def run(temp_file, flag):
         pda,
         product_info,
         status_users_elounda,
-        status_users_lato,
+        # status_users_lato,
         # customers,
         # customers_month,
     )
@@ -223,7 +223,7 @@ while True:
         write.create_calendar()
         calendar_check_today = datetime.now().day
     # files = ["a0", "l", "a01"]
-    files = ["a0"]
+    files = ["a01"]
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
 
