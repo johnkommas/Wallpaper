@@ -57,13 +57,13 @@ def run_daily(all_years, specific_day, path_a, path_b):
         plt.subplot()
     colors = "#FF5732"
     plt.bar(X, Y, alpha=0.9, color=colors)
-    plt.plot(X, Y_all, alpha=0.9, color="red")
-    plt.fill_between(X, Y_all, alpha=0.1, color="white")
+    # plt.plot(X, Y_all, alpha=0.9, color="grey")
+    # plt.fill_between(X, Y_all, alpha=0.05, color="white")
     for (
         a,
         b,
     ) in zip(X, Y):
-        label = f"{b}\nEUR"
+        label = f"{b}\nEUR" if b > 0 else ""
         # this method is called for each point
         plt.annotate(
             label,  # this is the text
@@ -91,7 +91,7 @@ def glue_images_2(path_a, path_b):
     overlay = Image.open(img_file)
     width, height = overlay.size
     overlay = overlay.resize((width * 1, height * 1))
-    my_image.paste(overlay, (343, 4000), mask=overlay)
+    my_image.paste(overlay, (1250, 2300), mask=overlay)
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
 
