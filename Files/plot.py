@@ -91,7 +91,7 @@ def glue_images_2(path_a, path_b):
     overlay = Image.open(img_file)
     width, height = overlay.size
     overlay = overlay.resize((width * 1, height * 1))
-    my_image.paste(overlay, (1250, 2300), mask=overlay)
+    my_image.paste(overlay, (100, 4000), mask=overlay)
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
 
