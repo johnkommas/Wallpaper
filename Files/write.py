@@ -111,7 +111,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     # END OF WRITING CUSTOMERS DATA
 
     # WRITING YEARS
-    x = 500
+    x = 500 + 700
     check_year = today.year - 11
     for i, year in enumerate(years):
         image_editable.text((x + 400, 900), dates_for_every_year[i], white, font=dates_font_parse)
@@ -128,9 +128,9 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     for i in range(len(data)):
         year = str(int(data[i]))
         if int(year) >= int(data[-1]):
-            image_editable.text((x[len(year)] + 400, 700), year, white, font=number_font_parse)
+            image_editable.text((x[len(year)] + 400 + 700, 700), year, white, font=number_font_parse)
         else:
-            image_editable.text((x[len(year)] + 400, 700), year, orange, font=number_font_parse)
+            image_editable.text((x[len(year)] + 400 + 700, 700), year, orange, font=number_font_parse)
 
         x = [y + 660 for y in x]
 
@@ -208,13 +208,13 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     elif flag == 'a01':
         calibrate_y = 700
         calibrate_x = 300
-        potitions = [(9204 + 150 - calibrate_x, 5142 + calibrate_y),
-                     (8469 - calibrate_x, 5322 - 20 - calibrate_y),
-                     (4378 + 100 - calibrate_x, 5142 + calibrate_y),
-                     (5816 - calibrate_x, 5142 + calibrate_y),
-                     (5071 + 50 - calibrate_x, 5322 - 20 - calibrate_y),
-                     (1908 + 120 - calibrate_x, 5322 - 20 - calibrate_y),
-                     (7768 + 100 - calibrate_x, 5142 + calibrate_y)]
+        potitions = [(9204 + 150 - calibrate_x, 2760 + calibrate_y),
+                     (8469 - calibrate_x, 3040 - 20 - calibrate_y),
+                     (4378 + 100 - calibrate_x, 2760 + calibrate_y),
+                     (5816 - calibrate_x, 2760 + calibrate_y),
+                     (5071 + 50 - calibrate_x, 3040 - 20 - calibrate_y),
+                     (1908 + 120 - calibrate_x, 3040 - 20 - calibrate_y),
+                     (7768 + 100 - calibrate_x, 2760 + calibrate_y)]
 
         lato_potitions = [(4410 - 250, 3080 + calibrate_y),
                           (5100 - 200, 3250 - 20 - calibrate_y),
@@ -240,12 +240,12 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     #WRITE CALENDAR
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
-    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(1200, 1150), resize=1)
+    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 1150), resize=1)
 
     if flag in ('a0', 'a0_sierra', 'a01'):
         plot.run_daily(plot_df, specific_day=today, path_a=f"{path}/graph.png",
                        path_b=f"{path}/TEMP/{file_in}_{time}.jpg")
-        potitions = [(9204, 5142), (8469, 5322), (4378, 5142), (5816, 5142), (5071, 5322), (1908, 5322), (7768, 5142)]
+        potitions = [(9204, 2760), (8469, 3050), (4378, 2760), (5816, 2760), (5071, 3050), (1908, 3050), (7768, 2760)]
         # lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
         my_image = Image.open(f"{path}/TEMP/{file_in}_{time}.jpg")
         for user, pots in zip(ssi.EM_users, potitions):
