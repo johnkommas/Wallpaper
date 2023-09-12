@@ -83,18 +83,14 @@ def run(temp_file, flag):
     def fetch_data_with_params(sql_file, params=None):
         return fetch_data.get_sql_data(sql_file, params)
 
-    params_1 = {"year": today.year - 11, "month": today.month, "day": today.day}
+    params_1 = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year, "month": today.month, "day": today.day}
-    params_3 = {"year": today.year - 11, "month": today.month}
+    params_3 = {"year": today.year - 5, "month": today.month}
 
     with ThreadPoolExecutor() as executor:
         futures = {
-            executor.submit(
-                fetch_data_with_params, SQL_FILES[0], params_1
-            ): "df_sales_elounda",
-            executor.submit(
-                fetch_data_with_params, SQL_FILES[1], params_2
-            ): "df_sales_elounda_today",
+            executor.submit(fetch_data_with_params, SQL_FILES[0], params_1): "df_sales_elounda",
+            executor.submit(fetch_data_with_params, SQL_FILES[1], params_2): "df_sales_elounda_today",
             executor.submit(fetch_data_with_params, SQL_FILES[2], params_3): "df",
             # executor.submit(fetch_data_with_params, SQL_FILES[3]): "customers",
             # executor.submit(fetch_data_with_params, SQL_FILES[4]): "customers_month",

@@ -111,15 +111,15 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     # END OF WRITING CUSTOMERS DATA
 
     # WRITING YEARS
-    x = 500 + 700
-    check_year = today.year - 11
+    x = 500 + 5000
+    check_year = today.year - 5
     for i, year in enumerate(years):
-        image_editable.text((x + 400, 900), dates_for_every_year[i], white, font=dates_font_parse)
+        image_editable.text((x + 400, 900 + 500), dates_for_every_year[i], white, font=dates_font_parse)
         if year != str(check_year):
-            image_editable.text((x, 400), str(check_year), (255, 255, 255), font=title_font_year)
+            image_editable.text((x, 400 + 500), str(check_year), (255, 255, 255), font=title_font_year)
             x += 660
             data.insert(i, 0)
-        image_editable.text((x, 400), year, (255, 255, 255), font=title_font_year)
+        image_editable.text((x, 400 + 500), year, (255, 255, 255), font=title_font_year)
         x += 660
         check_year += 1
 
@@ -128,9 +128,9 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     for i in range(len(data)):
         year = str(int(data[i]))
         if int(year) >= int(data[-1]):
-            image_editable.text((x[len(year)] + 400 + 700, 700), year, white, font=number_font_parse)
+            image_editable.text((x[len(year)] + 400 + 5000, 700 + 500), year, white, font=number_font_parse)
         else:
-            image_editable.text((x[len(year)] + 400 + 700, 700), year, orange, font=number_font_parse)
+            image_editable.text((x[len(year)] + 400 + 5000, 700 + 500), year, orange, font=number_font_parse)
 
         x = [y + 660 for y in x]
 
@@ -240,7 +240,7 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     #WRITE CALENDAR
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
-    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 1150), resize=1)
+    glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 600), resize=1)
 
     if flag in ('a0', 'a0_sierra', 'a01'):
         plot.run_daily(plot_df, specific_day=today, path_a=f"{path}/graph.png",
@@ -341,7 +341,7 @@ def create_calendar():
     img = Image.new("RGBA", (10000, 2400), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    for month_diff in range(4):  # Update range from 2 to 4
+    for month_diff in range(2):  # Update range from 2 to 4
         month = (today.month + month_diff - 1) % 12 + 1
         year = today.year + ((today.month + month_diff - 1) // 12)
 
