@@ -93,7 +93,7 @@ def run(temp_file, flag):
             executor.submit(fetch_data_with_params, SQL_FILES[1], params_2): "df_sales_elounda_today",
             executor.submit(fetch_data_with_params, SQL_FILES[2], params_3): "df",
             # executor.submit(fetch_data_with_params, SQL_FILES[3]): "customers",
-            # executor.submit(fetch_data_with_params, SQL_FILES[4]): "customers_month",
+            executor.submit(fetch_data_with_params, SQL_FILES[4]): "customers_month",
             executor.submit(fetch_data_with_params, SQL_FILES[5]): "price_change",
             executor.submit(fetch_data_with_params, SQL_FILES[6]): "new_product",
             executor.submit(fetch_data_with_params, SQL_FILES[7]): "special_price",
@@ -111,9 +111,11 @@ def run(temp_file, flag):
                 print(f"%r generated an exception: %s" % (df_name, exc))
 
     (df_sales_elounda, df_sales_elounda_today, df,
-     # customers, customers_month,
+     # customers,
+     customers_month,
      price_change, new_product, special_price, customer_prefer, pda) = (results[key] for key in ["df_sales_elounda", "df_sales_elounda_today", "df",
-                                                                                                 # "customers", "customers_month",
+                                                                                                 # "customers",
+                                                                                                 "customers_month",
                                                                                                  "price_change", "new_product", "special_price", "customer_prefer", "pda"])
 
     def get_count(temp_df):
@@ -131,10 +133,10 @@ def run(temp_file, flag):
     #     lambda x: "white" if x >= max_live_customers else "#F25E49"
     # )
     #
-    # max_live_customers_month = customers_month.COUNT.max()
-    # customers_month["COLOR"] = customers_month["COUNT"].apply(
-    #     lambda x: "white" if x >= max_live_customers_month else "#F25E49"
-    # )
+    max_live_customers_month = customers_month.COUNT.max()
+    customers_month["COLOR"] = customers_month["COUNT"].apply(
+        lambda x: "white" if x >= max_live_customers_month else "#F25E49"
+    )
 
     c = df_sales_elounda
 
@@ -195,7 +197,7 @@ def run(temp_file, flag):
         status_users_elounda,
         # status_users_lato,
         # customers,
-        # customers_month,
+        customers_month,
     )
 
     stop_ = time.perf_counter()
