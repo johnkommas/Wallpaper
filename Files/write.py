@@ -36,7 +36,8 @@ def offline(emoji, path, offline_path):
 def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
         product_info, status_users_elounda,
         # status_users_lato,
-        # customers, customers_month
+        # customers,
+        customers_month
         ):
     today = specific_date
     data = list(df.TurnOver.values)
@@ -90,36 +91,30 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     #         image_editable.text((x, y_percent), f'({(round(100 * customers.COUNT.iloc[i]/customers.COUNT.max())) - 100}%)', color, font=store_info_small)
     #     x += 550
     #
-    # x = 5812
-    # for i, year in enumerate(customers_month.YEAR):
-    #     y = 1090
-    #     y_percent = 1230
-    #     color = (
-    #         pink
-    #         if customers_month.COUNT.iloc[i] == customers_month.COUNT.min()
-    #         else customers_month.COLOR.iloc[i]
-    #     )
-    #     image_editable.text((x, y), str(customers_month.COUNT.iloc[i]), color, font=store_info)
-    #     if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
-    #         image_editable.text(
-    #             (x, y_percent),
-    #             f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)",
-    #             color,
-    #             font=store_info_small,
-    #         )
-    #     x += 550
+
+    x = [0, 310, 260, 215, 170, 120, 75]
+    for i, year in enumerate(customers_month.YEAR):
+        y = 1350
+        y_percent = 1230
+        customer_data = str(customers_month.COUNT.iloc[i])
+        color = customers_month.COLOR.iloc[i]
+        image_editable.text((x[len(data)] + 500 + 5000, y), customer_data, color, font=number_font_parse)
+        # if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
+        #     image_editable.text((x, y_percent),f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)", color,  font=number_font_parse,)
+        x = [y + 660 for y in x]
+    image_editable.text((9400, y), '(C)', color, font=number_font_parse)
     # END OF WRITING CUSTOMERS DATA
 
     # WRITING YEARS
     x = 500 + 5000
     check_year = today.year - 5
     for i, year in enumerate(years):
-        image_editable.text((x + 400, 900 + 500), dates_for_every_year[i], white, font=dates_font_parse)
+        image_editable.text((x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse)
         if year != str(check_year):
-            image_editable.text((x, 400 + 500), str(check_year), (255, 255, 255), font=title_font_year)
+            image_editable.text((x, 400 + 300), str(check_year), (255, 255, 255), font=title_font_year)
             x += 660
             data.insert(i, 0)
-        image_editable.text((x, 400 + 500), year, (255, 255, 255), font=title_font_year)
+        image_editable.text((x, 400 + 300), year, (255, 255, 255), font=title_font_year)
         x += 660
         check_year += 1
 
@@ -128,11 +123,12 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     for i in range(len(data)):
         year = str(int(data[i]))
         if int(year) >= int(data[-1]):
-            image_editable.text((x[len(year)] + 400 + 5000, 700 + 500), year, white, font=number_font_parse)
+            image_editable.text((x[len(year)] + 400 + 5000, 700 + 300), year, white, font=number_font_parse)
         else:
-            image_editable.text((x[len(year)] + 400 + 5000, 700 + 500), year, orange, font=number_font_parse)
+            image_editable.text((x[len(year)] + 400 + 5000, 700 + 300), year, orange, font=number_font_parse)
 
         x = [y + 660 for y in x]
+    image_editable.text((9400, 1000), "(R)", color, font=number_font_parse)
 
     pda_data_list = [
         {"pda_data": "ΑΓΟΡΕΣ", "x": 500, "y": 6300, "text_prefix": "Agores"},
