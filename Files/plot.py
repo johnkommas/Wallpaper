@@ -57,7 +57,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
         plt.figure(figsize=(22, 5), dpi=450, facecolor="#1a376e")
         plt.subplot()
     font = font_manager.FontProperties(family="Poiret One")
-    median = np.median(Y)
+    median = np.median(y)
     colors = ["#FF5732" if i > median else 'white' for i in Y]
     plt.bar(X, Y, alpha=0.9, color=colors )
     # plt.plot(X, Y_all, alpha=0.9, color="grey")
