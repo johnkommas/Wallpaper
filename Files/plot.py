@@ -9,6 +9,7 @@ from wordcloud import WordCloud, ImageColorGenerator
 from scipy.ndimage import gaussian_gradient_magnitude
 from matplotlib import font_manager
 
+
 def run_daily(all_years, specific_day, path_a, path_b):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
@@ -56,8 +57,9 @@ def run_daily(all_years, specific_day, path_a, path_b):
         plt.figure(figsize=(22, 5), dpi=450, facecolor="#1a376e")
         plt.subplot()
     font = font_manager.FontProperties(family="Poiret One")
-    colors = "#FF5732"
-    plt.bar(X, Y, alpha=0.9, color=colors)
+    median = np.median(Y)
+    colors = ["#FF5732" if i > median else 'white' for i in Y]
+    plt.bar(X, Y, alpha=0.9, color=colors )
     # plt.plot(X, Y_all, alpha=0.9, color="grey")
     # plt.fill_between(X, Y_all, alpha=0.05, color="white")
     for (a, b) in zip(X, Y):
