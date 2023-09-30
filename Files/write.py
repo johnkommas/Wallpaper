@@ -33,12 +33,23 @@ def offline(emoji, path, offline_path):
     delete_all_files_inside_folder(offline_path)
 
 
-def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, online_order,
-        product_info, status_users_elounda,
-        # status_users_lato,
-        # customers,
-        customers_month
-        ):
+def run(
+    df,
+    file_in,
+    specific_date,
+    path,
+    path_2,
+    sales,
+    timed,
+    plot_df,
+    flag,
+    online_order,
+    product_info,
+    status_users_elounda,
+    # status_users_lato,
+    # customers,
+    customers_month,
+):
     today = specific_date
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
@@ -65,12 +76,16 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     # red = (238, 0, 0)
     pink = (255, 134, 179)
     # green = (68, 255, 115)
-    orange = '#F25E49'
+    orange = "#F25E49"
 
     # WRITING STORE INFO
     image_editable.text((520, 150), f"        ELOUNDA MARKET", white, font=store_info)
-    image_editable.text((4000, 150), f"REFRESHING DATA EVERY MINUTE :  {timed}", white, font=store_info)
-    image_editable.text((10000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info)
+    image_editable.text(
+        (4000, 150), f"REFRESHING DATA EVERY MINUTE :  {timed}", white, font=store_info
+    )
+    image_editable.text(
+        (10000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info
+    )
 
     # WRITING CUSTOMERS DATA
     # x = 5812
@@ -98,20 +113,26 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
         y_percent = 1230
         customer_data = str(customers_month.COUNT.iloc[i])
         color = customers_month.COLOR.iloc[i]
-        image_editable.text((x[len(data)] + 500 + 5000, y), customer_data, color, font=number_font_parse)
+        image_editable.text(
+            (x[len(data)] + 500 + 5000, y), customer_data, color, font=number_font_parse
+        )
         # if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
         #     image_editable.text((x, y_percent),f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)", color,  font=number_font_parse,)
         x = [y + 660 for y in x]
-    image_editable.text((9400, y), '(C)', color, font=number_font_parse)
+    image_editable.text((9400, y), "(C)", color, font=number_font_parse)
     # END OF WRITING CUSTOMERS DATA
 
     # WRITING YEARS
     x = 500 + 5000
     check_year = today.year - 5
     for i, year in enumerate(years):
-        image_editable.text((x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse)
+        image_editable.text(
+            (x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse
+        )
         if year != str(check_year):
-            image_editable.text((x, 400 + 300), str(check_year), (255, 255, 255), font=title_font_year)
+            image_editable.text(
+                (x, 400 + 300), str(check_year), (255, 255, 255), font=title_font_year
+            )
             x += 660
             data.insert(i, 0)
         image_editable.text((x, 400 + 300), year, (255, 255, 255), font=title_font_year)
@@ -123,9 +144,19 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     for i in range(len(data)):
         year = str(int(data[i]))
         if int(year) >= int(data[-1]):
-            image_editable.text((x[len(year)] + 400 + 5000, 700 + 300), year, white, font=number_font_parse)
+            image_editable.text(
+                (x[len(year)] + 400 + 5000, 700 + 300),
+                year,
+                white,
+                font=number_font_parse,
+            )
         else:
-            image_editable.text((x[len(year)] + 400 + 5000, 700 + 300), year, orange, font=number_font_parse)
+            image_editable.text(
+                (x[len(year)] + 400 + 5000, 700 + 300),
+                year,
+                orange,
+                font=number_font_parse,
+            )
 
         x = [y + 660 for y in x]
     image_editable.text((9400, 1000), "(R)", color, font=number_font_parse)
@@ -133,11 +164,16 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
     pda_data_list = [
         {"pda_data": "ΑΓΟΡΕΣ", "x": 500, "y": 6300, "text_prefix": "Agores"},
         {"pda_data": "ΕΠΙΣΤΡΟΦΕΣ", "x": 2500, "y": 6300, "text_prefix": "Epistrofes"},
-        {"pda_data": "ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ", "x": 4600, "y": 6300, "text_prefix": "Endodiakinisi"},
+        {
+            "pda_data": "ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ",
+            "x": 4600,
+            "y": 6300,
+            "text_prefix": "Endodiakinisi",
+        },
         {"pda_data": "ΠΑΡΑΓΓΕΛΙΕΣ", "x": 6600, "y": 6300, "text_prefix": "Paraggelia"},
         {"pda_data": "ΡΑΦΙ ΤΙΜΕΣ", "x": 9000, "y": 6300, "text_prefix": "Times Rafi"},
     ]
-    
+
     for data in pda_data_list:
         a, b = get_pda_data(online_order, data["pda_data"])
         image_editable.text(
@@ -149,33 +185,41 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
 
     # WRITE PRODUCT INFO
     product_info_texts = [
-        {'info_key': 'price_change', 'y': 400, 'text_prefix': 'Price Changes'},
-        {'info_key': 'new_product', 'y': 550, 'text_prefix': 'New Products'},
-        {'info_key': 'special_price', 'y': 850, 'text_prefix': 'Special Offers'}
+        {"info_key": "price_change", "y": 400, "text_prefix": "Price Changes"},
+        {"info_key": "new_product", "y": 550, "text_prefix": "New Products"},
+        {"info_key": "special_price", "y": 850, "text_prefix": "Special Offers"},
     ]
 
     for info_text in product_info_texts:
         text = f"{info_text['text_prefix']}: {product_info.get(info_text['info_key'])}"
-        image_editable.text((10000, info_text['y']), text, (255, 255, 255), font=store_info)
+        image_editable.text(
+            (10000, info_text["y"]), text, (255, 255, 255), font=store_info
+        )
 
-    if flag == 'a00':
+    if flag == "a00":
         swift = 1650
         # WRITING PDA DATA
-        a, b = get_pda_data(online_order, 'ΑΓΟΡΕΣ')
-        image_editable.text((3400, 2000 + swift), f"{a}", (255, 255, 255), font=store_info)
+        a, b = get_pda_data(online_order, "ΑΓΟΡΕΣ")
+        image_editable.text(
+            (3400, 2000 + swift), f"{a}", (255, 255, 255), font=store_info
+        )
         image_editable.text((2950, 1500 + swift), f"{b}", orange, font=store_info)
 
-        a, b = get_pda_data(online_order, 'ΕΠΙΣΤΡΟΦΕΣ')
+        a, b = get_pda_data(online_order, "ΕΠΙΣΤΡΟΦΕΣ")
         if len(str(a)) == 1:
-            image_editable.text((2200, 1200 + swift), f"{a}", (255, 255, 255), font=store_info)
+            image_editable.text(
+                (2200, 1200 + swift), f"{a}", (255, 255, 255), font=store_info
+            )
         if len(str(b)) == 1:
             image_editable.text((1500, 1500 + swift), f"{b}", orange, font=store_info)
         elif len(str(b)) == 2:
             image_editable.text((1500, 1500 + swift), f"{b}", orange, font=store_info)
 
-        a, b = get_pda_data(online_order, 'ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ')
+        a, b = get_pda_data(online_order, "ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ")
         if len(str(a)) == 1:
-            image_editable.text((1550, 3450 + swift), f"{a}", (255, 255, 255), font=store_info)
+            image_editable.text(
+                (1550, 3450 + swift), f"{a}", (255, 255, 255), font=store_info
+            )
         if len(str(b)) == 1:
             image_editable.text((2250, 3550 + swift), f"{b}", orange, font=store_info)
         elif len(str(b)) == 2:
@@ -183,46 +227,75 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
         elif len(str(b)) == 3:
             image_editable.text((2250, 3550 + swift), f"{b}", orange, font=store_info)
 
-        a, b = get_pda_data(online_order, 'ΠΑΡΑΓΓΕΛΙΕΣ')
+        a, b = get_pda_data(online_order, "ΠΑΡΑΓΓΕΛΙΕΣ")
         if len(str(a)) == 1:
-            image_editable.text((1050, 2100 + swift), f"{a}", (255, 255, 255), font=store_info)
+            image_editable.text(
+                (1050, 2100 + swift), f"{a}", (255, 255, 255), font=store_info
+            )
         if len(str(b)) == 1:
             image_editable.text((1150, 2800 + swift), f"{b}", orange, font=store_info)
         elif len(str(b)) == 2:
             image_editable.text((1050, 2800 + swift), f"{b}", orange, font=store_info)
 
-        a, b = get_pda_data(online_order, 'ΡΑΦΙ ΤΙΜΕΣ')
-        image_editable.text((3000, 3350 + swift), f"{a}", (255, 255, 255), font=store_info)
+        a, b = get_pda_data(online_order, "ΡΑΦΙ ΤΙΜΕΣ")
+        image_editable.text(
+            (3000, 3350 + swift), f"{a}", (255, 255, 255), font=store_info
+        )
         image_editable.text((3350, 2700 + swift), f"{b}", orange, font=store_info)
 
         # WRITE PRODUCT INFO
-        image_editable.text((7800, 3300), f"{product_info.get('price_change')}", (255, 255, 255), font=store_info)
-        image_editable.text((9350, 3300), f"{product_info.get('new_product')}", (255, 255, 255), font=store_info)
-        image_editable.text((7650, 4700), f"{product_info.get('special_price')}", (255, 255, 255), font=store_info)
-        image_editable.text((9400, 4700), f"{product_info.get('customer_prefer')}", (255, 255, 255),
-                            font=store_info)
-    elif flag == 'a01':
+        image_editable.text(
+            (7800, 3300),
+            f"{product_info.get('price_change')}",
+            (255, 255, 255),
+            font=store_info,
+        )
+        image_editable.text(
+            (9350, 3300),
+            f"{product_info.get('new_product')}",
+            (255, 255, 255),
+            font=store_info,
+        )
+        image_editable.text(
+            (7650, 4700),
+            f"{product_info.get('special_price')}",
+            (255, 255, 255),
+            font=store_info,
+        )
+        image_editable.text(
+            (9400, 4700),
+            f"{product_info.get('customer_prefer')}",
+            (255, 255, 255),
+            font=store_info,
+        )
+    elif flag == "a01":
         calibrate_y = 700
         calibrate_x = 300
-        potitions = [(9204 + 150 - calibrate_x, 2760 + calibrate_y),
-                     (8469 - calibrate_x, 3040 - 20 - calibrate_y),
-                     (4378 + 100 - calibrate_x, 2760 + calibrate_y),
-                     (5816 - calibrate_x, 2760 + calibrate_y),
-                     (5071 + 50 - calibrate_x, 3040 - 20 - calibrate_y),
-                     (1908 + 120 - calibrate_x, 3040 - 20 - calibrate_y),
-                     (7768 + 100 - calibrate_x, 2760 + calibrate_y)]
+        potitions = [
+            (9204 + 150 - calibrate_x, 2760 + calibrate_y),
+            (8469 - calibrate_x, 3040 - 20 - calibrate_y),
+            (4378 + 100 - calibrate_x, 2760 + calibrate_y),
+            (5816 - calibrate_x, 2760 + calibrate_y),
+            (5071 + 50 - calibrate_x, 3040 - 20 - calibrate_y),
+            (1908 + 120 - calibrate_x, 3040 - 20 - calibrate_y),
+            (7768 + 100 - calibrate_x, 2760 + calibrate_y),
+        ]
 
-        lato_potitions = [(4410 - 250, 3080 + calibrate_y),
-                          (5100 - 200, 3250 - 20 - calibrate_y),
-                          (5840 - 200, 3080 + calibrate_y),
-                          (7768 - 200, 3080 + calibrate_y),
-                          (8469 - 250, 3250 - 20 - calibrate_y),
-                          (9160 - 200, 3080 + calibrate_y)]
+        lato_potitions = [
+            (4410 - 250, 3080 + calibrate_y),
+            (5100 - 200, 3250 - 20 - calibrate_y),
+            (5840 - 200, 3080 + calibrate_y),
+            (7768 - 200, 3080 + calibrate_y),
+            (8469 - 250, 3250 - 20 - calibrate_y),
+            (9160 - 200, 3080 + calibrate_y),
+        ]
 
         # print()
         # print(status_users_elounda.UserID)
         for pot, user in zip(potitions, ssi.EM_users):
-            data = status_users_elounda['elapsed_time'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
+            data = status_users_elounda["elapsed_time"][
+                status_users_elounda.UserID.str.startswith(user)
+            ].iloc[0]
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
         # for pot, user in zip(lato_potitions, ssi.LATO_users):
@@ -231,37 +304,76 @@ def run(df, file_in, specific_date, path, path_2, sales, timed, plot_df, flag, o
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
-    glue_images(f"{path}/green.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 160), resize=4)
+    glue_images(
+        f"{path}/green.png",
+        f"{path}/TEMP/{file_in}_{time}.jpg",
+        xy=(550, 160),
+        resize=4,
+    )
 
-    #WRITE CALENDAR
+    # WRITE CALENDAR
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
     glue_images(img_file, f"{path}/TEMP/{file_in}_{time}.jpg", xy=(550, 600), resize=1)
 
-    if flag in ('a0', 'a0_sierra', 'a01'):
-        plot.run_daily(plot_df, specific_day=today, path_a=f"{path}/graph.png",
-                       path_b=f"{path}/TEMP/{file_in}_{time}.jpg")
-        potitions = [(9204, 2760), (8469, 3050), (4378, 2760), (5816, 2760), (5071, 3050), (1908, 3050), (7768, 2760)]
+    if flag in ("a0", "a0_sierra", "a01"):
+        plot.run_daily(
+            plot_df,
+            specific_day=today,
+            path_a=f"{path}/graph.png",
+            path_b=f"{path}/TEMP/{file_in}_{time}.jpg",
+        )
+        potitions = [
+            (9204, 2760),
+            (8469, 3050),
+            (4378, 2760),
+            (5816, 2760),
+            (5071, 3050),
+            (1908, 3050),
+            (7768, 2760),
+        ]
         # lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
         my_image = Image.open(f"{path}/TEMP/{file_in}_{time}.jpg")
         for user, pots in zip(ssi.EM_users, potitions):
-            color = status_users_elounda['COLOR'][status_users_elounda.UserID.str.startswith(user)].iloc[0]
+            color = status_users_elounda["COLOR"][
+                status_users_elounda.UserID.str.startswith(user)
+            ].iloc[0]
             my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
         # for user, pots in zip(ssi.LATO_users, lato_potitions):
         #     color = status_users_lato["COLOR"][status_users_lato.UserID.str.startswith(user)].iloc[0]
         #     my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
         my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
-    elif flag == 'a00':
-        glue_images(f"{path}/pda.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(1200, 3000), resize=1)
-        glue_images(f"{path}/product.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(7500, 3000), resize=1)
+    elif flag == "a00":
+        glue_images(
+            f"{path}/pda.png",
+            f"{path}/TEMP/{file_in}_{time}.jpg",
+            xy=(1200, 3000),
+            resize=1,
+        )
+        glue_images(
+            f"{path}/product.png",
+            f"{path}/TEMP/{file_in}_{time}.jpg",
+            xy=(7500, 3000),
+            resize=1,
+        )
 
-    elif flag == 'a000':
-        glue_images(f"{path}/words.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(30, 1800), resize=1)
-        glue_images(f"{path}/tree_map.png", f"{path}/TEMP/{file_in}_{time}.jpg", xy=(4500, 400), resize=3)
+    elif flag == "a000":
+        glue_images(
+            f"{path}/words.png",
+            f"{path}/TEMP/{file_in}_{time}.jpg",
+            xy=(30, 1800),
+            resize=1,
+        )
+        glue_images(
+            f"{path}/tree_map.png",
+            f"{path}/TEMP/{file_in}_{time}.jpg",
+            xy=(4500, 400),
+            resize=3,
+        )
 
     delete_all_files_inside_folder(f"{path_2}/")
-    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}.jpg")
-    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_{time}_2.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_0.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_1.jpg")
 
 
 def get_pda_data(df, str_a):
@@ -311,6 +423,8 @@ def paste_image(my_image, overlay_image, xy, resize):
 def delete_all_files_inside_folder(folder):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
+        if filename.startswith("tiger"):
+            continue
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)
@@ -321,7 +435,6 @@ def delete_all_files_inside_folder(folder):
 
 
 def create_calendar():
-
     # Define the current month
     today = datetime.now()
     next_month = today.month + 1 if today.month != 12 else 1
@@ -355,7 +468,12 @@ def create_calendar():
         weekdays = list(calendar.day_abbr)
         for day_no, weekday in enumerate(weekdays):
             weekday_font = ImageFont.truetype("Arial.ttf", 80)
-            draw.text((x_start + day_no * 280, 160), weekday, fill=color_week_days, font=weekday_font)
+            draw.text(
+                (x_start + day_no * 280, 160),
+                weekday,
+                fill=color_week_days,
+                font=weekday_font,
+            )
 
         # Days
         day_font = ImageFont.truetype("Arial.ttf", 80)
@@ -368,9 +486,13 @@ def create_calendar():
 
                     text_width = draw.textlength(str(day), font=day_font)
                     centered_x = x_start + day_no * 280 + 40 - text_width // 2
-                    draw.text((centered_x, week_no * 120 + 440), str(day), fill=fill_color, font=day_font)
+                    draw.text(
+                        (centered_x, week_no * 120 + 440),
+                        str(day),
+                        fill=fill_color,
+                        font=day_font,
+                    )
 
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
     img.save(img_file)
-
