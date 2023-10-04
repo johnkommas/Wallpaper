@@ -52,17 +52,19 @@ def run_daily(all_years, specific_day, path_a, path_b):
     with plt.rc_context(
         {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
     ):
-        plt.rcParams["font.family"] = "Poiret One"
+        # plt.rcParams["font.family"] = "Poiret One"
+        plt.rcParams["font.family"] = "Futura"
+        # DIN Condensed Bold.ttf
         # plt.rcParams["font.monospace"] = ["FreeMono"]
         plt.figure(figsize=(22, 5), dpi=450, facecolor="#1a376e")
         plt.subplot()
-    font = font_manager.FontProperties(family="Poiret One")
+    font = font_manager.FontProperties(family="Futura")
     median = np.median(Y_all)
-    colors = ["#FF5732" if i > median else 'white' for i in Y]
-    plt.bar(X, Y, alpha=0.9, color=colors )
+    colors = ["#FF5732" if i > median else "white" for i in Y]
+    plt.bar(X, Y, alpha=0.9, color=colors)
     # plt.plot(X, Y_all, alpha=0.9, color="grey")
     # plt.fill_between(X, Y_all, alpha=0.05, color="white")
-    for (a, b) in zip(X, Y):
+    for a, b in zip(X, Y):
         label = f"{b}€" if b > 0 else ""
         # this method is called for each point
         plt.annotate(
@@ -329,5 +331,3 @@ def customers_graph(df):
     img_file = f"test.png"
     plt.savefig(img_file, transparent=True)
     plt.close()
-
-
