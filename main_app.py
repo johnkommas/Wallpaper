@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from SQL_FOLDER import fetch_data
 from Files import write
-from Private import stores_sensitive_info
+from Private import stores_sensitive_info, sql_connect
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
@@ -251,6 +251,7 @@ while True:
             else:
                 write.offline(path, path_2, path_3)
                 wp_logger.error("VPN OFFLINE")
+                sql_connect.open_vpn(failed)
                 failed += 1
                 print(
                     f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
