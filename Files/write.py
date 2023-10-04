@@ -423,8 +423,6 @@ def paste_image(my_image, overlay_image, xy, resize):
 def delete_all_files_inside_folder(folder):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
-        if filename.startswith("tiger"):
-            continue
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)
@@ -434,33 +432,43 @@ def delete_all_files_inside_folder(folder):
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
+def create_scheduled_activities():
+    # Define your scheduled activities in this function
+    scheduled_activities = {
+        "4. Send Transactions: Accounting Office": {"day": 4, "month": None},
+        "9. Protergia Self Metering": {"day": 9, "month": None},  # None means every month
+        "25. Create Special Prices": {"day": 25, "month": None},  # None means every month
+    }
+    return scheduled_activities
+
+
 def create_calendar():
     # Define the current month
     today = datetime.now()
-    next_month = today.month + 1 if today.month != 12 else 1
-    next_year = today.year if today.month != 12 else today.year + 1
+
+    # Define scheduled activities
+    scheduled_activities = create_scheduled_activities()
 
     # The colors for various elements
     color_month_and_day = "#F25E49"
     color_week_days = "grey"
     color_weekends = "grey"
     color_days = "white"
+    color_activity_day = "#F25E49"
+    color_today = "green"
 
-    # Define a new image with reduced width to make room for smaller gaps
-    img = Image.new("RGBA", (10000, 2400), (0, 0, 0, 0))
+    # Define a new image
+    img = Image.new("RGBA", (10000, 2800), (0, 0, 0, 0))  # Increase the height to 2800
     draw = ImageDraw.Draw(img)
 
-    for month_diff in range(2):  # Update range from 2 to 4
+    for month_diff in range(2):
         month = (today.month + month_diff - 1) % 12 + 1
         year = today.year + ((today.month + month_diff - 1) // 12)
-
         cal_month = calendar.monthcalendar(year, month)
 
         # Month title
         month_name = calendar.month_name[month]
         text_font = ImageFont.truetype("Arial.ttf", 120)
-
-        # Decreased the multiplication factor to bring months closer
         x_start = 2500 * month_diff
         draw.text((x_start, 0), month_name, fill=color_month_and_day, font=text_font)
 
@@ -481,8 +489,55 @@ def create_calendar():
             for day_no, day in enumerate(week):
                 if day != 0:
                     fill_color = color_weekends if day_no >= 5 else color_days
+
+                    y = 1200
+                    for activity_name, event_date in scheduled_activities.items():
+                        event_day = event_date.get("day")
+                        event_month = event_date.get("month")
+                        activity_text = activity_name
+
+                        # Check if it's an activity day
+                        if (event_month is None or event_month == month
+                        ) and event_day == day:
+                            days_until_event = (datetime(year, month, day).date() - today.date()).days
+                            if days_until_event == 0:
+                                days = "Today"
+                            elif days_until_event == 1:
+                                days = "Tomorrow"
+                            elif days_until_event > 1:
+                                days = f"{days_until_event} days"
+                            else:
+                                days = "Completed"
+
+                            fill_color = color_activity_day
+                            activity_font = ImageFont.truetype("Arial.ttf", 80)
+                            if month_diff == 0 and event_month is None:
+                                draw.text(
+                                    (
+                                        x_start,
+                                        y,
+                                    ),  # Set this appropriate for an aligment
+                                    f"{activity_text} : {days} ",
+                                    fill=color_activity_day,
+                                    font=activity_font,
+                                )
+
+                            elif event_month == month:
+                                draw.text(
+                                    (
+                                        x_start,
+                                        y,
+                                    ),  # Set this appropriate for an aligment
+                                    f"{activity_text} : {days} ",
+                                    fill=color_activity_day,
+                                    font=activity_font,
+                                )
+
+                        y += 100
+
+
                     if datetime(year, month, day).date() == today.date():
-                        fill_color = color_month_and_day
+                        fill_color = color_today
 
                     text_width = draw.textlength(str(day), font=day_font)
                     centered_x = x_start + day_no * 280 + 40 - text_width // 2
