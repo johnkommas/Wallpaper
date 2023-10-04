@@ -4,7 +4,7 @@ fastapi==0.101.0
 matplotlib==3.7.2
 numpy==1.25.2
 pandas==2.0.3
-Pillow==10.0.0
+Pillow >=10.0.0
 pyodbc==4.0.39
 pytest==7.4.0
 python-dateutil>=2.8.2
