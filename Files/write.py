@@ -436,6 +436,7 @@ def create_scheduled_activities():
     # Define your scheduled activities in this function
     scheduled_activities = {
         "4. Send Transactions: Accounting Office": {"day": 4, "month": None},
+        "5. DEH Self Metering": {"day": 5, "month": None},
         "9. Protergia Self Metering": {"day": 9, "month": None},  # None means every month
         "25. Create Special Prices": {"day": 25, "month": None},  # None means every month
     }
@@ -511,27 +512,21 @@ def create_calendar():
 
                             fill_color = color_activity_day
                             activity_font = ImageFont.truetype("Arial.ttf", 80)
-                            if month_diff == 0 and event_month is None:
+                            if month_diff == 0 and event_month is None and days_until_event in [0, 1]:
                                 draw.text(
-                                    (
-                                        x_start,
-                                        y,
-                                    ),  # Set this appropriate for an aligment
+                                    (x_start,y),  # Set this appropriate for an aligment
                                     f"{activity_text} : {days} ",
                                     fill=color_activity_day,
                                     font=activity_font,
                                 )
 
-                            elif event_month == month:
-                                draw.text(
-                                    (
-                                        x_start,
-                                        y,
-                                    ),  # Set this appropriate for an aligment
-                                    f"{activity_text} : {days} ",
-                                    fill=color_activity_day,
-                                    font=activity_font,
-                                )
+                            # elif event_month == month:
+                            #     draw.text(
+                            #         (x_start, y),  # Set this appropriate for an aligment
+                            #         f"{activity_text} : {days} ",
+                            #         fill=color_activity_day,
+                            #         font=activity_font,
+                            #     )
 
                         y += 100
 
