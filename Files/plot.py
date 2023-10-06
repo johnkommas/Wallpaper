@@ -60,6 +60,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
         plt.subplot()
     font = font_manager.FontProperties(family="Futura")
     median = np.median(Y_all)
+    print(f"🟢MEDIAN = {median}€", end='')
     colors = ["#FF5732" if i > median else "white" for i in Y]
     plt.bar(X, Y, alpha=0.9, color=colors)
     # plt.plot(X, Y_all, alpha=0.9, color="grey")
