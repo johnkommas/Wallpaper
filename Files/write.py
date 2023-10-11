@@ -2,7 +2,7 @@
 import calendar
 import os
 import shutil
-from Files import plot
+from Files import plot, schedule_my_calendar
 from PIL import Image, ImageFont, ImageDraw
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
@@ -432,23 +432,12 @@ def delete_all_files_inside_folder(folder):
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def create_scheduled_activities():
-    # Define your scheduled activities in this function
-    scheduled_activities = {
-        "4. Send Transactions: Accounting Office": {"day": 4, "month": None},
-        "5. DEH Self Metering": {"day": 5, "month": None},
-        "9. Protergia Self Metering": {"day": 9, "month": None},  # None means every month
-        "25. Create Special Prices": {"day": 25, "month": None},  # None means every month
-    }
-    return scheduled_activities
-
-
 def create_calendar():
     # Define the current month
     today = datetime.now()
 
     # Define scheduled activities
-    scheduled_activities = create_scheduled_activities()
+    scheduled_activities = schedule_my_calendar.create_scheduled_activities()
 
     # The colors for various elements
     color_month_and_day = "#F25E49"
@@ -487,38 +476,49 @@ def create_calendar():
         # Days
         day_font = ImageFont.truetype("Arial.ttf", 80)
         for week_no, week in enumerate(cal_month):
+            y = 1200
             for day_no, day in enumerate(week):
                 if day != 0:
                     fill_color = color_weekends if day_no >= 5 else color_days
 
-                    y = 1200
                     for activity_name, event_date in scheduled_activities.items():
                         event_day = event_date.get("day")
                         event_month = event_date.get("month")
                         activity_text = activity_name
 
                         # Check if it's an activity day
-                        if (event_month is None or event_month == month
+                        if (
+                            event_month is None or event_month == month
                         ) and event_day == day:
-                            days_until_event = (datetime(year, month, day).date() - today.date()).days
+                            days_until_event = (
+                                datetime(year, month, day).date() - today.date()
+                            ).days
                             if days_until_event == 0:
-                                days = "Today"
+                                days = "TODAY"
                             elif days_until_event == 1:
-                                days = "Tomorrow"
+                                days = "TOMORROW"
                             elif days_until_event > 1:
                                 days = f"{days_until_event} days"
                             else:
-                                days = "Completed"
+                                days = "COMPETEDs"
 
                             fill_color = color_activity_day
                             activity_font = ImageFont.truetype("Arial.ttf", 80)
-                            if month_diff == 0 and event_month is None and days_until_event in [0, 1]:
+                            if (
+                                month_diff == 0
+                                and event_month is None
+                                and days_until_event in [0, 1]
+                            ):
                                 draw.text(
-                                    (x_start,y),  # Set this appropriate for an aligment
+                                    (
+                                        x_start,
+                                        y,
+                                    ),  # Set this appropriate for an aligment
                                     f"{activity_text} : {days} ",
                                     fill=color_activity_day,
                                     font=activity_font,
                                 )
+                                y += 100
 
                             # elif event_month == month:
                             #     draw.text(
@@ -527,9 +527,6 @@ def create_calendar():
                             #         fill=color_activity_day,
                             #         font=activity_font,
                             #     )
-
-                        y += 100
-
 
                     if datetime(year, month, day).date() == today.date():
                         fill_color = color_today
