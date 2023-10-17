@@ -3,7 +3,7 @@ def create_scheduled_activities():
     month_ = {
         "4. Send Transactions: Accounting Office": {"day": 4, "month": None},
         "5. DEH Self Metering": {"day": 5, "month": None},
-        "9. PROTERGIA Self Metering": {"day": 9, "month": None},  # None means every month
+        "11. PROTERGIA Self Metering": {"day": 11, "month": None},  # None means every month
         "12. Pay Day (VODAFONE HOME)": {"day": 12, "month": None},
         "13. Pay Day (My DEH)": {"day": 13, "month": None},
         "14. Pay Day (COSMOTE HOME)": {"day": 14, "month": None},
