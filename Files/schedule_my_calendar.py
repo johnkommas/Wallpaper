@@ -11,6 +11,7 @@ def create_scheduled_activities():
         "17. Pay Day (COSMOTE MOBILE)": {"day": 17, "month": None},
         "21. Pay Day (VODAFONE MOBILE)": {"day": 21, "month": None},
         "25. Create Special Prices": {"day": 25, "month": None},  # None means every month
+        "26. Organize Employees Working Time": {"day": 26, "month": None},
     }
     scheduled_activities = month_
     return scheduled_activities
