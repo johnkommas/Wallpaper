@@ -126,15 +126,18 @@ def run(
     x = 500 + 5000
     check_year = today.year - 5
     for i, year in enumerate(years):
-        image_editable.text(
-            (x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse
-        )
-        if year != str(check_year):
-            image_editable.text(
-                (x, 400 + 300), str(check_year), (255, 255, 255), font=title_font_year
-            )
-            x += 660
-            data.insert(i, 0)
+        if year == str(check_year):
+            image_editable.text((x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse)
+            check_year = int(year)
+        else:
+            i += 1
+            image_editable.text((x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse)
+        # if year != str(check_year):
+        #     image_editable.text(
+        #         (x, 400 + 300), str(check_year), (255, 255, 255), font=title_font_year
+        #     )
+        #     x += 660
+        #     data.insert(i, 0)
         image_editable.text((x, 400 + 300), year, (255, 255, 255), font=title_font_year)
         x += 660
         check_year += 1
