@@ -1,6 +1,7 @@
 def create_scheduled_activities():
     # Define your scheduled activities in this function
     month_ = {
+        "1. Clean Opel Corsa Car (33759)": {"day": 1, "month": None},
         "4. Send Transactions: Accounting Office": {"day": 4, "month": None},
         "5. DEH Self Metering": {"day": 5, "month": None},
         "11. PROTERGIA Self Metering": {"day": 11, "month": None},  # None means every month
@@ -12,6 +13,7 @@ def create_scheduled_activities():
         "21. Pay Day (VODAFONE MOBILE)": {"day": 21, "month": None},
         "25. Create Special Prices": {"day": 25, "month": None},  # None means every month
         "26. Organize Employees Working Time": {"day": 26, "month": None},
+        "27. Barberiko Call to Arrange a HairCut (31485)": {"day": 27, "month": None},
     }
     scheduled_activities = month_
     return scheduled_activities
