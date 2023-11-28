@@ -127,11 +127,21 @@ def run(
     check_year = today.year - 5
     for i, year in enumerate(years):
         if year == str(check_year):
-            image_editable.text((x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse)
+            image_editable.text(
+                (x + 400, 900 + 300),
+                dates_for_every_year[i],
+                white,
+                font=dates_font_parse,
+            )
             check_year = int(year)
         else:
             i += 1
-            image_editable.text((x + 400, 900 + 300), dates_for_every_year[i], white, font=dates_font_parse)
+            image_editable.text(
+                (x + 400, 900 + 300),
+                dates_for_every_year[i],
+                white,
+                font=dates_font_parse,
+            )
         # if year != str(check_year):
         #     image_editable.text(
         #         (x, 400 + 300), str(check_year), (255, 255, 255), font=title_font_year
@@ -478,8 +488,8 @@ def create_calendar():
 
         # Days
         day_font = ImageFont.truetype("Arial.ttf", 80)
+        y = 1200
         for week_no, week in enumerate(cal_month):
-            y = 1200
             for day_no, day in enumerate(week):
                 if day != 0:
                     fill_color = color_weekends if day_no >= 5 else color_days
@@ -503,9 +513,9 @@ def create_calendar():
                             elif days_until_event > 1:
                                 days = f"{days_until_event} days"
                             else:
-                                days = "COMPETEDs"
+                                days = "COMPETED"
 
-                            fill_color = color_activity_day
+                            fill_color = color_weekends if day_no >= 5 else color_activity_day
                             activity_font = ImageFont.truetype("Arial.ttf", 80)
                             if (
                                 month_diff == 0
