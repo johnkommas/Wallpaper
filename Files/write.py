@@ -107,17 +107,21 @@ def run(
     #     x += 550
     #
 
+    # WRITING CUSTOMERS DATA
     x = [0, 310, 260, 215, 170, 120, 75]
     for i, year in enumerate(customers_month.YEAR):
         y = 1350
-        y_percent = 1230
+        y_percent = 1590
         customer_data = str(customers_month.COUNT.iloc[i])
+
+        customer_percent = round(((customers_month.COUNT.iloc[-1] - customers_month.COUNT.iloc[i]) / customers_month.COUNT.iloc[i]) * 100, 2)
+        percent_color = 'white' if customer_percent >= 0 else 'red'
         color = customers_month.COLOR.iloc[i]
-        image_editable.text(
-            (x[len(data)] + 500 + 5000, y), customer_data, color, font=number_font_parse
-        )
-        # if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
-        #     image_editable.text((x, y_percent),f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%)", color,  font=number_font_parse,)
+        image_editable.text((x[len(data)] + 500 + 5000, y), customer_data, color, font=number_font_parse)
+
+        if customers_month.COUNT.iloc[i] != customers_month.COUNT.max():
+            image_editable.text((x[len(data)] + 5700, y_percent), f'({customer_percent}%)', percent_color, font=dates_font_parse)
+            # image_editable.text((x[len(data)] + 500 + 5000, y_percent_2),f"({(round(100 * customers_month.COUNT.iloc[i]/customers_month.COUNT.max())) - 100}%", color,  font=dates_font_parse,)
         x = [y + 660 for y in x]
     image_editable.text((9400, y), "(C)", color, font=number_font_parse)
     # END OF WRITING CUSTOMERS DATA
