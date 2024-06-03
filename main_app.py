@@ -75,7 +75,7 @@ def filter_data(df):
     return df
 
 
-def run(temp_file, flag):
+def run(refresh_rate, temp_file, flag):
     print(f"🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
     start_ = time.perf_counter()
@@ -184,6 +184,7 @@ def run(temp_file, flag):
     timed = datetime.now().strftime("%d . %m . %Y   %H : %M : %S")
     print(f"🟢 IMAGE @{datetime.now().strftime('%H:%M:%S')} ", end="")
     write.run(
+        refresh_rate,
         c,
         temp_file,
         today,
@@ -217,6 +218,7 @@ timers = {"a0": 0, "l": 0, "a01": 0}
 
 calendar_check_today = datetime.now().day
 write.create_calendar()
+refresh_rate = 600
 while True:
     if datetime.now().day != calendar_check_today:
         write.create_calendar()
@@ -237,9 +239,9 @@ while True:
         try:
             if HOST_UP:
                 time.sleep(timers.get(file))
-                start, stop, sales = run(file, file)
+                start, stop, sales = run(refresh_rate, file, file)
                 sleep_t = (
-                    60 - round(stop - start) if 60 - round(stop - start) > 0 else 0
+                    refresh_rate - round(stop - start) if refresh_rate - round(stop - start) > 0 else 0
                 )
                 timers[file] = sleep_t
 
