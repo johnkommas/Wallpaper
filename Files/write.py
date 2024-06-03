@@ -34,6 +34,7 @@ def offline(emoji, path, offline_path):
 
 
 def run(
+    refresh_rate,
     df,
     file_in,
     specific_date,
@@ -81,7 +82,7 @@ def run(
     # WRITING STORE INFO
     image_editable.text((520, 150), f"        ELOUNDA MARKET", white, font=store_info)
     image_editable.text(
-        (4000, 150), f"REFRESHING DATA EVERY MINUTE :  {timed}", white, font=store_info
+        (4000, 150), f"REFRESHING DATA EVERY {refresh_rate//60} MINUTES :  {timed}", white, font=store_info
     )
     image_editable.text(
         (10000, 150), f"TODAY SALES:  {int(sales)}€", white, font=store_info
