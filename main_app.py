@@ -13,6 +13,11 @@ from Private import stores_sensitive_info, sql_connect
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
+
+try:
+    refresh_rate = int(input("Enter Refresh Rate in: sec "))
+except ValueError:
+    refresh_rate = 600
 OneDrive = stores_sensitive_info.OneDrivePath
 path = f"{OneDrive}/Pictures/Wallpaper/in"
 path_2 = f"{OneDrive}/Pictures/Wallpaper/roll"
@@ -218,7 +223,9 @@ timers = {"a0": 0, "l": 0, "a01": 0}
 
 calendar_check_today = datetime.now().day
 write.create_calendar()
-refresh_rate = 600
+
+
+
 while True:
     if datetime.now().day != calendar_check_today:
         write.create_calendar()
