@@ -12,12 +12,33 @@ from Files import write
 from Private import stores_sensitive_info, sql_connect
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
+import queue
+import threading
 
 
-try:
-    refresh_rate = int(input("Enter Refresh Rate in: sec "))
-except ValueError:
-    refresh_rate = 600
+class InterruptibleInput:
+    def __init__(self, timeout):
+        self.timeout = timeout
+
+    def get_input(self):
+        q = queue.Queue()
+
+        def inner():
+            q.put(input("Enter Refresh Rate in: sec "))
+
+        threading.Thread(target=inner).start()
+
+        try:
+            return int(q.get(block=True, timeout=self.timeout))
+        except queue.Empty:
+            print("\nInput timed out, defaulting to 600 sec")
+            return 600
+
+
+refresh_rate = InterruptibleInput(timeout=5).get_input()
+print(f"Refresh rate: {refresh_rate}")
+
+
 OneDrive = stores_sensitive_info.OneDrivePath
 path = f"{OneDrive}/Pictures/Wallpaper/in"
 path_2 = f"{OneDrive}/Pictures/Wallpaper/roll"
