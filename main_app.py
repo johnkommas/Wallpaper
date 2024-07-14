@@ -33,11 +33,13 @@ class InterruptibleInput:
         except queue.Empty:
             print("\nInput timed out, defaulting to 600 sec")
             return 600
+        except ValueError:
+            print("\nInput Value Error")
+            return self.get_input()
 
 
 refresh_rate = InterruptibleInput(timeout=5).get_input()
 print(f"Refresh rate: {refresh_rate}")
-
 
 OneDrive = stores_sensitive_info.OneDrivePath
 path = f"{OneDrive}/Pictures/Wallpaper/in"
@@ -140,10 +142,13 @@ def run(refresh_rate, temp_file, flag):
     (df_sales_elounda, df_sales_elounda_today, df,
      # customers,
      customers_month,
-     price_change, new_product, special_price, customer_prefer, pda) = (results[key] for key in ["df_sales_elounda", "df_sales_elounda_today", "df",
-                                                                                                 # "customers",
-                                                                                                 "customers_month",
-                                                                                                 "price_change", "new_product", "special_price", "customer_prefer", "pda"])
+     price_change, new_product, special_price, customer_prefer, pda) = (results[key] for key in
+                                                                        ["df_sales_elounda", "df_sales_elounda_today",
+                                                                         "df",
+                                                                         # "customers",
+                                                                         "customers_month",
+                                                                         "price_change", "new_product", "special_price",
+                                                                         "customer_prefer", "pda"])
 
     def get_count(temp_df):
         return temp_df.COUNT.iloc[0] if not temp_df.empty else 0
@@ -190,7 +195,7 @@ def run(refresh_rate, temp_file, flag):
                 days = df["DIFF"].days
                 return f"{days}Days"
 
-        def complete_df(temp_df:pd.DataFrame) -> pd.DataFrame:
+        def complete_df(temp_df: pd.DataFrame) -> pd.DataFrame:
             temp_df["COLOR"] = np.where(temp_df["ID"] == "ESLOGOUT", "red", "green")
             temp_df["DIFF"] = today - temp_df["EDate"]
             temp_df["elapsed_time"] = temp_df.apply(lambda row: calc(row), axis=1)
@@ -245,8 +250,6 @@ timers = {"a0": 0, "l": 0, "a01": 0}
 calendar_check_today = datetime.now().day
 write.create_calendar()
 
-
-
 while True:
     if datetime.now().day != calendar_check_today:
         write.create_calendar()
@@ -261,7 +264,7 @@ while True:
             if os.system(
                 f"ping -c 1  {stores_sensitive_info.ip.get('EM ROUTER')} >/dev/null"
             )
-            == 0
+               == 0
             else False
         )
         try:
