@@ -31,8 +31,8 @@ class InterruptibleInput:
         try:
             return int(q.get(block=True, timeout=self.timeout))
         except queue.Empty:
-            print("\nInput timed out, defaulting to 600 sec")
-            return 600
+            print("\nInput timed out, defaulting to 60 sec")
+            return 60
         except ValueError:
             print("\nInput Value Error")
             return self.get_input()
@@ -67,6 +67,7 @@ SQL_FILES = [
 
 
 def delete_all_files_inside_folder(folder: str) -> None:
+    # print(f"Deleting files in folder: {folder}")
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
 
@@ -104,13 +105,17 @@ def filter_data(df):
 
 
 def run(refresh_rate, temp_file, flag):
+    # print(refresh_rate, temp_file, flag)
     print(f"🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
     start_ = time.perf_counter()
     today = datetime.now()
 
     def fetch_data_with_params(sql_file, params=None):
-        return fetch_data.get_sql_data(sql_file, params)
+        result = fetch_data.get_sql_data(sql_file, params)
+        if result is None or isinstance(result, type):
+            raise ValueError(f"SQL file '{sql_file}' returned invalid data!")
+        return result
 
     params_1 = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year, "month": today.month, "day": today.day}
@@ -180,7 +185,7 @@ def run(refresh_rate, temp_file, flag):
     status_users_elounda = pd.DataFrame
     status_users_lato = pd.DataFrame
 
-    if flag == "a01":
+    if flag in ("a01", "a0"):
 
         def calc(df):
             if df["DIFF"].total_seconds() < 86400:  # less than one day in seconds
@@ -256,9 +261,9 @@ while True:
         calendar_check_today = datetime.now().day
     # files = ["a0", "l", "a01"]
     files = ["a01"]
+
     for file in files:
         delete_all_files_inside_folder(f"{path}/TEMP/")
-
         HOST_UP = (
             True
             if os.system(
