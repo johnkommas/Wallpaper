@@ -286,7 +286,7 @@ def run(
             (255, 255, 255),
             font=store_info,
         )
-    elif flag == "a01":
+    elif flag in ("a01", "a0"):
         calibrate_y = 700
         calibrate_x = 300
         potitions = [
@@ -389,10 +389,13 @@ def run(
             resize=3,
         )
 
-    delete_all_files_inside_folder(f"{path_2}/")
+    # delete_all_files_inside_folder(f"{path_2}/")
+    # if os.path.isfile(f"{path_2}/a01_0.jpg"):
+    delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_0.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_1.jpg")
-
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_2.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_3.jpg")
 
 def get_pda_data(df, str_a):
     a = 0
@@ -438,10 +441,12 @@ def paste_image(my_image, overlay_image, xy, resize):
     return my_image
 
 
-def delete_all_files_inside_folder(folder):
+def delete_all_files_inside_folder(folder, exception_file=None):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         try:
+            if filename == exception_file:
+                continue
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
