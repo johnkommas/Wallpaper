@@ -66,6 +66,17 @@ SQL_FILES = [
 ]
 
 
+def log_sql_query(sql_file: str, params: dict) -> None:
+    """
+    Logs the SQL query details including file and parameters.
+
+    :param sql_file: Name of the SQL file being executed
+    :param params: Parameters passed to the SQL query
+    """
+    log_message = f"Executing SQL File: {sql_file} with Parameters: {params}"
+    wp_logger.info(log_message)
+
+
 def delete_all_files_inside_folder(folder: str) -> None:
     # print(f"Deleting files in folder: {folder}")
     for filename in os.listdir(folder):
@@ -112,6 +123,7 @@ def run(refresh_rate, temp_file, flag):
     today = datetime.now()
 
     def fetch_data_with_params(sql_file, params=None):
+        log_sql_query(sql_file, params)
         result = fetch_data.get_sql_data(sql_file, params)
         if result is None or isinstance(result, type):
             raise ValueError(f"SQL file '{sql_file}' returned invalid data!")
