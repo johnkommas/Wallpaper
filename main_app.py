@@ -308,12 +308,14 @@ while True:
                     end="",
                 )
         except KeyboardInterrupt:
+            print("🟢 Safely stopping the app... Cleaning up resources.")
             write.offline(path, path_2, path_3)
             print("🟢 The App will Now stop Running")
             for thread in threading.enumerate():
                 if thread is not threading.main_thread():
                     print(f"Stopping thread: {thread.name}")
-                    thread.join(0.1)  # Χρονικό όριο για να κλείσουν τα threads
+                    thread.join(0.5)  # Χρονικό όριο για να κλείσουν τα threads
+            print("Clean exit. Goodbye!")
             sys.exit(0)
         except Exception as e:
             print(f"\rException Occured", end="")
