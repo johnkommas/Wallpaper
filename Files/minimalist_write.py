@@ -41,52 +41,61 @@ def delete_all_files_inside_folder(folder, exception_file=None):
 
 
 def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c, number_font_parse):
-    x_offsets = [0, 310, 260, 215, 170, 120, 75]
-    for i in data:
-        revenue = str(int(i))
-        if i == max(data):
-            image_editable.text(
-                (x_offsets[len(revenue)] + 400, 700),
-                revenue,
-                color_pallete_c,
-                font=number_font_parse,
-            )
-        else:
-            image_editable.text(
-                (x_offsets[len(revenue)] + 400, 700),
-                revenue,
-                color_pallete_a,
-                font=number_font_parse,
-            )
-        x_offsets = [y + 660 for y in x_offsets]
+        x_offsets = [0, 310, 260, 215, 170, 120, 75]
+        for i in data:
+            revenue = str(int(i))
+            if i == max(data):
+                image_editable.text(
+                    (x_offsets[len(revenue)] + 400, 700),
+                    revenue,
+                    color_pallete_c,
+                    font=number_font_parse,
+                )
+            else:
+                image_editable.text(
+                    (x_offsets[len(revenue)] + 400, 700),
+                    revenue,
+                    color_pallete_a,
+                    font=number_font_parse,
+                )
+            x_offsets = [y + 660 for y in x_offsets]
 
 
-def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year, dates_font_parse, color_pallete_b):
-    years = [str(i) for i in df_years]
-    x = 500
-    check_year = specific_date.year - 5
-    for i, year in enumerate(years):
-        # Ελέγχει αν το year ταιριάζει με το check_year
-        text_to_draw = (dates_for_every_year[i] if year == str(check_year) else dates_for_every_year[i])
+
+def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year, dates_font_parse, color_pallete_b, timestamp_font_parse):
+        years = [str(i) for i in df_years]
+        x = 500
+        check_year = specific_date.year - 5
+        for i, year in enumerate(years):
+            # Ελέγχει αν το year ταιριάζει με το check_year
+            text_to_draw = (dates_for_every_year[i] if year == str(check_year) else dates_for_every_year[i])
+            image_editable.text(
+                (x, 900),
+                text_to_draw,
+                color_pallete_b,
+                font=dates_font_parse,
+            )
+            # Ενημερώνει το check_year αν χρειάζεται
+            if year == str(check_year):
+                check_year = int(year)
+            image_editable.text((x, 400), year, color_pallete_b, font=title_font_year)
+            x += 660
+            check_year += 1
+        # add timestamp
+        time = datetime.now().strftime("%d.%m.%Y %H:%M")
         image_editable.text(
-            (x, 900),
-            text_to_draw,
+            (600, 6300),
+            time,
             color_pallete_b,
-            font=dates_font_parse,
+            font=timestamp_font_parse,
         )
-        # Ενημερώνει το check_year αν χρειάζεται
-        if year == str(check_year):
-            check_year = int(year)
-        image_editable.text((x, 400), year, color_pallete_b, font=title_font_year)
-        x += 660
-        check_year += 1
-
 
 def run(df, path, path_2, file_in, specific_date):
     # SETUP FONTS
     title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
     number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
     dates_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 80)
+    timestamp_font_parse = ImageFont.truetype("Futura.ttc", 80)
 
     # SETUP COLORS
     color_pallete_a = "#0D1B2A"
@@ -94,8 +103,15 @@ def run(df, path, path_2, file_in, specific_date):
     color_pallete_c = "#D7C9AA"
 
     # INITIALIZE IMAGE
-    my_image = Image.open(f"{path}/{file_in}.jpg")
-    image_editable = ImageDraw.Draw(my_image)
+    my_image_1 = Image.open(f"{path}/{file_in}_1.jpg")
+    my_image_2 = Image.open(f"{path}/{file_in}_2.jpg")
+    my_image_3 = Image.open(f"{path}/{file_in}_3.jpg")
+    image_editable_1 = ImageDraw.Draw(my_image_1)
+    image_editable_2 = ImageDraw.Draw(my_image_2)
+    image_editable_3 = ImageDraw.Draw(my_image_3)
+
+    images = [my_image_1, my_image_2, my_image_3]
+    editables = [image_editable_1, image_editable_2, image_editable_3]
 
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
     dates_for_every_year = get_date_for_every_year(specific_date)
@@ -105,24 +121,28 @@ def run(df, path, path_2, file_in, specific_date):
     df_years = list(df.YEAR.values)
 
     # WRITING YEARS
-    write_years_and_days(
-        image_editable=image_editable,
-        df_years=df_years,
-        specific_date=specific_date,
-        dates_for_every_year=dates_for_every_year,
-        title_font_year=title_font_year,
-        dates_font_parse=dates_font_parse,
-        color_pallete_b=color_pallete_b,
-    )
+    for image, editable in zip(images, editables):
+        write_years_and_days(
+            image_editable=editable,
+            df_years=df_years,
+            specific_date=specific_date,
+            dates_for_every_year=dates_for_every_year,
+            title_font_year=title_font_year,
+            dates_font_parse=dates_font_parse,
+            color_pallete_b=color_pallete_b,
+            timestamp_font_parse=timestamp_font_parse,
+        )
 
-    # WRITING REVENUE VALUES
-    write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c, number_font_parse)
+        # WRITING REVENUE VALUES
+        write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse)
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
-    my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
+    my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
+    my_image_2.save(f"{path}/TEMP/{file_in}_{time}_2.jpg")
+    my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
-    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_0.jpg")
-    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_1.jpg")
-    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_2.jpg")
-    shutil.copy2(f"{path}/TEMP/{file_in}_{time}.jpg", f"{path_2}/{file_in}_3.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_2.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}_3.jpg", f"{path_2}/{file_in}_3.jpg")
+    shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_4.jpg")
 
