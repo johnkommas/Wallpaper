@@ -178,7 +178,7 @@ def run(
 
         x = [y + 660 for y in x]
     image_editable.text((9400, 1000), "(R)", color, font=number_font_parse)
-
+    # print("CHECK POINT ONE")
     pda_data_list = [
         {"pda_data": "ΑΓΟΡΕΣ", "x": 500, "y": 6300, "text_prefix": "Agores"},
         {"pda_data": "ΕΠΙΣΤΡΟΦΕΣ", "x": 2500, "y": 6300, "text_prefix": "Epistrofes"},
@@ -200,7 +200,6 @@ def run(
             (255, 255, 255),
             font=store_info,
         )
-
     # WRITE PRODUCT INFO
     product_info_texts = [
         {"info_key": "price_change", "y": 400, "text_prefix": "Price Changes"},
@@ -287,6 +286,7 @@ def run(
             font=store_info,
         )
     elif flag in ("a01", "a0"):
+        # print("CHECK POINT TWO")
         calibrate_y = 700
         calibrate_x = 300
         potitions = [
@@ -310,16 +310,23 @@ def run(
 
         # print()
         # print(status_users_elounda.UserID)
+        # print("CHECK POINT 2.9")
         for pot, user in zip(potitions, ssi.EM_users):
-            data = status_users_elounda["elapsed_time"][
+            filtered_data = status_users_elounda["elapsed_time"][
                 status_users_elounda.UserID.str.startswith(user)
-            ].iloc[0]
+            ]
+
+            if not filtered_data.empty:
+                data = filtered_data.iloc[0]
+            else:
+                data = "ERROR"
+            # print(user, data)
             image_editable.text(pot, data, (255, 255, 255), font=store_info)
 
         # for pot, user in zip(lato_potitions, ssi.LATO_users):
         #     data = status_users_lato["elapsed_time"][status_users_lato.UserID.str.startswith(user)].iloc[0]
         #     image_editable.text(pot, data, (255, 255, 255), font=store_info)
-
+    # print("CHECK POINT THREE")
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image.save(f"{path}/TEMP/{file_in}_{time}.jpg")
     glue_images(
@@ -328,7 +335,7 @@ def run(
         xy=(550, 160),
         resize=4,
     )
-
+    print(f"CHECK POINT FOUR")
     # WRITE CALENDAR
     cwd = os.path.dirname(os.path.abspath(__file__))
     img_file = f"{cwd}/calendar.png"
@@ -353,9 +360,15 @@ def run(
         # lato_potitions = [(4410, 3080), (5100, 3250), (5840, 3080), (7768, 3080), (8469, 3250), (9160, 3080)]
         my_image = Image.open(f"{path}/TEMP/{file_in}_{time}.jpg")
         for user, pots in zip(ssi.EM_users, potitions):
-            color = status_users_elounda["COLOR"][
+            filtered_data = status_users_elounda["COLOR"][
                 status_users_elounda.UserID.str.startswith(user)
-            ].iloc[0]
+            ]
+            if not filtered_data.empty:
+                color = filtered_data.iloc[0]
+            else:
+                color = "red"
+            # print(color)
+
             my_image = paste_image(my_image, f"{path}/{color}.png", xy=pots, resize=4)
         # for user, pots in zip(ssi.LATO_users, lato_potitions):
         #     color = status_users_lato["COLOR"][status_users_lato.UserID.str.startswith(user)].iloc[0]
@@ -414,7 +427,7 @@ def get_date_for_every_year(specific_date):
     greek = ["(ΔΕ)", "(ΤΡ)", "(ΤΕ)", "(ΠΕ)", "(ΠΑ)", "(ΣΑ)", "(ΚΥ)"]
     today = specific_date
     x = []
-    for i in range(0, 12):
+    for i in range(0, 6):
         a = today - relativedelta(years=i)
         eng = a.strftime("%a")
         x.append(greek[english.index(eng)])
