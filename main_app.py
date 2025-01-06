@@ -116,7 +116,6 @@ def filter_data(df):
 
 
 def run(refresh_rate, temp_file, flag):
-    # print(refresh_rate, temp_file, flag)
     print(f"🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
     start_ = time.perf_counter()
