@@ -90,6 +90,23 @@ def run(temp_file):
     return start_, stop_
 
 
+def start_at_exact_second():
+    """
+    Περιμένει μέχρι τα δευτερόλεπτα του ρολογιού να είναι 00 και ξεκινά το πρόγραμμα.
+    """
+    while True:
+        # Πάρε τον τρέχοντα χρόνο
+        now = datetime.now()
+
+        # Έλεγχος αν τα δευτερόλεπτα είναι 00
+        if now.second == 55:
+            print("Ξεκινάω το πρόγραμμα στις: ", now)
+            break  # Σπάει το loop και ξεκινά το πρόγραμμα
+
+        # Αναμονή για 0.5 δευτερόλεπτα πριν ξαναελέγξει
+        time.sleep(0.5)
+
+
 CRED = "\033[91m"
 CBLUE = "\33[34m"
 CGREEN = "\033[92m"
@@ -98,6 +115,9 @@ CEND = "\033[0m"
 times = 0
 failed = 0
 timers = {"wallpaper": 0}
+
+# Κλήση της συνάρτησης
+start_at_exact_second()
 while True:
     file = "wallpaper"
     delete_all_files_inside_folder(f"{path}/TEMP/")
