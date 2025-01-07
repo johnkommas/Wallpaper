@@ -62,7 +62,7 @@ def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c,
 
 
 
-def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year, dates_font_parse, color_pallete_b, timestamp_font_parse):
+def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year, dates_font_parse, color_pallete_b, timestamp_font_parse, time):
         years = [str(i) for i in df_years]
         x = 500
         check_year = specific_date.year - 5
@@ -81,14 +81,13 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
             image_editable.text((x, 400), year, color_pallete_b, font=title_font_year)
             x += 660
             check_year += 1
-        # add timestamp
-        time = datetime.now().strftime("%d.%m.%Y %H:%M")
         image_editable.text(
             (600, 6300),
             time,
             color_pallete_b,
             font=timestamp_font_parse,
         )
+
 
 def run(df, path, path_2, file_in, specific_date):
     # SETUP FONTS
@@ -120,6 +119,8 @@ def run(df, path, path_2, file_in, specific_date):
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
 
+    # add timestamp
+    time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # WRITING YEARS
     for image, editable in zip(images, editables):
         write_years_and_days(
@@ -131,6 +132,7 @@ def run(df, path, path_2, file_in, specific_date):
             dates_font_parse=dates_font_parse,
             color_pallete_b=color_pallete_b,
             timestamp_font_parse=timestamp_font_parse,
+            time=time
         )
 
         # WRITING REVENUE VALUES
