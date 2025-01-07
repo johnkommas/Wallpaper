@@ -99,7 +99,7 @@ def start_at_exact_second():
         now = datetime.now()
 
         # Έλεγχος αν τα δευτερόλεπτα είναι 00
-        if now.second == 55:
+        if now.second == 56:
             print("Ξεκινάω το πρόγραμμα στις: ", now)
             break  # Σπάει το loop και ξεκινά το πρόγραμμα
 
