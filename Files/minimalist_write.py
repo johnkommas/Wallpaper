@@ -40,11 +40,11 @@ def delete_all_files_inside_folder(folder, exception_file=None):
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c, number_font_parse):
+def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter):
     x_offsets = [0, 310, 260, 215, 170, 120, 75]
     for i in data:
         revenue = str(int(i))
-        if i == max(data):
+        if i == max(data) and counter == 2:
             image_editable.text(
                 (x_offsets[len(revenue)] + 400, 700),
                 revenue,
@@ -62,29 +62,34 @@ def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c,
 
 
 def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
-                         dates_font_parse, color_pallete_b, timestamp_font_parse, time):
+                         dates_font_parse, color_pallete_a, color_pallete_b, timestamp_font_parse, time, counter):
     years = [str(i) for i in df_years]
     x = 500
     check_year = specific_date.year - 5
+    if counter == 0:
+        custom_color = color_pallete_a
+    else:
+        custom_color = color_pallete_b
+
     for i, year in enumerate(years):
         # Ελέγχει αν το year ταιριάζει με το check_year
         text_to_draw = (dates_for_every_year[i] if year == str(check_year) else dates_for_every_year[i])
         image_editable.text(
             (x, 900),
             text_to_draw,
-            color_pallete_b,
+            custom_color,
             font=dates_font_parse,
         )
         # Ενημερώνει το check_year αν χρειάζεται
         if year == str(check_year):
             check_year = int(year)
-        image_editable.text((x, 400), year, color_pallete_b, font=title_font_year)
+        image_editable.text((x, 400), year, custom_color, font=title_font_year)
         x += 660
         check_year += 1
     image_editable.text(
         (10100, 6300),
         time,
-        color_pallete_b,
+        custom_color,
         font=timestamp_font_parse,
     )
 
@@ -122,6 +127,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # WRITING YEARS
+    counter = 0
     for image, editable in zip(images, editables):
         write_years_and_days(
             image_editable=editable,
@@ -130,13 +136,16 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
             dates_for_every_year=dates_for_every_year,
             title_font_year=title_font_year,
             dates_font_parse=dates_font_parse,
+            color_pallete_a=color_pallete_a,
             color_pallete_b=color_pallete_b,
             timestamp_font_parse=timestamp_font_parse,
-            time=time
+            time=time,
+            counter=counter
         )
 
         # WRITING REVENUE VALUES
-        write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse)
+        write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter)
+        counter += 1
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
