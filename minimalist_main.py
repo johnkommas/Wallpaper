@@ -31,8 +31,8 @@ class InterruptibleInput:
         try:
             return int(q.get(block=True, timeout=self.timeout))
         except queue.Empty:
-            print("\nInput timed out, defaulting to 60 sec")
-            return 60
+            print("\nInput timed out, defaulting to 600 sec")
+            return 600
         except ValueError:
             print("\nInput Value Error")
             return self.get_input()
