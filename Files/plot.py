@@ -150,7 +150,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, 
 
     plt.bar(X, Y, alpha=0.9, color=colors)
     ysmoothed = gaussian_filter1d(Y_all, sigma=2)
-    plt.plot(X, ysmoothed if loop_counter in (1, 3) else Y_all, alpha=0.9, color=color_a if loop_counter == 3 else color_c)
+    plt.plot(X, ysmoothed if loop_counter in (1, 3) else Y_all, alpha=0.9, color=color_a if loop_counter in (1, 3) else color_c)
     for a, b in zip(X, Y):
         label = f"{b}€" if b > 0 else ""
         # this method is called for each point
