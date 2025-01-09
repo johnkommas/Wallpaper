@@ -41,55 +41,55 @@ def delete_all_files_inside_folder(folder, exception_file=None):
 
 
 def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c, number_font_parse):
-        x_offsets = [0, 310, 260, 215, 170, 120, 75]
-        for i in data:
-            revenue = str(int(i))
-            if i == max(data):
-                image_editable.text(
-                    (x_offsets[len(revenue)] + 400, 700),
-                    revenue,
-                    color_pallete_c,
-                    font=number_font_parse,
-                )
-            else:
-                image_editable.text(
-                    (x_offsets[len(revenue)] + 400, 700),
-                    revenue,
-                    color_pallete_a,
-                    font=number_font_parse,
-                )
-            x_offsets = [y + 660 for y in x_offsets]
-
-
-
-def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year, dates_font_parse, color_pallete_b, timestamp_font_parse, time):
-        years = [str(i) for i in df_years]
-        x = 500
-        check_year = specific_date.year - 5
-        for i, year in enumerate(years):
-            # Ελέγχει αν το year ταιριάζει με το check_year
-            text_to_draw = (dates_for_every_year[i] if year == str(check_year) else dates_for_every_year[i])
+    x_offsets = [0, 310, 260, 215, 170, 120, 75]
+    for i in data:
+        revenue = str(int(i))
+        if i == max(data):
             image_editable.text(
-                (x, 900),
-                text_to_draw,
-                color_pallete_b,
-                font=dates_font_parse,
+                (x_offsets[len(revenue)] + 400, 700),
+                revenue,
+                color_pallete_c,
+                font=number_font_parse,
             )
-            # Ενημερώνει το check_year αν χρειάζεται
-            if year == str(check_year):
-                check_year = int(year)
-            image_editable.text((x, 400), year, color_pallete_b, font=title_font_year)
-            x += 660
-            check_year += 1
+        else:
+            image_editable.text(
+                (x_offsets[len(revenue)] + 400, 700),
+                revenue,
+                color_pallete_a,
+                font=number_font_parse,
+            )
+        x_offsets = [y + 660 for y in x_offsets]
+
+
+def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
+                         dates_font_parse, color_pallete_b, timestamp_font_parse, time):
+    years = [str(i) for i in df_years]
+    x = 500
+    check_year = specific_date.year - 5
+    for i, year in enumerate(years):
+        # Ελέγχει αν το year ταιριάζει με το check_year
+        text_to_draw = (dates_for_every_year[i] if year == str(check_year) else dates_for_every_year[i])
         image_editable.text(
-            (600, 6300),
-            time,
+            (x, 900),
+            text_to_draw,
             color_pallete_b,
-            font=timestamp_font_parse,
+            font=dates_font_parse,
         )
+        # Ενημερώνει το check_year αν χρειάζεται
+        if year == str(check_year):
+            check_year = int(year)
+        image_editable.text((x, 400), year, color_pallete_b, font=title_font_year)
+        x += 660
+        check_year += 1
+    image_editable.text(
+        (10100, 6300),
+        time,
+        color_pallete_b,
+        font=timestamp_font_parse,
+    )
 
 
-def run(df, path, path_2, file_in, specific_date):
+def run(df, path, path_2, file_in, specific_date, plot_df):
     # SETUP FONTS
     title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
     number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
@@ -142,9 +142,21 @@ def run(df, path, path_2, file_in, specific_date):
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
     my_image_2.save(f"{path}/TEMP/{file_in}_{time}_2.jpg")
     my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
+
+    for i in range(1, 4):
+        plot.run_daily_smooth(
+            plot_df,
+            specific_day=specific_date,
+            path_a=f"{path}/graph.png",
+            path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+            color_a= color_pallete_a,
+            color_b = color_pallete_b,
+            color_c = color_pallete_c,
+            loop_counter = i
+        )
+
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_2.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_3.jpg", f"{path_2}/{file_in}_3.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_4.jpg")
-
