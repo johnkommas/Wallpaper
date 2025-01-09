@@ -8,6 +8,7 @@ from datetime import timedelta, datetime
 from wordcloud import WordCloud, ImageColorGenerator
 from scipy.ndimage import gaussian_gradient_magnitude
 from matplotlib import font_manager
+from scipy.ndimage.filters import gaussian_filter1d
 
 
 def run_daily(all_years, specific_day, path_a, path_b):
@@ -50,7 +51,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
             pass
 
     with plt.rc_context(
-        {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
+            {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
     ):
         # plt.rcParams["font.family"] = "Poiret One"
         plt.rcParams["font.family"] = "Futura"
@@ -90,7 +91,6 @@ def run_daily(all_years, specific_day, path_a, path_b):
 
 
 def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, color_c, loop_counter):
-
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -130,7 +130,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, 
             pass
 
     with plt.rc_context(
-        {"axes.edgecolor": color_a, "xtick.color": color_a, "ytick.color": color_a}
+            {"axes.edgecolor": color_a, "xtick.color": color_a, "ytick.color": color_a}
     ):
         # plt.rcParams["font.family"] = "Poiret One"
         plt.rcParams["font.family"] = "Futura"
@@ -149,8 +149,8 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, 
         colors = [color_a if i > median else color_a for i in Y]
 
     plt.bar(X, Y, alpha=0.9, color=colors)
-    plt.plot(X, Y_all, alpha=0.9, color=color_a if loop_counter == 3 else color_c)
-    # plt.fill_between(X, Y_all, alpha=0.05, color=color_b)
+    ysmoothed = gaussian_filter1d(Y_all, sigma=2)
+    plt.plot(X, ysmoothed if loop_counter in (1, 3) else Y_all, alpha=0.9, color=color_a if loop_counter == 3 else color_c)
     for a, b in zip(X, Y):
         label = f"{b}€" if b > 0 else ""
         # this method is called for each point
@@ -200,14 +200,14 @@ def glue_images_smooth(path_a, path_b):
 
 def randar_chart(categories, sales, path):
     with plt.rc_context(
-        {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
+            {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
     ):
         plt.figure(figsize=(7, 7), dpi=120)
         plt.subplot()
     plt.barh(categories, sales, alpha=0.9, color="white")
     for (
-        a,
-        b,
+            a,
+            b,
     ) in zip(sales, categories):
         label = f"{a}\nEUR"
         # this method is called for each point
@@ -252,7 +252,8 @@ def tree_map(df, path):
     df = df.head(10)
     try:
         labels = df.apply(
-            lambda x: f'{x[0]} ({round(int(x[2]) * 100 / all_["SALES"].sum())}%)\n{int(x[1])}{"T" if x[1] - int(x[1]) == 0 else "Κ"}/{int(x[2])}€',
+            lambda
+                x: f'{x[0]} ({round(int(x[2]) * 100 / all_["SALES"].sum())}%)\n{int(x[1])}{"T" if x[1] - int(x[1]) == 0 else "Κ"}/{int(x[2])}€',
             axis=1,
         )
 
@@ -407,7 +408,7 @@ def customers_graph(df):
     #         )  # horizontal alignment can be left, right or center
 
     with plt.rc_context(
-        {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
+            {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
     ):
         plt.rcParams["font.family"] = "monospace"
         plt.rcParams["font.monospace"] = ["FreeMono"]
