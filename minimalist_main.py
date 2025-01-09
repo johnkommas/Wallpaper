@@ -52,7 +52,8 @@ logging.basicConfig(
 wp_logger = logging.getLogger()
 wp_logger.setLevel("WARNING")
 SQL_FILES = [
-    "ESFIItemEntry_ESFIItemPeriodics_a.sql"
+    "ESFIItemEntry_ESFIItemPeriodics_a.sql",
+    "ESFIItemEntry_ESFIItemPeriodics_c.sql",
 ]
 
 
@@ -84,8 +85,13 @@ def run(temp_file):
         return result
 
     params = {"year": today.year - 5, "month": today.month, "day": today.day}
+    params_2 = {"year": today.year - 5, "month": today.month}
     df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
-    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today)
+    df = fetch_data_with_params(SQL_FILES[1], params_2)
+    # print(df)
+    df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
+    df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
+    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df)
     stop_ = time.perf_counter()
     return start_, stop_
 
