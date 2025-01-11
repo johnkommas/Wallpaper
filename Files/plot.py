@@ -141,12 +141,13 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, 
     font = font_manager.FontProperties(family="Futura")
     median = np.median(Y_all)
     mean_val = np.mean(Y_all)
+    currnet_max = np.max(Y)
     if loop_counter == 0:
         print(f"🟢MEDIAN = {median}€", end='')
     if loop_counter == 3:
-        colors = [color_c if i >= mean_val else color_a for i in Y]
+        colors = [color_c if i >= currnet_max else color_a for i in Y]
     else:
-        colors = [color_a if i > median else color_a for i in Y]
+        colors = [color_a if i > currnet_max else color_a for i in Y]
 
     plt.bar(X, Y, alpha=0.9, color=colors)
     ysmoothed = gaussian_filter1d(Y_all, sigma=2)
