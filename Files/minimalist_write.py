@@ -1,5 +1,6 @@
 #  Copyright (c) Ioannis E. Kommas 2022. All Rights Reserved
 import calendar
+import time as ctime
 import os
 import shutil
 from Files import plot, schedule_my_calendar
@@ -95,16 +96,20 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
 
 
 def run(df, path, path_2, file_in, specific_date, plot_df):
+    start = ctime.perf_counter()
+
     # SETUP FONTS
     title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
     number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
     dates_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 80)
     timestamp_font_parse = ImageFont.truetype("Futura.ttc", 80)
 
+
     # SETUP COLORS
     color_pallete_a = "#0D1B2A"
     color_pallete_b = "#778DA9"
     color_pallete_c = "#D7C9AA"
+
 
     # INITIALIZE IMAGE
     my_image_1 = Image.open(f"{path}/{file_in}_1.jpg")
@@ -120,12 +125,17 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
     dates_for_every_year = get_date_for_every_year(specific_date)
 
+
     # LIST DATA
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
 
+
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+
+    c1 = ctime.perf_counter()
+    print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
     # WRITING YEARS
     counter = 0
     for image, editable in zip(images, editables):
@@ -147,11 +157,14 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
         write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter)
         counter += 1
 
+
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
     my_image_2.save(f"{path}/TEMP/{file_in}_{time}_2.jpg")
     my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
 
+    c2 = ctime.perf_counter()
+    print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
     for i in range(1, 4):
         plot.run_daily_smooth(
             plot_df,
@@ -169,3 +182,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_2.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_3.jpg", f"{path_2}/{file_in}_3.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_4.jpg")
+    c3 = ctime.perf_counter()
+    print(f" 🟢DONE IN: {round(c3 - c2)} sec PLOTTING GRAPH ", end="")
+    ctime.sleep(2)
