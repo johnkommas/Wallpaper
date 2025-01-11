@@ -31,8 +31,8 @@ class InterruptibleInput:
         try:
             return int(q.get(block=True, timeout=self.timeout))
         except queue.Empty:
-            print("\nInput timed out, defaulting to 600 sec")
-            return 600
+            print("\nInput timed out, defaulting to 60 sec")
+            return 60
         except ValueError:
             print("\nInput Value Error")
             return self.get_input()
@@ -87,10 +87,13 @@ def run(temp_file):
     params = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year - 5, "month": today.month}
     df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
+    first_q_timer= time.perf_counter()
+    print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
     df = fetch_data_with_params(SQL_FILES[1], params_2)
-    # print(df)
+    second_q_timer = time.perf_counter()
     df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
     df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
+    print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
     minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df)
     stop_ = time.perf_counter()
     return start_, stop_
@@ -109,7 +112,7 @@ def start_at_exact_second():
             print("Ξεκινάω το πρόγραμμα στις: ", now)
             break  # Σπάει το loop και ξεκινά το πρόγραμμα
 
-        # Αναμονή για 0.5 δευτερόλεπτα πριν ξαναελέγξει
+        # Αναμονή για 0.5 δευτερόλεπτα πριν ξανά ελέγξει
         time.sleep(0.5)
 
 
