@@ -111,6 +111,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
     color_pallete_c = "#D7C9AA"
 
 
+
     # INITIALIZE IMAGE
     my_image_1 = Image.open(f"{path}/{file_in}_1.jpg")
     my_image_2 = Image.open(f"{path}/{file_in}_2.jpg")
