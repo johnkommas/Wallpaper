@@ -14,6 +14,7 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 import queue
 import threading
+import pygame
 
 
 class InterruptibleInput:
@@ -55,6 +56,17 @@ SQL_FILES = [
     "ESFIItemEntry_ESFIItemPeriodics_a.sql",
     "ESFIItemEntry_ESFIItemPeriodics_c.sql",
 ]
+SOUND_A = f"{os.getcwd()}/Sound_Pack/a.mp3"
+SOUND_B = f"{os.getcwd()}/Sound_Pack/b.mp3"
+SOUND_C = f"{os.getcwd()}/Sound_Pack/c.mp3"
+
+
+def play_sound(file_path):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():  # Περιμένει μέχρι να τελειώσει η αναπαραγωγή
+        continue
 
 
 def delete_all_files_inside_folder(folder: str) -> None:
@@ -73,7 +85,7 @@ def delete_all_files_inside_folder(folder: str) -> None:
 
 def run(temp_file):
     # print(refresh_rate, temp_file, flag)
-    print(f"🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
+    print(f"\r🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
     start_ = time.perf_counter()
     today = datetime.now()
@@ -87,7 +99,7 @@ def run(temp_file):
     params = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year - 5, "month": today.month}
     df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
-    first_q_timer= time.perf_counter()
+    first_q_timer = time.perf_counter()
     print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
     df = fetch_data_with_params(SQL_FILES[1], params_2)
     second_q_timer = time.perf_counter()
@@ -125,8 +137,10 @@ times = 0
 failed = 0
 timers = {"wallpaper": 0}
 
+play_sound(SOUND_B)
 # Κλήση της συνάρτησης
 start_at_exact_second()
+play_sound(SOUND_C)
 while True:
     file = "wallpaper"
     delete_all_files_inside_folder(f"{path}/TEMP/")
@@ -141,6 +155,7 @@ while True:
     try:
         if HOST_UP:
             time.sleep(timers.get(file))
+
             start, stop = run(file)
             sleep_t = (
                 refresh_rate - round(stop - start) if refresh_rate - round(stop - start) > 0 else 0
@@ -148,11 +163,14 @@ while True:
             timers[file] = sleep_t
 
             times += 1
+
             print(
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
-                end="",
-            )
+                end="", )
+            play_sound(SOUND_B)
+
         else:
+            play_sound(SOUND_A)
             wp_logger.error("VPN OFFLINE")
             sql_connect.open_vpn(failed)
             failed += 1
@@ -161,6 +179,7 @@ while True:
                 end="",
             )
     except KeyboardInterrupt:
+        play_sound(SOUND_A)
         print("🟢 Safely stopping the app... Cleaning up resources.")
         print("🟢 The App will Now stop Running")
         for thread in threading.enumerate():
@@ -170,6 +189,7 @@ while True:
         print("Clean exit. Goodbye!")
         sys.exit(0)
     except Exception as e:
+        play_sound(SOUND_A)
         print(f"\rException Occured", end="")
         wp_logger.error(e)
         failed += 1
