@@ -15,32 +15,31 @@ from concurrent.futures import ThreadPoolExecutor
 import queue
 import threading
 import pygame
+import signal
 
 
-class InterruptibleInput:
-    def __init__(self, timeout):
-        self.timeout = timeout
-
-    def get_input(self):
-        q = queue.Queue()
-
-        def inner():
-            q.put(input("Enter Refresh Rate in: sec "))
-
-        threading.Thread(target=inner).start()
-
-        try:
-            return int(q.get(block=True, timeout=self.timeout))
-        except queue.Empty:
-            print("\nInput timed out, defaulting to 60 sec")
-            return 60
-        except ValueError:
-            print("\nInput Value Error")
-            return self.get_input()
+def timeout_handler(signum, frame):
+    raise TimeoutError
 
 
-refresh_rate = InterruptibleInput(timeout=5).get_input()
+def get_input_with_timeout(prompt, timeout, default):
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(timeout)
+    try:
+        return input(prompt)
+    except (TimeoutError, EOFError):
+        print(f"\nInput timed out. Defaulting to {default}.")
+        return default
+    finally:
+        signal.alarm(0)  # Disable alarm
+
+
+refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 60))
+md = get_input_with_timeout("Multiple Data? (y/n): ", 5, "n").lower()
+multiple_data = md == 'y'
+
 print(f"Refresh rate: {refresh_rate}")
+print(f"Multiple Data: {multiple_data}")
 
 OneDrive = stores_sensitive_info.OneDrivePath
 path = f"{OneDrive}/Pictures/Wallpaper/in"
@@ -56,6 +55,8 @@ SQL_FILES = [
     "ESFIItemEntry_ESFIItemPeriodics_a.sql",
     "ESFIItemEntry_ESFIItemPeriodics_c.sql",
 ]
+
+# SETUP SOUNDS
 SOUND_A = f"{os.getcwd()}/Sound_Pack/a.mp3"
 SOUND_B = f"{os.getcwd()}/Sound_Pack/b.mp3"
 SOUND_C = f"{os.getcwd()}/Sound_Pack/c.mp3"
@@ -83,7 +84,7 @@ def delete_all_files_inside_folder(folder: str) -> None:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def run(temp_file):
+def run(temp_file, multiple_data, md):
     # print(refresh_rate, temp_file, flag)
     print(f"\r🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
@@ -98,15 +99,21 @@ def run(temp_file):
 
     params = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year - 5, "month": today.month}
-    df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
+    if md != 'x':
+        df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
+    else:
+        df_sales_elounda = pd.DataFrame()
     first_q_timer = time.perf_counter()
     print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
-    df = fetch_data_with_params(SQL_FILES[1], params_2)
-    second_q_timer = time.perf_counter()
-    df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
-    df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
-    print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
-    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df)
+    if multiple_data:
+        df = fetch_data_with_params(SQL_FILES[1], params_2)
+        second_q_timer = time.perf_counter()
+        df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
+        df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
+        print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
+    else:
+        df = pd.DataFrame()
+    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, md)
     stop_ = time.perf_counter()
     return start_, stop_
 
@@ -139,9 +146,10 @@ timers = {"wallpaper": 0}
 
 play_sound(SOUND_B)
 # Κλήση της συνάρτησης
-start_at_exact_second()
+# start_at_exact_second()
 play_sound(SOUND_C)
-while True:
+running = True
+while running:
     file = "wallpaper"
     delete_all_files_inside_folder(f"{path}/TEMP/")
     HOST_UP = (
@@ -156,10 +164,8 @@ while True:
         if HOST_UP:
             time.sleep(timers.get(file))
 
-            start, stop = run(file)
-            sleep_t = (
-                refresh_rate - round(stop - start) if refresh_rate - round(stop - start) > 0 else 0
-            )
+            start, stop = run(file, multiple_data, md)
+            sleep_t = (refresh_rate - round(stop - start) if refresh_rate - round(stop - start) > 0 else 0)
             timers[file] = sleep_t
 
             times += 1
@@ -168,25 +174,25 @@ while True:
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
                 end="", )
             play_sound(SOUND_B)
+            if md == 'x':
+                raise KeyboardInterrupt
 
         else:
             play_sound(SOUND_A)
             wp_logger.error("VPN OFFLINE")
+            minimalist_write.offline(path, path_2, path_3, "VPN OFFLINE")
             sql_connect.open_vpn(failed)
             failed += 1
             print(
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
-                end="",
-            )
+                end="")
     except KeyboardInterrupt:
         play_sound(SOUND_A)
-        print("🟢 Safely stopping the app... Cleaning up resources.")
+        # minimalist_write.offline(path, path_2, path_3,  "SRV OFFLINE")
+        print("\n🟢 Safely stopping the app... Cleaning up resources.")
+        pygame.mixer.quit()
         print("🟢 The App will Now stop Running")
-        for thread in threading.enumerate():
-            if thread is not threading.main_thread():
-                print(f"Stopping thread: {thread.name}")
-                thread.join(0.5)  # Χρονικό όριο για να κλείσουν τα threads
-        print("Clean exit. Goodbye!")
+        running = False
         sys.exit(0)
     except Exception as e:
         play_sound(SOUND_A)
@@ -195,5 +201,5 @@ while True:
         failed += 1
         print(
             f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
-            end="",
-        )
+            end="")
+
