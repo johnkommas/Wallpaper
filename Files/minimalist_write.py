@@ -9,6 +9,37 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from Private import stores_sensitive_info as ssi
 import pandas as pd
+from io import BytesIO
+
+
+def offline(emoji, path, offline_path, word):
+    # Ορισμός χρωμάτων
+    color = "#0D1B2A"
+    box = (10000, 500)  # Αρχική θέση για το κείμενο πάνω στην εικόνα
+    if word == "VPN OFFLINE":
+        box = (10000, 700)
+    delete_all_files_inside_folder(offline_path)  # Διαγραφή όλων των αρχείων στον φάκελο offline_path
+    dir_list = os.listdir(path)
+    for dfile in dir_list:
+        my_image = Image.open(f"{path}/{dfile}")
+        image_editable = ImageDraw.Draw(my_image)
+
+        # Χρησιμοποιούμε διαφορετικά χρώματα για κάθε γράμμα σύμφωνα με τα palettes
+        font = ImageFont.truetype("25191766905.ttf", 200)  # Αλλαγή font αν χρειάζεται
+        x, y = box  # Ξεκινάμε από την προκαθορισμένη θέση
+
+        # Διαχωρισμός γραμμάτων και χρωμάτων
+
+        image_editable.text((x, y), word, font=font, fill=color)
+
+        # Αποθηκεύουμε την τροποποιημένη εικόνα στο offline_path
+        my_image.save(f"{offline_path}/{dfile}")
+
+    # Διαγραφές και αντιγραφές αρχείων
+    delete_all_files_inside_folder(path)
+    for dfile in os.listdir(offline_path):
+        shutil.copy2(f"{offline_path}/{dfile}", f"{path}/{dfile}")
+    delete_all_files_inside_folder(offline_path)
 
 
 def get_date_for_every_year(today):
@@ -95,7 +126,7 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
     )
 
 
-def run(df, path, path_2, file_in, specific_date, plot_df):
+def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     start = ctime.perf_counter()
 
     # SETUP FONTS
@@ -104,13 +135,10 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
     dates_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 80)
     timestamp_font_parse = ImageFont.truetype("Futura.ttc", 80)
 
-
     # SETUP COLORS
     color_pallete_a = "#0D1B2A"
     color_pallete_b = "#778DA9"
     color_pallete_c = "#D7C9AA"
-
-
 
     # INITIALIZE IMAGE
     my_image_1 = Image.open(f"{path}/{file_in}_1.jpg")
@@ -126,11 +154,9 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
     dates_for_every_year = get_date_for_every_year(specific_date)
 
-
     # LIST DATA
     data = list(df.TurnOver.values)
     df_years = list(df.YEAR.values)
-
 
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
@@ -158,7 +184,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
         write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter)
         counter += 1
 
-
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
     my_image_2.save(f"{path}/TEMP/{file_in}_{time}_2.jpg")
@@ -166,17 +191,18 @@ def run(df, path, path_2, file_in, specific_date, plot_df):
 
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
-    for i in range(1, 4):
-        plot.run_daily_smooth(
-            plot_df,
-            specific_day=specific_date,
-            path_a=f"{path}/graph.png",
-            path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
-            color_a= color_pallete_a,
-            color_b = color_pallete_b,
-            color_c = color_pallete_c,
-            loop_counter = i
-        )
+    if multiple_data:
+        for i in range(1, 4):
+            plot.run_daily_smooth(
+                plot_df,
+                specific_day=specific_date,
+                path_a=f"{path}/graph.png",
+                path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+                color_a=color_pallete_a,
+                color_b=color_pallete_b,
+                color_c=color_pallete_c,
+                loop_counter=i
+            )
 
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
