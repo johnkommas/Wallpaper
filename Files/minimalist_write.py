@@ -126,7 +126,7 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
     )
 
 
-def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
+def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, md):
     start = ctime.perf_counter()
 
     # SETUP FONTS
@@ -154,10 +154,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
     dates_for_every_year = get_date_for_every_year(specific_date)
 
-    # LIST DATA
-    data = list(df.TurnOver.values)
-    df_years = list(df.YEAR.values)
-
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
@@ -165,24 +161,29 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
     # WRITING YEARS
     counter = 0
-    for image, editable in zip(images, editables):
-        write_years_and_days(
-            image_editable=editable,
-            df_years=df_years,
-            specific_date=specific_date,
-            dates_for_every_year=dates_for_every_year,
-            title_font_year=title_font_year,
-            dates_font_parse=dates_font_parse,
-            color_pallete_a=color_pallete_a,
-            color_pallete_b=color_pallete_b,
-            timestamp_font_parse=timestamp_font_parse,
-            time=time,
-            counter=counter
-        )
+    if md != 'x':
+        # LIST DATA
+        data = list(df.TurnOver.values)
+        df_years = list(df.YEAR.values)
 
-        # WRITING REVENUE VALUES
-        write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter)
-        counter += 1
+        for image, editable in zip(images, editables):
+            write_years_and_days(
+                image_editable=editable,
+                df_years=df_years,
+                specific_date=specific_date,
+                dates_for_every_year=dates_for_every_year,
+                title_font_year=title_font_year,
+                dates_font_parse=dates_font_parse,
+                color_pallete_a=color_pallete_a,
+                color_pallete_b=color_pallete_b,
+                timestamp_font_parse=timestamp_font_parse,
+                time=time,
+                counter=counter
+            )
+
+            # WRITING REVENUE VALUES
+            write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter)
+            counter += 1
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
