@@ -7,9 +7,9 @@ import sys
 import time
 import numpy as np
 import pandas as pd
-from SQL_FOLDER import fetch_data
+from SQL_FOLDER import fetch_data, sql_connect
 from Files import write
-from Private import stores_sensitive_info, sql_connect
+from Private import stores_sensitive_info
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 import queue
