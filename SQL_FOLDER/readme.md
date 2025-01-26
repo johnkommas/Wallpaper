@@ -95,7 +95,3 @@ Copyright (c) Ioannis E. Kommas 2023. All Rights Reserved.
 ```
 
 ---
-
-Feel free to expand upon this `README.md` draft to fit your project's unique features and add any additional details!
-
-Would you like to make adjustments or add specific instructions to this file? Let me know your thoughts!
