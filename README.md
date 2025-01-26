@@ -13,13 +13,65 @@
 
 # Wallpaper - Realtime Data Integration from Your ERP
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Quick Start](#quick-start)
+- [Setup](#setup)
+  - [Folder Structure](#1-folder-structure)
+  - [Adding Your Images](#2-adding-your-images)
+  - [Create a `.env` File](#3-create-a-env-file)
+  - [Setting Rolling Wallpapers](#4-setting-rolling-wallpapers)
+- [Example of Output](#example-of-output)
+- [Dependencies](#dependencies)
+- [Troubleshooting](#troubleshooting)
+- [Testing Guidance](#testing-guidance)
+- [License](#license)
+- [Maintainers](#maintainers)
+
+### Retina-Ready Wallpapers
+
+The wallpaper images in this project are designed for **Retina displays**, ensuring optimal visual quality on high-resolution screens. If you are using a non-Retina display, the images will still work, but you may notice a slight quality difference due to downscaling.
+
+#### Example Devices:
+- **MacBooks** (Pro, Air, and Standard) with Retina displays
+- **iMacs** with Retina 4K or 5K displays
+- External Retina or high-resolution monitors
+
+#### Recommendations:
+- Use images with a resolution of **2880x1800** pixels or higher to match the quality of Retina screens.
+- If customizing the wallpapers, ensure the images match or exceed these dimensions for the best results.
+
 This repository allows you to integrate real-time data directly from your ERP system into wallpaper images. By following the steps below, you can set up and customize the wallpapers to fit your needs. 
+
+---
+
+## Key Features
+
+- Retina-ready wallpapers optimized for high-definition displays.
+- Allows real-time ERP data integration into wallpapers.
+- Cross-platform compatibility with Windows and macOS.
+- Fully customizable and supports dynamic wallpaper generation.
+- Integration with OneDrive for file and folder management.
 
 ---
 
 ## Overview
 
 This project uses 3 default wallpaper images, which can be replaced with your own. The application processes these input images and generates dynamic wallpapers incorporating real-time ERP data. The output images are saved into a designated folder for immediate use.
+
+---
+
+## Quick Start
+
+To quickly set up and start using this project, follow these steps:
+
+1. Clone the repository and ensure the dependencies are installed.
+2. Create the necessary folder structure in your OneDrive directory.
+3. Add your input images to the `in/` folder using the naming conventions provided.
+4. Create a `.env` file with your specific system and connection details.
+5. Follow the instructions to set up rolling wallpapers for Windows or macOS.
 
 ---
 
@@ -69,6 +121,47 @@ For the application to function correctly, you need to create a `.env` file to s
    Place the `.env` file in the root directory of the project (where the Python scripts are located).
 
 2. **Add the Following Content to the `.env` File**:  
+
+.env Configuration variables are divided into the following groups:
+
+---
+
+**Database Variables:**
+
+- **`SQL_SERVER`**: The IP address or hostname of the SQL Server.
+- **`UID`**: The username used for authentication with the SQL Server.
+- **`SQL_PWD`**: The password for the specified SQL Server user. Enclose in quotes if it contains special characters.
+- **`DATABASE`**: The name of the database being accessed (e.g., your ERP database name).
+- **`SQL_COMPANY_CODE`**: The company-specific code used within your SQL database (if multiple companies are used).
+
+---
+
+**VPN/Network Configuration:**
+
+- **`VPN`**: The IP address of the VPN server for remote access.
+- **`ROUTER`**: The IP address of the router used in the VPN setup.
+- **`VPN_NAME`**: The name of the VPN connection (for identification purposes).
+- **`VPN_PWD`**: The password for the VPN connection.
+
+---
+
+**File Paths and System Configuration:**
+
+- **`ONEDRIVE`**: The OneDrive folder path where the application will read/write files (e.g., wallpapers). Make sure the path is correct and accessible from the application.
+- **`TSC`**: Indicates whether to use Transport Security (e.g., `yes` or `no`).
+
+---
+
+**Environment IP Configuration:**
+
+- **`IP_EM`**: General-use IP address for the environment.
+- **`IP_L1`**: Layer 1 or specific-use IP in the network setup.
+- **`IP_L2`**: Layer 2 or specific-use IP in the network setup.
+- **`IP_EM_SQL`**: IP address of the SQL server related to the `Elounda Market` setup.
+- **`IP_EM_FTP`**: IP address of the FTP server used for file operations.
+- **`IP_EM_ROUTER`**: The router's IP address within the Elounda Market setup.
+
+---
 
 Make sure the `.env` file is structured as follows:
 
@@ -155,9 +248,71 @@ IP_EM_ROUTER=<router_ip>
 
 ---
 
-### 4. Running the Application
+### 4.1 Setting 5-Second Rolling Wallpapers on Windows
 
-Once your folders, images, and `.env` settings are correctly configured, run the **`minimalist_main.py`** script included in the project. When executed, the script processes the images in the `in/` folder and generates four new images containing real-time data. These output images will be saved in the `roll/` directory.
+> **Note:** By default, Windows does not support intervals shorter than 1 minute. Follow these steps to modify the Windows Registry for supporting a 5-second interval.
+
+1. **Open "Settings":**  
+   - Right-click on the desktop and select **Personalize**.  
+   - In the Background section, choose **Slideshow**.  
+   - Select the `roll/` folder (e.g., `{OneDrive}/Pictures/Wallpaper/roll/`) as the picture location.  
+   - Set the interval to any value (e.g., 1 minute) as a placeholder for now.  
+   - Click **Save**.  
+
+2. **Edit the Registry:**  
+   - Press `Win + R`, type **`regedit`**, and press **Enter**.  
+   - Navigate to the following key in the Registry Editor:  
+
+     ```plaintext
+     HKEY_CURRENT_USER\Control Panel\Personalization\Desktop Slideshow
+     ```  
+   - Locate the key named **`Interval`**.  
+   - Double-click `Interval` and set its value to **5000** (milliseconds for a 5-second interval).  
+   - Click **OK** to save the changes.  
+---
+
+## Troubleshooting
+
+### SQL Connection Issues
+- Ensure that the `SQL_SERVER`, `UID`, and `SQL_PWD` values in your `.env` file are correct.
+- Confirm that your database is running and accessible on the specified IP/hostname.
+- Use a tool like SSMS or a Python script to test the connection before running the application.
+
+### OneDrive Sync Issues
+- Verify that your OneDrive folder is properly configured and synced locally.
+- Right-click the folder and select **"Always Keep on This Device"** to avoid offloading.
+
+### Wallpaper Updating Issues
+- For Windows:
+  - Make sure the rolling wallpapers are added to the correct `roll/` folder.
+  - Double-check that the registry values are properly updated for 5-second intervals.
+- For macOS:
+  - Ensure the folder has been selected in the **Desktop & Screen Saver** settings.
+---
+
+
+### 4.2 Setting Rolling Wallpapers on macOS
+   - Locate **Windows Explorer** in the list of processes.  
+   - Right-click **Windows Explorer** and select **Restart**.  
+
+4. **Verify the Change:**  
+   - Your desktop backgrounds should now change every 5 seconds using the images in the `roll/` folder.  
+
+### 4.2 Setting Rolling Wallpapers on macOS
+
+1. **Open "System Preferences":**  
+   - Navigate to **"System Preferences > Desktop & Screen Saver"**.
+
+2. **Select the `roll/` Folder as the Source:**  
+   - Click the "+" button to add a folder.
+   - Locate and select your `roll/` folder, which should contain the dynamically generated wallpapers.
+
+3. **Enable Wallpaper Slideshow:**  
+   - Choose the folder and enable **"Change Picture"** to create a slideshow.
+   - Set the change interval to any value (e.g., 5 seconds).
+
+4. **Apply Changes:**  
+   - Your desktop wallpapers will now rotate based on the order in the selected folder.
 
 #### Example Output Images
 Here is an example of the types of images generated and saved in the `roll/` folder:
@@ -169,7 +324,21 @@ Here is an example of the types of images generated and saved in the `roll/` fol
 
 ---
 
-### 5. Example of Wallpaper Appearance
+### Example of Output
+
+#### Folder Structure Diagram:
+
+```plaintext
+
+{OneDrive}/Pictures/Wallpaper
+    ├── in/
+    ├── roll/
+    └── in/OFFLINE/
+```
+
+![Folder Structure Example](https://github.com/user-attachments/assets/example-folder-diagram.png)
+
+---
 
 Here is a short video showcasing the dynamic look and feel of the processed wallpapers:
 
@@ -180,6 +349,58 @@ Here is a short video showcasing the dynamic look and feel of the processed wall
 ## Additional Notes
 
 - **Compatibility:** The application works seamlessly with OneDrive for folder management. Ensure OneDrive is active and properly configured to allow folder synchronization.
+
+## Dependencies
+
+This project uses two sets of dependencies: core dependencies (for running the application) and development dependencies (for testing, debugging, and visualization).
+
+### Testing Guidance
+
+#### Verifying SQL Database Connection
+Add and run the following Python script:
+```python
+import pyodbc
+
+connection_str = (
+    "DRIVER={SQL Server};"
+    "SERVER=your_sql_server;"
+    "UID=your_username;"
+    "PWD=your_password;"
+    "DATABASE=your_database;"
+)
+
+try:
+    conn = pyodbc.connect(connection_str)
+    print("Connection successful!")
+except Exception as e:
+    print("Connection failed:", e)
+```
+
+#### Verifying OneDrive Path Access
+Add and run this script:
+
+```python
+import os
+
+one_drive_path = "<your-onedrive-path>"
+
+if os.path.exists(one_drive_path):
+    print(f"OneDrive path found: {one_drive_path}")
+else:
+    print(f"OneDrive path not found: {one_drive_path}")
+```
+
+### Installing Core Dependencies:
+To install the core dependencies required for running the application, use the following command:
+```bash
+pip install -r requirements.txt
+```
+
+### Installing Development Dependencies:
+For development, testing, or additional tools, install the development dependencies using:
+```bash
+pip install -r requirements-dev.txt
+```
 - **ERP Systems:** The application integrates with the Entersoft ERP database by default. If you are using a different ERP system, consider modifying the SQL queries in the code to match your requirements.
 - **Customization:** You can customize the default wallpapers by replacing the input files in the `in/` folder. Ensure that the file naming follows the conventions outlined above.
 - **Photoshop Files:** Editable Photoshop files are included in the `Photoshop` folder. Feel free to open them and make any additional changes for enhanced customization.
