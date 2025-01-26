@@ -23,3 +23,7 @@ setuptools==68.0.0
 dash~=2.11.1
 plotly==5.16.0
 Flask==2.3.2
+pytube~=15.0.0
+python-dotenv~=1.0.1
+pygame~=2.6.1
+colorama~=0.4.6
