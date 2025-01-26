@@ -62,10 +62,22 @@ Here are the types of images you can expect in the output folder (`roll/`):
 
 ---
 
+#### Example How Your Wallpaper Look Like
+Here is a short Video representing the look and feel of your Wallpaper:
+
+
+
+https://github.com/user-attachments/assets/64ae8612-7972-4f12-8d33-70b6243996ed
+
+
+---
+
 ### Additional Notes
 
 - **Compatibility:** Works seamlessly with OneDrive for folder structure. Ensure your OneDrive is properly configured for the folders to sync.
+- **ERP:** Wallpaper Returns Data From Entersoft ERP Database consider replacing SQL Queries in case of different ERP System.
 - **Customization:** Replace the default wallpapers with your own by naming them appropriately as indicated in the folder structure.
+- **Photoshop** Feel Free to Open Files inside Photoshop Folder and Make Your changes there.
 
 ---
 
