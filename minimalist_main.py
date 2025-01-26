@@ -1,19 +1,14 @@
 #  Copyright (c) Ioannis E. Kommas 2022. All Rights Reserved
-import concurrent.futures
 import logging
 import os
 import shutil
 import sys
 import time
-import numpy as np
 import pandas as pd
-from SQL_FOLDER import fetch_data
+from SQL_FOLDER import fetch_data, sql_connect
 from Files import minimalist_write
-from Private import stores_sensitive_info, sql_connect
+from Private import stores_sensitive_info
 from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
-import queue
-import threading
 import pygame
 import signal
 
@@ -35,8 +30,8 @@ def get_input_with_timeout(prompt, timeout, default):
 
 
 refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 60))
-md = get_input_with_timeout("Multiple Data? (y/n): ", 5, "n").lower()
-multiple_data = md == 'y'
+multiple_data = int(get_input_with_timeout("Multiple Data? (1: None) (2:Simple) (3:Full): ", 5, 3))
+
 
 print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
@@ -84,7 +79,7 @@ def delete_all_files_inside_folder(folder: str) -> None:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def run(temp_file, multiple_data, md):
+def run(temp_file, multiple_data):
     # print(refresh_rate, temp_file, flag)
     print(f"\r🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
@@ -99,13 +94,13 @@ def run(temp_file, multiple_data, md):
 
     params = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year - 5, "month": today.month}
-    if md != 'x':
+    if multiple_data in (2, 3):
         df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
     else:
         df_sales_elounda = pd.DataFrame()
     first_q_timer = time.perf_counter()
     print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
-    if multiple_data:
+    if multiple_data == 3:
         df = fetch_data_with_params(SQL_FILES[1], params_2)
         second_q_timer = time.perf_counter()
         df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
@@ -113,7 +108,7 @@ def run(temp_file, multiple_data, md):
         print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
     else:
         df = pd.DataFrame()
-    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, md)
+    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data)
     stop_ = time.perf_counter()
     return start_, stop_
 
@@ -164,7 +159,7 @@ while running:
         if HOST_UP:
             time.sleep(timers.get(file))
 
-            start, stop = run(file, multiple_data, md)
+            start, stop = run(file, multiple_data)
             sleep_t = (refresh_rate - round(stop - start) if refresh_rate - round(stop - start) > 0 else 0)
             timers[file] = sleep_t
 
@@ -174,7 +169,7 @@ while running:
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
                 end="", )
             play_sound(SOUND_B)
-            if md == 'x':
+            if multiple_data == 1:
                 raise KeyboardInterrupt
 
         else:
