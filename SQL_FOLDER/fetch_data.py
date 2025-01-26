@@ -4,8 +4,7 @@ import os
 from sqlalchemy import text
 import pandas as pd
 import logging
-from Private import sql_connect
-from sqlalchemy.exc import OperationalError
+from SQL_FOLDER import sql_connect
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.width", 1000)
