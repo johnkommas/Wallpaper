@@ -118,15 +118,12 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
         image_editable.text((x, 400), year, custom_color, font=title_font_year)
         x += 660
         check_year += 1
-    image_editable.text(
-        (10100, 6300),
-        time,
-        custom_color,
-        font=timestamp_font_parse,
-    )
+
+    # write timestamp refreshed data
+    image_editable.text((10100, 6300), time, custom_color, font=timestamp_font_parse)
 
 
-def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, md):
+def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     start = ctime.perf_counter()
 
     # SETUP FONTS
@@ -161,7 +158,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, md):
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
     # WRITING YEARS
     counter = 0
-    if md != 'x':
+    if multiple_data in (2, 3):
         # LIST DATA
         data = list(df.TurnOver.values)
         df_years = list(df.YEAR.values)
@@ -192,7 +189,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, md):
 
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
-    if multiple_data:
+    if multiple_data == 3:
         for i in range(1, 4):
             plot.run_daily_smooth(
                 plot_df,
