@@ -1,3 +1,7 @@
+<p align="center">
+<img src="docs/img/logo.png" width="800"/>
+</p>
+
 # Wallpaper - Realtime Data Integration from Your ERP
 
 This repository allows you to integrate real-time data directly from your ERP system into wallpaper images. By following the steps below, you can set up and customize the wallpapers to fit your needs. 
