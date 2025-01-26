@@ -7,10 +7,14 @@ import time
 import pandas as pd
 from SQL_FOLDER import fetch_data, sql_connect
 from Files import minimalist_write
-from Private import stores_sensitive_info
 from datetime import datetime
 import pygame
 import signal
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
 
 
 def timeout_handler(signum, frame):
@@ -36,7 +40,7 @@ multiple_data = int(get_input_with_timeout("Multiple Data? (1: None) (2:Simple) 
 print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
 
-OneDrive = stores_sensitive_info.OneDrivePath
+OneDrive = os.getenv('ONEDRIVE')
 path = f"{OneDrive}/Pictures/Wallpaper/in"
 path_2 = f"{OneDrive}/Pictures/Wallpaper/roll"
 path_3 = f"{OneDrive}/Pictures/Wallpaper/in/OFFLINE"
@@ -150,7 +154,7 @@ while running:
     HOST_UP = (
         True
         if os.system(
-            f"ping -c 1  {stores_sensitive_info.ip.get('EM ROUTER')} >/dev/null"
+            f"ping -c 1  {os.getenv('IP_EM_ROUTER')} >/dev/null"
         )
            == 0
         else False
