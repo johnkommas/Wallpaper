@@ -1,15 +1,11 @@
 #  Copyright (c) Ioannis E. Kommas 2022. All Rights Reserved
-import calendar
 import time as ctime
 import os
 import shutil
-from Files import plot, schedule_my_calendar
+from Files import plot
 from PIL import Image, ImageFont, ImageDraw
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from Private import stores_sensitive_info as ssi
-import pandas as pd
-from io import BytesIO
 
 
 def offline(emoji, path, offline_path, word):
