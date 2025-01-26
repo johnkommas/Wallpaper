@@ -331,9 +331,6 @@ Here is an example of the types of images generated and saved in the `roll/` fol
     └── in/OFFLINE/
 ```
 
-![Folder Structure Example](https://github.com/user-attachments/assets/example-folder-diagram.png)
-
----
 
 Here is a short video showcasing the dynamic look and feel of the processed wallpapers:
 
