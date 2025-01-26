@@ -2,8 +2,7 @@
 
 # Make the Connection
 import pyodbc
-from Private.stores_sensitive_info import ip
-from subprocess import call, check_output
+from subprocess import call
 import time
 import socket
 from sqlalchemy.engine import URL
@@ -40,12 +39,12 @@ def connect():
 
 
 def open_vpn(sql_counter):
-    EM_mode = os.system(f"ping -c 1  {ip.get('EM')} >/dev/null")
+    EM_mode = os.system(f"ping -c 1  {os.getenv('IP_EM')} >/dev/null")
     if EM_mode == 0:
         print("\r🟢: (SQL) Elounda Market is UP, Trying to get VPN UP...", end='')
         call(["scutil", "--nc", "start", os.getenv('VPN_NAME'), '--secret', os.getenv('VPN_PWD')])
         time.sleep(5)
-        Server_mode = os.system(f"ping -c 1  {ip.get('EM ROUTER')} >/dev/null")
+        Server_mode = os.system(f"ping -c 1  {os.getenv('IP_EM_ROUTER')} >/dev/null")
         if Server_mode == 0:
             print("\r🟢: (SQL) VPN IS UP", end='')
             return connect()
