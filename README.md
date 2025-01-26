@@ -112,7 +112,7 @@ To ensure the application operates correctly, you need to configure a `.env` fil
 
 ### **Sample .env File Structure**
 
-Below is how your `.env` file should look (use descriptive placeholders instead of sensitive information):
+Below is how your `.env` file should look (here i use descriptive placeholders instead of sensitive information):
 
 ```dotenv
 SQL_SERVER=<sql_server_ip_or_hostname>
@@ -145,7 +145,6 @@ IP_EM_ROUTER=<router_ip>
 
 ---
 
-By properly setting these variables, you ensure the application has access to the necessary resources, such as the database, VPN connection, and file system pathways. Let me know if you have any questions about the configuration!
 
 3. **Replace Placeholders**:  
    - Replace `your_database_user`, `your_database_password`, etc., with the correct credentials and connection details required for your ERP system.
