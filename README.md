@@ -269,6 +269,24 @@ IP_EM_ROUTER=<router_ip>
    - Locate the key named **`Interval`**.  
    - Double-click `Interval` and set its value to **5000** (milliseconds for a 5-second interval).  
    - Click **OK** to save the changes.  
+
+### 4.2 Setting Rolling Wallpapers on macOS
+
+1. **Open "System Preferences":**  
+   - Navigate to **"System Preferences > Desktop & Screen Saver"**.
+
+2. **Select the `roll/` Folder as the Source:**  
+   - Click the "+" button to add a folder.
+   - Locate and select your `roll/` folder, which should contain the dynamically generated wallpapers.
+
+3. **Enable Wallpaper Slideshow:**  
+   - Choose the folder and enable **"Change Picture"** to create a slideshow.
+   - Set the change interval to any value (e.g., 5 seconds).
+
+4. **Apply Changes:**  
+   - Your desktop wallpapers will now rotate based on the order in the selected folder.
+
+
 ---
 
 ## Troubleshooting
@@ -290,29 +308,6 @@ IP_EM_ROUTER=<router_ip>
   - Ensure the folder has been selected in the **Desktop & Screen Saver** settings.
 ---
 
-
-### 4.2 Setting Rolling Wallpapers on macOS
-   - Locate **Windows Explorer** in the list of processes.  
-   - Right-click **Windows Explorer** and select **Restart**.  
-
-4. **Verify the Change:**  
-   - Your desktop backgrounds should now change every 5 seconds using the images in the `roll/` folder.  
-
-### 4.2 Setting Rolling Wallpapers on macOS
-
-1. **Open "System Preferences":**  
-   - Navigate to **"System Preferences > Desktop & Screen Saver"**.
-
-2. **Select the `roll/` Folder as the Source:**  
-   - Click the "+" button to add a folder.
-   - Locate and select your `roll/` folder, which should contain the dynamically generated wallpapers.
-
-3. **Enable Wallpaper Slideshow:**  
-   - Choose the folder and enable **"Change Picture"** to create a slideshow.
-   - Set the change interval to any value (e.g., 5 seconds).
-
-4. **Apply Changes:**  
-   - Your desktop wallpapers will now rotate based on the order in the selected folder.
 
 #### Example Output Images
 Here is an example of the types of images generated and saved in the `roll/` folder:
