@@ -1,6 +1,6 @@
-<p align="center">
-<img src="docs/img/logo.png" width="800"/>
-</p>
+
+![logo](https://github.com/user-attachments/assets/69f4f1d9-43ea-454e-b560-f9b245d26767)
+
 
 # Wallpaper - Realtime Data Integration from Your ERP
 
