@@ -1,6 +1,15 @@
 
 ![logo](https://github.com/user-attachments/assets/69f4f1d9-43ea-454e-b560-f9b245d26767)
 
+[![MIT licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](LICENSE)
+[![GitHub code size in bytes](https://img.shields.io/github/repo-size/johnkommas/Wallpaper?style=for-the-badge)](CODE_SIZE)
+![GitHub repo file count](https://img.shields.io/github/directory-file-count/johnkommas/Wallpaper?style=for-the-badge)
+[![GitHub forks](https://img.shields.io/github/forks/johnkommas/Wallpaper?style=for-the-badge)](FORKS)
+[![GitHub issues](https://img.shields.io/github/issues/johnkommas/Wallpaper?style=for-the-badge)](ISSUES)
+[![GitHub last commit](https://img.shields.io/github/last-commit/johnkommas/Wallpaper?style=for-the-badge)](COMMIT)
+[![GitHub language count](https://img.shields.io/github/languages/count/johnkommas/Wallpaper?style=for-the-badge)](LANGUAGES)
+[![GitHub top language](https://img.shields.io/github/languages/top/johnkommas/Wallpaper?style=for-the-badge)](lang)
+[![Discord](https://img.shields.io/discord/583993547792056321?style=for-the-badge)](https://discord.gg/PJAT7XNshB)
 
 # Wallpaper - Realtime Data Integration from Your ERP
 
