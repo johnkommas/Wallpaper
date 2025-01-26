@@ -1,0 +1,1 @@
+Photoshop Files: Editable Photoshop files are included in the Photoshop folder. Feel free to open them and make any additional changes for enhanced customization.s
