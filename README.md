@@ -49,6 +49,8 @@ Implementing the Wallpaper solution can lead to significant improvements in your
   
 - **Increased Employee Engagement**: Customizable wallpapers that reflect departmental goals foster a sense of ownership and accountability among team members.
 
+- **Cost Efficiency**: Reduces reliance on expensive BI tools and minimizes manual reporting efforts, saving both time and resources.
+
 ---
 
 ## 🚀 Quick Start
@@ -147,7 +149,7 @@ This project is **MIT Licensed** – free to use, modify, and distribute. See [L
 
 **John Kommas**  
 📧 [johnkommas@gmail.com](mailto:johnkommas@gmail.com)  
-💼 [LinkedIn](https://linkedin.com/in/johnkommas)  
+💼 [LinkedIn](https://www.linkedin.com/in/ioannis-e-kommas-6a8004a6/)  
 
 ---
 
