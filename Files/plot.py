@@ -9,7 +9,7 @@ from wordcloud import WordCloud, ImageColorGenerator
 from scipy.ndimage import gaussian_gradient_magnitude
 from matplotlib import font_manager
 from scipy.ndimage.filters import gaussian_filter1d
-
+from mikrotik import app
 
 def run_daily(all_years, specific_day, path_a, path_b):
     year = specific_day.year
@@ -90,7 +90,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
     glue_images_2(path_a, path_b)
 
 
-def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, color_c, loop_counter):
+def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, pie_df, color_a, color_b, color_c, loop_counter):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -174,6 +174,28 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, color_a, color_b, 
     plt.savefig(img_file, transparent=True)
     plt.close()
     glue_images_smooth(path_a, path_b)
+
+    #RUN MIKROTIK
+    if loop_counter == 1:
+        app.plot_run(pie_df, pie_path, color_a)
+    elif loop_counter == 2:
+        app.plot_run(pie_df, pie_path, color_b)
+    else:
+        app.plot_run(pie_df, pie_path, color_b)
+    glue_images_for_pie(pie_path, path_b)
+
+
+def glue_images_for_pie(path_a, path_b):
+    img_file = f"{path_a}"
+    my_image = Image.open(f"{path_b}")
+    overlay = Image.open(img_file)
+    width, height = overlay.size
+    # print(width, height)
+    overlay = overlay.resize((width // 2, height // 2 ))
+    my_image.paste(overlay, (9500, 50), mask=overlay)
+    # image_editable = ImageDraw.Draw(my_image)
+    my_image.save(f"{path_b}")
+
 
 
 def glue_images_2(path_a, path_b):
