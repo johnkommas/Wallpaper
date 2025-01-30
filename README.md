@@ -5,12 +5,26 @@
 ![logo](https://github.com/user-attachments/assets/69f4f1d9-43ea-454e-b560-f9b245d26767)
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](LICENSE)
-[![GitHub code size in bytes](https://img.shields.io/github/repo-size/johnkommas/Wallpaper?style=for-the-badge)](CODE_SIZE)
+[![GitHub code size in bytes](https://img.shields.io/github/repo-size/johnkommas/Wallpaper?style=for-the-badge)](https://github.com/johnkommas/Wallpaper)
 ![GitHub repo file count](https://img.shields.io/github/directory-file-count/johnkommas/Wallpaper?style=for-the-badge)
 [![GitHub last commit](https://img.shields.io/github/last-commit/johnkommas/Wallpaper?style=for-the-badge)](COMMIT)
 [![GitHub language count](https://img.shields.io/github/languages/count/johnkommas/Wallpaper?style=for-the-badge)](LANGUAGES)
 [![GitHub top language](https://img.shields.io/github/languages/top/johnkommas/Wallpaper?style=for-the-badge)](lang)
 [![Discord](https://img.shields.io/discord/583993547792056321?style=for-the-badge)](https://discord.gg/PJAT7XNshB)
+
+## 📚 Table of Contents
+- [Overview](#-overview)
+- [Demo Video](#-demo-video)
+- [Business Impact](#-business-impact)
+- [Quick Start](#-quick-start)
+- [Key Features](#-key-features)
+- [Setting Up Rolling Wallpapers](#-setting-up-rolling-wallpapers)
+- [Troubleshooting](#-troubleshooting)
+- [License](#-license)
+- [Maintainers](#-maintainers)
+- [Contributing](#-contributing)
+
+---
 
 ## 📌 Overview
 
@@ -69,6 +83,7 @@ SQL_PWD=your_password
 DATABASE=your_database
 ONEDRIVE=your_onedrive_path
 ```
+**Note**: Don’t commit your .env to version control for security reasons.
 
 ### 3️⃣ Setup Folder Structure
 Ensure you have the following folders in **OneDrive**:
@@ -145,6 +160,8 @@ print("Connected Successfully!")
 ## 📜 License
 This project is **MIT Licensed** – free to use, modify, and distribute. See [LICENSE](LICENSE) for details.
 
+---
+
 ## 👥 Maintainers
 
 **John Kommas**  
@@ -153,5 +170,10 @@ This project is **MIT Licensed** – free to use, modify, and distribute. See [L
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit a Pull Request or open an Issue to discuss improvements or report bugs.
+
+---
 💡 **Like this project?** ⭐ Star it on GitHub and spread the word!
 
