@@ -119,11 +119,7 @@ def extend_df_with_columns(df):
 
     return df
 
-
-
-
-# Ανάκτηση email με το συγκεκριμένο θέμα
-def retrieve_mikrotik_emails(_mail, label):
+def retrieve_mikrotik_emails(_mail, label, counter_file="counter.txt"):
     try:
         # Επιλογή φακέλου
         status, messages = _mail.select(label)
@@ -132,16 +128,35 @@ def retrieve_mikrotik_emails(_mail, label):
                 f"Failed to select folder/label '{label}'. Please ensure it exists."
             )
 
-        # Αναζητούμε emails με το κατάλληλο θέμα
+        # Ανάγνωση ή δημιουργία του αρχείου counter.txt
+        if not os.path.exists(counter_file):
+            # Αν το αρχείο δεν υπάρχει, το δημιουργούμε με αρχική τιμή "0"
+            with open(counter_file, "w") as f:
+                f.write("0")
+            last_read_email_count = 0
+        else:
+            # Αν το αρχείο υπάρχει, διαβάζουμε την τελευταία καταμέτρηση
+            with open(counter_file, "r") as f:
+                last_read_email_count = int(f.read().strip())
+
+        # Αναζήτηση όλων των emails με το κατάλληλο θέμα
         status, messages = _mail.search(None, '(SUBJECT "MikroTik Alert:")')
         if status != "OK":
             raise RuntimeError("Failed to execute SEARCH command.")
 
         email_ids = messages[0].split()
+        total_emails = len(email_ids)
+
+        # Αν δεν υπάρχουν νέα emails
+        if last_read_email_count >= total_emails:
+            print("No new emails to process.")
+            return None  # Καμία νέα εγγραφή
+
+        # Λίστα για την αποθήκευση δεδομένων email
         email_data = []
 
-        for email_id in email_ids:
-
+        # Επεξεργασία μόνο των νέων emails
+        for email_id in tqdm(email_ids[last_read_email_count:]):
             # Ανάγνωση email
             status, msg_data = _mail.fetch(email_id, "(RFC822)")
             for response_part in msg_data:
@@ -162,8 +177,8 @@ def retrieve_mikrotik_emails(_mail, label):
                             content_disposition = str(part.get("Content-Disposition"))
 
                             if (
-                                    content_type == "text/plain"
-                                    and "attachment" not in content_disposition
+                                content_type == "text/plain"
+                                and "attachment" not in content_disposition
                             ):
                                 # Απόκτηση του περιεχομένου και ασφαλής αποκωδικοποίηση
                                 body = decode_safe(part.get_payload(decode=True))
@@ -175,38 +190,68 @@ def retrieve_mikrotik_emails(_mail, label):
                     # Προσθήκη στη λίστα δεδομένων
                     email_data.append({"Subject": subject, "From": from_, "Body": body})
 
-        # Μετατροπή σε pandas DataFrame
-        df = pd.DataFrame(email_data)
-        return df
+        # Μετατροπή δεδομένων σε pandas DataFrame
+        new_df = pd.DataFrame(email_data)
 
-    except ValueError as e:
-        print(f"Error: {e}")
-        return None
+        # Ενημέρωση του αρχείου καταμέτρησης emails
+        with open(counter_file, "w") as f:
+            f.write(str(total_emails))
+
+        return new_df  # Επιστροφή του DataFrame με τα νέα δεδομένα
+
     except Exception as e:
         print(f"Error while fetching emails: {e}")
-        return None
+        return None  # Επιστροφή None σε περίπτωση σφάλματος
 
 
-def run():
+def run(csv_file="emails_data.csv"):
     # Σύνδεση στο Gmail
     mail = connect_to_gmail()
-    df = pd.DataFrame()
     if mail:
-        # Ανάκτηση δεδομένων
-        df = retrieve_mikrotik_emails(
-            mail, label="MIKROTIK"
-        )  # Χρησιμοποιήστε το 'INBOX' ή το κατάλληλο label
+        # Ελέγχουμε για νέα emails
+        new_emails_df = retrieve_mikrotik_emails(mail, label="MIKROTIK")  # Χρησιμοποιήστε το 'INBOX' ή το κατάλληλο label
         mail.logout()
 
-        # Εμφάνιση δεδομένων
-        if df is not None:
-            df = extend_df_with_columns(df)
-            return df
+        if new_emails_df is not None:
+            print("New emails fetched. Processing...")
+
+            # Επεξεργασία δεδομένων
+            new_emails_df = extend_df_with_columns(new_emails_df)
+
+            if os.path.exists(csv_file):
+                print(f"CSV file {csv_file} exists. Appending data...")
+                # Διαβάζουμε τα υπάρχοντα δεδομένα
+                try:
+                    existing_df = pd.read_csv(csv_file)
+                    # Συγχώνευση χωρίς διπλότυπα
+                    combined_df = (
+                        pd.concat([existing_df, new_emails_df])
+                        .drop_duplicates()
+                        .reset_index(drop=True)
+                    )
+                except Exception as e:
+                    combined_df = new_emails_df
+
+            else:
+                print(f"CSV file {csv_file} does not exist. Creating...")
+                combined_df = new_emails_df
+
+            # Αποθήκευση συγχωνευμένου DataFrame στο CSV
+            combined_df.to_csv(csv_file, index=False)
+            return combined_df
+
         else:
-            print("No valid emails found.")
+            print("No new emails. Loading data from CSV...")
+            # Δεν υπάρχουν νέα emails, διαβάζουμε από το CSV (αν υπάρχει)
+            if os.path.exists(csv_file):
+                return pd.read_csv(csv_file)
+            else:
+                print(f"CSV file {csv_file} does not exist. Returning empty DataFrame.")
+                return pd.DataFrame()
 
 
 def plot_run(df, path, color):
     data_analysis.visualize_api_hackers_ports_pie(df, path_a=path, color=color)
+
 
 
