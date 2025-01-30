@@ -6,6 +6,7 @@ from Files import plot
 from PIL import Image, ImageFont, ImageDraw
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
+from mikrotik import app
 
 
 def offline(emoji, path, offline_path, word):
@@ -186,12 +187,16 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
     if multiple_data == 3:
+        pie_path =  f"{path}/pie.png"
+        pie_df = app.run()
         for i in range(1, 4):
             plot.run_daily_smooth(
                 plot_df,
                 specific_day=specific_date,
                 path_a=f"{path}/graph.png",
                 path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+                pie_path = pie_path,
+                pie_df = pie_df,
                 color_a=color_pallete_a,
                 color_b=color_pallete_b,
                 color_c=color_pallete_c,
