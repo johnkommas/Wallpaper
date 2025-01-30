@@ -33,7 +33,7 @@ def get_input_with_timeout(prompt, timeout, default):
         signal.alarm(0)  # Disable alarm
 
 
-refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 60))
+refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 120))
 multiple_data = int(get_input_with_timeout("Multiple Data? (1: None) (2:Simple) (3:Full): ", 5, 3))
 
 
@@ -179,7 +179,7 @@ while running:
         else:
             play_sound(SOUND_A)
             # wp_logger.error("VPN OFFLINE")
-            minimalist_write.offline(path, path_2, path_3, "VPN OFFLINE")
+            # minimalist_write.offline(path, path_2, path_3, "VPN OFFLINE")
             sql_connect.open_vpn(failed)
             failed += 1
             print(
