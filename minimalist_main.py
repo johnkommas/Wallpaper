@@ -178,7 +178,7 @@ while running:
 
         else:
             play_sound(SOUND_A)
-            wp_logger.error("VPN OFFLINE")
+            # wp_logger.error("VPN OFFLINE")
             minimalist_write.offline(path, path_2, path_3, "VPN OFFLINE")
             sql_connect.open_vpn(failed)
             failed += 1
