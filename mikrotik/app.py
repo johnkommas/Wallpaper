@@ -41,10 +41,10 @@ def connect_to_gmail():
         # print("Connected")
         return mail
     except imaplib.IMAP4.error as e:
-        print(f"Failed to connect: {e}")
+        print(f"Failed to connect: {e}", end="")
         return None
     except ValueError as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}", end="")
         return None
 
 
@@ -119,6 +119,7 @@ def extend_df_with_columns(df):
 
     return df
 
+
 def retrieve_mikrotik_emails(_mail, label, counter_file="counter.txt"):
     try:
         # Επιλογή φακέλου
@@ -149,7 +150,7 @@ def retrieve_mikrotik_emails(_mail, label, counter_file="counter.txt"):
 
         # Αν δεν υπάρχουν νέα emails
         if last_read_email_count >= total_emails:
-            print("No new emails to process.")
+            print("No new emails to process.", end="")
             return None  # Καμία νέα εγγραφή
 
         # Λίστα για την αποθήκευση δεδομένων email
@@ -200,7 +201,7 @@ def retrieve_mikrotik_emails(_mail, label, counter_file="counter.txt"):
         return new_df  # Επιστροφή του DataFrame με τα νέα δεδομένα
 
     except Exception as e:
-        print(f"Error while fetching emails: {e}")
+        print(f"Error while fetching emails: {e}", end="")
         return None  # Επιστροφή None σε περίπτωση σφάλματος
 
 
@@ -213,13 +214,13 @@ def run(csv_file="emails_data.csv"):
         mail.logout()
 
         if new_emails_df is not None:
-            print("New emails fetched. Processing...")
+            print("New emails fetched. Processing...", end="")
 
             # Επεξεργασία δεδομένων
             new_emails_df = extend_df_with_columns(new_emails_df)
 
             if os.path.exists(csv_file):
-                print(f"CSV file {csv_file} exists. Appending data...")
+                print(f"CSV file {csv_file} exists. Appending data...", end="")
                 # Διαβάζουμε τα υπάρχοντα δεδομένα
                 try:
                     existing_df = pd.read_csv(csv_file)
@@ -233,7 +234,7 @@ def run(csv_file="emails_data.csv"):
                     combined_df = new_emails_df
 
             else:
-                print(f"CSV file {csv_file} does not exist. Creating...")
+                print(f"CSV file {csv_file} does not exist. Creating...", end="")
                 combined_df = new_emails_df
 
             # Αποθήκευση συγχωνευμένου DataFrame στο CSV
@@ -241,12 +242,12 @@ def run(csv_file="emails_data.csv"):
             return combined_df
 
         else:
-            print("No new emails. Loading data from CSV...")
+            print("No new emails. Loading data from CSV...", end="")
             # Δεν υπάρχουν νέα emails, διαβάζουμε από το CSV (αν υπάρχει)
             if os.path.exists(csv_file):
                 return pd.read_csv(csv_file)
             else:
-                print(f"CSV file {csv_file} does not exist. Returning empty DataFrame.")
+                print(f"CSV file {csv_file} does not exist. Returning empty DataFrame.", end="")
                 return pd.DataFrame()
 
 
