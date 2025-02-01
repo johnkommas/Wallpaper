@@ -2,13 +2,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+from matplotlib.font_manager import FontProperties
+import matplotlib.colors as mcolors  # For brightness calculation
 
 
-def time_series_analysis(df):
+def time_series_analysis(df, path_a, loop_counter):
     """
     Δημιουργεί ένα Time Series Analysis για τη συχνότητα επιθέσεων ανά ώρα.
     Εξάγουμε ένα διάγραμμα τύπου line όπου εμφανίζεται η δραστηριότητα στον χρόνο.
     """
+    # SETUP COLORS
+    color = ["#778DA9", "#0D1B2A", "#778DA9", "#D7C9AA",]
+
+
     # Συνδυασμός ημερομηνίας και ώρας για δημιουργία πλήρους timestamp
     df["Timestamp"] = pd.to_datetime(
         df["Date"] + " " + df["Time"], format="%Y.%d.%m %H:%M:%S"
@@ -18,14 +24,31 @@ def time_series_analysis(df):
     attack_counts = df.resample("H", on="Timestamp").size()
 
     # Γράφημα χρονοσειράς
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(17, 6), dpi=300, facecolor="#1a376e")
     attack_counts.plot(
-        kind="line", marker="o", color="blue", title="Frequency of Attacks Over Time"
+        kind="line",
+        marker="o",
+        color=color[1],
+        title=f"{len(df)} Attacks Over Time "
     )
-    plt.xlabel("Time")
-    plt.ylabel("Number of Attacks")
-    plt.grid()
-    plt.show()
+    # plt.xlabel("Time", fontsize=12, color=color_pallete_b)  # Προσαρμογή στα labels
+    # plt.ylabel("Number of Attacks", fontsize=12, color=color_pallete_b)
+
+    # Αφαίρεση περιγράμματος (box off)
+    ax = plt.gca()  # Λήψη του τρέχοντος άξονα
+    ax.spines["top"].set_visible(False)  # Αφαίρεση κορυφής
+    ax.spines["right"].set_visible(False)  # Αφαίρεση δεξιού περιγράμματος
+    ax.spines["left"].set_visible(False)  # Αφαίρεση αριστερού περιγράμματος
+    ax.spines["bottom"].set_visible(False)  # Αφαίρεση κάτω περιγράμματος
+
+    # Αφαίρεση ticks (Κλίμακα στο διάγραμμα)
+    ax.tick_params(left=False, bottom=False)  # Απενεργοποίηση ticks
+
+    # Αποθήκευση γραφήματος χωρίς grid
+    plt.tight_layout()  # Εξασφαλίζει σωστή διαμόρφωση στοιχείων
+    plt.savefig(path_a, transparent=True, dpi=300)
+    plt.close()
+
 
     return attack_counts
 
@@ -386,7 +409,7 @@ def visualize_api_ip_port_grouped(df, top_n=5):
     - Πλήθος μοναδικών IPs
     - Πλήθος διαφορετικών Ports.
     """
-    import numpy as np
+
 
     # Υπολογισμός Unique IPs και Unique Ports για κάθε API
     api_ips = (
@@ -440,8 +463,7 @@ def visualize_api_hackers_ports(df, top_n=5, path_a="./hacker_analysis_donut.png
     Visualize Number of Hackers (Unique IP Count) using a Donut Chart.
     The slice with the highest value is highlighted, and percentages are displayed.
     """
-    import matplotlib.pyplot as plt
-    from matplotlib.font_manager import FontProperties
+
 
     # Color Palette Setup
     color_pallete_a = "#0D1B2A"  # Dark Blue (Main colors for slices)
@@ -473,7 +495,7 @@ def visualize_api_hackers_ports(df, top_n=5, path_a="./hacker_analysis_donut.png
         figsize=(8, 8), dpi=450, facecolor="#FFFFFF"
     )  # White background for clarity
     with plt.rc_context(
-        {"text.color": "#000000"}
+            {"text.color": "#000000"}
     ):  # Ensure text is readable (black color)
         wedges, texts, autotexts = plt.pie(
             hacker_counts,
@@ -507,8 +529,7 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
     Adds a small gap between pies, highlights the slice with the highest value, makes it transparent,
     and includes bigger, bold text for API names and percentages.
     """
-    import matplotlib.pyplot as plt
-    from matplotlib.font_manager import FontProperties
+
 
     # Color Palette Setup
     color_pallete_a = "#0D1B2A"  # Dark Blue (Main colors for slices)
@@ -531,8 +552,8 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
     # Determine colors: Highlight the API with the highest count
 
     colors = [
-    color if count == max(hacker_counts) else color_pallete_a
-    for count in hacker_counts
+        color if count == max(hacker_counts) else color_pallete_a
+        for count in hacker_counts
     ]
 
     # Set small gap (explode) between slices
@@ -606,4 +627,85 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
         plt.tight_layout()
         plt.savefig(path_a, transparent=True, dpi=450)  # Transparency added to output
         plt.close()
+
+
+def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
+    """
+    Visualize Number of Hackers (Unique IP Count) using a Donut Chart.
+    Percent values follow the donut's curve with automatically calculated font colors for better visibility.
+    """
+
+    # Color Palette Setup
+    color_pallete_a = "#0D1B2A"  # Dark Blue (Main color for slices)
+    highlight_color = "#D7C9AA"  # Light Crème (Highlight color for the highest slice)
+
+
+    # Compute Number of Hackers (Unique IP Count) for each API
+    api_ips = ( df.groupby("Api")["Public IP"].nunique().reset_index(name="Number of Hackers"))
+    sorted_data = api_ips.sort_values(by="Number of Hackers", ascending=False).head(top_n)
+
+    # Data for Chart
+    labels = sorted_data["Api"]
+    hacker_counts = sorted_data["Number of Hackers"]
+
+    # Determine colors: Highlight the API with the highest count
+    colors = [
+        color if count == max(hacker_counts) else color_pallete_a
+        for count in hacker_counts
+    ]
+
+    # Font setup for annotations (bigger and bold)
+    percentage_font_size = 18  # Adjusted for better visibility
+    label_font_size = 18  # Label size adjusted for better alignment
+    labels = sorted_data["Api"].replace(
+        {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
+    )
+
+    # Figure Setup with Transparency
+    plt.figure(figsize=(8, 8), dpi=450)  # Higher resolution
+
+    # Calculate percentages
+    percentages = (hacker_counts / np.sum(hacker_counts)) * 100
+
+    # Find the index of the largest slice
+    max_index = np.argmax(percentages)
+
+    # Calculate rotation angle for the largest slice to start in the top-right
+    offset = sum(percentages[:max_index]) + percentages[max_index] / 2
+    startangle = 330 - offset  # Rotating to place it in the top-right
+    
+    # Create the donut chart with autopct to display percentages
+    wedges, texts, autotexts = plt.pie(
+        hacker_counts,
+        labels=labels,
+        explode=[0.01] * len(hacker_counts),  # Small gaps
+        colors=colors,
+        startangle=startangle,  # Start from top-center
+        autopct="%1.1f%%",  # Automatically calculate and display percentages
+        textprops={"fontsize": percentage_font_size},  # Font size for labels and percentages
+        pctdistance=0.8,  # Adjust percentage text position closer to the center
+
+    )
+    # Configure the percentage text (inside the slices)
+    for count, autotext in zip(hacker_counts, autotexts):
+        # Larger, bold text for percentage annotation
+        autotext.set_fontsize(percentage_font_size)
+        # autotext.set_fontweight("bold")
+        # Adjust font color
+        if (count == max(hacker_counts)) and (color != "#0D1B2A"):
+            autotext.set_color(color_pallete_a)  # Default for the max slice
+        else:
+            autotext.set_color(
+                highlight_color
+            )  # Light crème for non-max slices
+
+    # Add a colored circle at the center to create a donut effect
+    center_circle = plt.Circle((0, 0), 0.60, fc="#415a77")  # Custom color
+    plt.gca().add_artist(center_circle)
+
+    # Save Image
+    plt.tight_layout()
+    plt.savefig(path_a, transparent=True, dpi=450)  # Save as high-quality image
+    plt.close()
+
 
