@@ -7,6 +7,9 @@ import os
 import re
 from tqdm import tqdm
 from mikrotik import data_analysis
+from routeros_api import connect
+import routeros_api
+import paramiko
 
 # Προβολή όλων των στηλών
 pd.set_option("display.max_columns", None)
@@ -45,6 +48,50 @@ def connect_to_gmail():
         return None
     except ValueError as e:
         print(f"Error: {e}", end="")
+        return None
+
+
+import paramiko
+
+
+def connect_via_ssh():
+    try:
+        # Δημιουργία SSH Client
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # Σύνδεση
+        client.connect(
+            hostname=os.getenv("MIKROTIK_HOST"),
+            username=os.getenv("MIKROTIK_USER"),
+            password=os.getenv("MIKROTIK_PASS"),
+            port=int(os.getenv("MIKROTIK_PORT", 22)),  # Προεπιλογή port: 22
+        )
+        print("Connected via SSH successfully.")
+
+        # Εκτέλεση εντολής για ενεργές PPP συνδέσεις (VPN)
+        print("\nFetching active PPP connections:")
+        stdin, stdout, stderr = client.exec_command("/ppp active print terse")
+        ppp_output = stdout.read().decode("utf-8")
+        print(ppp_output)
+
+        # Εκτέλεση εντολής για ενεργές IPsec peers
+        # print("\nFetching active IPsec peers:")
+        # stdin, stdout, stderr = client.exec_command("/ip ipsec active-peers print terse")
+        # ipsec_output = stdout.read().decode("utf-8")
+        # print(ipsec_output)
+
+        # Κλείσιμο σύνδεσης
+        client.close()
+
+        # Επιστροφή δεδομένων (αν απαιτείται για περαιτέρω επεξεργασία)
+        # return {
+        #     "ppp_active": ppp_output,
+        #     "ipsec_active_peers": ipsec_output,
+        # }
+
+    except Exception as e:
+        print(f"Error connecting via SSH: {e}")
         return None
 
 
@@ -251,8 +298,8 @@ def run(csv_file="emails_data.csv"):
                 return pd.DataFrame()
 
 
-def plot_run(df, path, color):
-    data_analysis.visualize_api_hackers_ports_pie(df, path_a=path, color=color)
-
+def plot_run(df, path, line_path, color, loop_counter):
+    data_analysis.visualize_api_hackers_ports_donut(df, path_a=path, color=color)
+    data_analysis.time_series_analysis(df,path_a=line_path, loop_counter=loop_counter)
 
 
