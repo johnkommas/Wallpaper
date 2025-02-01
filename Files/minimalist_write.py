@@ -188,6 +188,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
     if multiple_data == 3:
         pie_path =  f"{path}/pie.png"
+        line_path = f"{path}/line.png"
         pie_df = app.run()
         for i in range(1, 4):
             plot.run_daily_smooth(
@@ -196,6 +197,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
                 path_a=f"{path}/graph.png",
                 path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
                 pie_path = pie_path,
+                line_path=line_path,
                 pie_df = pie_df,
                 color_a=color_pallete_a,
                 color_b=color_pallete_b,
