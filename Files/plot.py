@@ -90,7 +90,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
     glue_images_2(path_a, path_b)
 
 
-def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, pie_df, color_a, color_b, color_c, loop_counter):
+def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, line_path, pie_df, color_a, color_b, color_c, loop_counter):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -150,8 +150,9 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, pie_df, 
         colors = [color_a if i > currnet_max else color_a for i in Y]
 
     plt.bar(X, Y, alpha=0.9, color=colors)
+    line_color = ["#778DA9", "#0D1B2A", "#778DA9", "#D7C9AA",]
     ysmoothed = gaussian_filter1d(Y_all, sigma=2)
-    plt.plot(X, ysmoothed if loop_counter in (1, 3) else Y_all, alpha=0.9, color=color_a if loop_counter in (1, 3) else color_c)
+    plt.plot(X, ysmoothed if loop_counter in (1, 3) else Y_all, alpha=0.9, color=line_color[1])
     for a, b in zip(X, Y):
         label = f"{b}€" if b > 0 else ""
         # this method is called for each point
@@ -177,12 +178,25 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, pie_df, 
 
     #RUN MIKROTIK
     if loop_counter == 1:
-        app.plot_run(pie_df, pie_path, color_a)
+        app.plot_run(pie_df, pie_path, line_path, color_a, loop_counter)
     elif loop_counter == 2:
-        app.plot_run(pie_df, pie_path, color_b)
+        app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
     else:
-        app.plot_run(pie_df, pie_path, color_b)
+        app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
     glue_images_for_pie(pie_path, path_b)
+    glue_images_for_line(line_path, path_b)
+
+
+def glue_images_for_line(path_a, path_b):
+    img_file = f"{path_a}"
+    my_image = Image.open(f"{path_b}")
+    overlay = Image.open(img_file)
+    width, height = overlay.size
+    # print(width, height)
+    overlay = overlay.resize((width , height ))
+    my_image.paste(overlay, (4500, 300), mask=overlay)
+    # image_editable = ImageDraw.Draw(my_image)
+    my_image.save(f"{path_b}")
 
 
 def glue_images_for_pie(path_a, path_b):
