@@ -5,6 +5,8 @@ import shutil
 import sys
 import time
 import pandas as pd
+
+from Private import stores_sensitive_info
 from SQL_FOLDER import fetch_data, sql_connect
 from Files import minimalist_write
 from datetime import datetime
@@ -34,7 +36,7 @@ def get_input_with_timeout(prompt, timeout, default):
 
 
 refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 120))
-multiple_data = int(get_input_with_timeout("Multiple Data? (1: None) (2:Simple) (3:Full): ", 5, 3))
+multiple_data = int(get_input_with_timeout("Multiple Data? (0: Mikrotik) (1: None) (2:Simple) (3:Full): ", 5, 3))
 
 
 print(f"Refresh rate: {refresh_rate}")
@@ -83,6 +85,30 @@ def delete_all_files_inside_folder(folder: str) -> None:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
+def filter_data(df):
+    """
+    Όταν ένας χρήτης έκανε login δύο φορές και στη συνέχεια έκανε logout από το ένα η τελυταία εγγραφή είναι logout αλλά ο χρήστης είναι ακόμα συνδεδεμένος
+    έτσι αυτό το φίλτρο φτιάχτηκε για να λύσει αυτό το πρόβλημα.
+    :param df:
+    :return:
+    """
+    df["UserID"] = df["UserID"].str.strip()
+    df = df.drop_duplicates(subset=["WSID"], keep="first")
+
+    filtered_df_in = df[df.ID == "ESLOGIN"].groupby("UserID").first().reset_index()
+    logged = filtered_df_in.UserID.to_list()
+
+    filtered_df_out = (
+        df[(df.ID == "ESLOGOUT") & (~(df.UserID.isin(logged)))]
+        .groupby("UserID")
+        .first()
+        .reset_index()
+    )
+
+    df = pd.concat([filtered_df_in, filtered_df_out], ignore_index=True)
+    return df
+
+
 def run(temp_file, multiple_data):
     # print(refresh_rate, temp_file, flag)
     print(f"\r🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
@@ -112,6 +138,32 @@ def run(temp_file, multiple_data):
         print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
     else:
         df = pd.DataFrame()
+
+    #get_online_offline_ users_info
+    # def calc(df):
+    #     if df["DIFF"].total_seconds() < 86400:  # less than one day in seconds
+    #         hours = df["DIFF"].seconds // 3600
+    #         minutes = (df["DIFF"].seconds // 60) % 60
+    #         return f"{hours}h.{minutes}m"
+    #
+    #     elif df["DIFF"].total_seconds() < 172800:  # less than two days in seconds
+    #         return "1Day"
+    #
+    #     else:
+    #         days = df["DIFF"].days
+    #         return f"{days}Days"
+    #
+    # def complete_df(temp_df: pd.DataFrame) -> pd.DataFrame:
+    #     temp_df["COLOR"] = np.where(temp_df["ID"] == "ESLOGOUT", "red", "green")
+    #     temp_df["DIFF"] = today - temp_df["EDate"]
+    #     temp_df["elapsed_time"] = temp_df.apply(lambda row: calc(row), axis=1)
+    #     return temp_df
+    #
+    # elounda_users = tuple(stores_sensitive_info.EM_users)
+    # em_df = fetch_data.get_sql_data(SQL_FILES[10], None, tuple_data=elounda_users)
+    # status_users_elounda = complete_df(em_df)
+    # status_users_elounda = filter_data(status_users_elounda)
+
     minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data)
     stop_ = time.perf_counter()
     return start_, stop_
