@@ -90,7 +90,7 @@ def run_daily(all_years, specific_day, path_a, path_b):
     glue_images_2(path_a, path_b)
 
 
-def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, line_path, pie_df, color_a, color_b, color_c, loop_counter):
+def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c, loop_counter):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -176,7 +176,9 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, line_pat
     plt.close()
     glue_images_smooth(path_a, path_b)
 
-    #RUN MIKROTIK
+
+def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_b, path_b, secured_path):
+    # RUN MIKROTIK
     if loop_counter == 1:
         app.plot_run(pie_df, pie_path, line_path, color_a, loop_counter)
     elif loop_counter == 2:
@@ -185,6 +187,19 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, line_pat
         app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
     glue_images_for_pie(pie_path, path_b)
     # glue_images_for_line(line_path, path_b)
+    glue_images_for_secured(secured_path, path_b)
+
+
+def glue_images_for_secured(path_a, path_b):
+    img_file = f"{path_a}"
+    my_image = Image.open(f"{path_b}")
+    overlay = Image.open(img_file)
+    width, height = overlay.size
+    # print(width, height)
+    overlay = overlay.resize((width , height ))
+    my_image.paste(overlay, (10170, 700), mask=overlay)
+    # image_editable = ImageDraw.Draw(my_image)
+    my_image.save(f"{path_b}")
 
 
 def glue_images_for_line(path_a, path_b):
