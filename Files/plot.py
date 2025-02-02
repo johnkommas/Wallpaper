@@ -177,8 +177,9 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c,
     glue_images_smooth(path_a, path_b)
 
 
-def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_b, path_b, secured_path, secured_path_b):
+def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
     # RUN MIKROTIK
+    path = [0, secured_path, secured_path_b, secured_path_c]
     if loop_counter == 1:
         app.plot_run(pie_df, pie_path, line_path, color_a, loop_counter)
     elif loop_counter == 2:
@@ -187,7 +188,7 @@ def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_
         app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
     glue_images_for_pie(pie_path, path_b)
     # glue_images_for_line(line_path, path_b)
-    glue_images_for_secured(secured_path, path_b) if loop_counter in (1, 2) else glue_images_for_secured(secured_path_b, path_b)
+    glue_images_for_secured(path[loop_counter], path_b)
 
 
 def glue_images_for_secured(path_a, path_b):
@@ -197,7 +198,7 @@ def glue_images_for_secured(path_a, path_b):
     width, height = overlay.size
     # print(width, height)
     overlay = overlay.resize((width , height ))
-    my_image.paste(overlay, (10170, 700), mask=overlay)
+    my_image.paste(overlay, (10120, 700), mask=overlay)
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
 
