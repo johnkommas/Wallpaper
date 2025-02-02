@@ -90,8 +90,8 @@ def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c,
         x_offsets = [y + 660 for y in x_offsets]
 
 
-def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
-                         dates_font_parse, color_pallete_a, color_pallete_b, timestamp_font_parse, time, counter):
+def write_years_and_days(dataframe, image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
+                         dates_font_parse, number_font_parse, color_pallete_a, color_pallete_b, timestamp_font_parse, time, counter):
     years = [str(i) for i in df_years]
     x = 500
     check_year = specific_date.year - 5
@@ -118,6 +118,29 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
 
     # write timestamp refreshed data
     image_editable.text((10100, 6300), time, custom_color, font=timestamp_font_parse)
+
+    # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
+    text = "HACKS"
+    number = str(len(dataframe))
+
+    # Χρήση της textbbox για να πάρουμε το ορθογώνιο πλαίσιο για κάθε κείμενο
+    text_bbox = image_editable.textbbox((0, 0), text, font=title_font_year)  # (left, top, right, bottom)
+    number_bbox = image_editable.textbbox((0, 0), number, font=number_font_parse)
+
+    # Υπολογισμός του πλάτους από το πλαίσιο
+    text_width = text_bbox[2] - text_bbox[0]  # right - left
+    number_width = number_bbox[2] - number_bbox[0]  # right - left
+
+    # Σταθερή x συντεταγμένη για το κέντρο
+    center_x = 4800
+
+    # Υπολογισμός των θέσεων x για κεντράρισμα
+    text_x = center_x - (text_width // 2)  # x συντεταγμένη για τη λέξη "HACKS"
+    number_x = center_x - (number_width // 2)  # x συντεταγμένη για τον αριθμό
+
+    # Σχεδίαση του κειμένου
+    image_editable.text((text_x, 400), text, custom_color, font=title_font_year)  # Σχεδίαση της λέξης "HACKS"
+    image_editable.text((number_x, 700), number, "#0D1B2A", font=number_font_parse)  # Σχεδίαση του αριθμού
 
 
 def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
@@ -151,6 +174,9 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
+    #run mikrotik get dataframe
+    pie_df = app.run()
+
     c1 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
     # WRITING YEARS
@@ -162,12 +188,14 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
 
         for image, editable in zip(images, editables):
             write_years_and_days(
+                dataframe=pie_df,
                 image_editable=editable,
                 df_years=df_years,
                 specific_date=specific_date,
                 dates_for_every_year=dates_for_every_year,
                 title_font_year=title_font_year,
                 dates_font_parse=dates_font_parse,
+                number_font_parse = number_font_parse,
                 color_pallete_a=color_pallete_a,
                 color_pallete_b=color_pallete_b,
                 timestamp_font_parse=timestamp_font_parse,
@@ -189,7 +217,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     if multiple_data == 3:
         pie_path =  f"{path}/pie.png"
         line_path = f"{path}/line.png"
-        pie_df = app.run()
+
         for i in range(1, 4):
             plot.run_daily_smooth(
                 plot_df,
