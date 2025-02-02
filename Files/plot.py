@@ -184,7 +184,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, pie_path, line_pat
     else:
         app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
     glue_images_for_pie(pie_path, path_b)
-    glue_images_for_line(line_path, path_b)
+    # glue_images_for_line(line_path, path_b)
 
 
 def glue_images_for_line(path_a, path_b):
