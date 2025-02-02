@@ -163,13 +163,12 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     if multiple_data in (0, 3):
         for image, editable in zip(images, editables):
             # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
-            number = str(len(dataframe))
             daily_attacks = dataframe.groupby(dataframe["Date"]).size()
             mean_attacks = daily_attacks.mean()
-            daily = f"{int(mean_attacks)}"
-            editable.text((5050, 500), number + " Total Attacks", "#0D1B2A", font=number_font_parse)
-            editable.text((5050, 700), daily + " Daily Attacks", "#0D1B2A",
-                                font=number_font_parse)  # Σχεδίαση του αριθμού
+            daily = f"{int(mean_attacks)} / {len(dataframe)}"
+            editable.text((5080, 600), daily, "#0D1B2A", font=number_font_parse)
+            editable.text((4950, 800), "Daily vs Total Penetration Attempts", "#0D1B2A", font=timestamp_font_parse) # Σχεδίαση του αριθμού
+
     # WRITING YEARS
     counter = 0
     if multiple_data in (2, 3):
@@ -208,8 +207,12 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
         pie_path = f"{path}/pie.png"
         line_path = f"{path}/line.png"
         secured_path = f"{path}/secured.png"
+        secured_path_b = f"{path}/secured_3.png"
         for i in range(1, 4):
-            plot.plot_run_mikrotik(i, dataframe, pie_path, line_path, color_pallete_a, color_pallete_b, path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg", secured_path=secured_path)
+            plot.plot_run_mikrotik(i, dataframe, pie_path, line_path, color_pallete_a, color_pallete_b,
+                                   path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+                                   secured_path=secured_path,
+                                   secured_path_b=secured_path_b)
 
     if multiple_data == 3:
 
