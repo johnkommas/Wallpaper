@@ -7,6 +7,7 @@ from PIL import Image, ImageFont, ImageDraw
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from mikrotik import app
+from Youtrack import youtrack_app
 import pandas as pd
 
 
@@ -121,8 +122,6 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
     image_editable.text((10100, 6300), time, custom_color, font=timestamp_font_parse)
 
 
-
-
 def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     start = ctime.perf_counter()
 
@@ -154,21 +153,32 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
-    #run mikrotik get dataframe
-    dataframe = app.run()
-
     c1 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
 
     if multiple_data in (0, 3):
+        # run mikrotik get dataframe
+        dataframe = app.run()
+        o, p, r, c = youtrack_app.main()
+
         for image, editable in zip(images, editables):
             # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
             daily_attacks = dataframe.groupby(dataframe["Date"]).size()
             mean_attacks = daily_attacks.mean()
-            daily = f"{int(mean_attacks)} / {len(dataframe)}"
-            editable.text((5080, 600), daily, "#0D1B2A", font=number_font_parse)
-            editable.text((4950, 800), "Daily vs Total Penetration Attempts", "#0D1B2A", font=timestamp_font_parse) # Σχεδίαση του αριθμού
+            daily = f"{int(mean_attacks)}-{len(dataframe)}"
 
+            editable.text((5080, 600), daily, "#0D1B2A", font=number_font_parse)
+            editable.text((4950, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
+                          font=timestamp_font_parse)  # Σχεδίαση του αριθμού
+            editable.text((7250, 600), str(o), "#0D1B2A", font=number_font_parse)
+            editable.text((7600, 600), str(p), "#0D1B2A", font=number_font_parse)
+            editable.text((8050, 600), str(r), "#0D1B2A", font=number_font_parse)
+            editable.text((8550, 600), str(c), "#0D1B2A", font=number_font_parse)
+            editable.text((6900, 800), "Youtrack Opened - In Progress - Repeatable - Closed Tickets", "#0D1B2A",
+                          font=timestamp_font_parse)
+    c2 = ctime.perf_counter()
+    print(f"🟢DONE IN: {round(c2 - c1)} sec Mikrotik - Youtrack || ", end="")
+    c1 = ctime.perf_counter()
     # WRITING YEARS
     counter = 0
     if multiple_data in (2, 3):
@@ -203,16 +213,18 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
 
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
-    if multiple_data in (0,3):
+    if multiple_data in (0, 3):
         pie_path = f"{path}/pie.png"
         line_path = f"{path}/line.png"
-        secured_path = f"{path}/secured.png"
-        secured_path_b = f"{path}/secured_3.png"
+        secured_path = f"{path}/fingerprint_1.png"
+        secured_path_b = f"{path}/fingerprint_2.png"
+        secured_path_c = f"{path}/fingerprint_3.png"
         for i in range(1, 4):
             plot.plot_run_mikrotik(i, dataframe, pie_path, line_path, color_pallete_a, color_pallete_b,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
                                    secured_path=secured_path,
-                                   secured_path_b=secured_path_b)
+                                   secured_path_b=secured_path_b,
+                                   secured_path_c=secured_path_c)
 
     if multiple_data == 3:
 
