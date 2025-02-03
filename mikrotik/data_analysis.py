@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from matplotlib.font_manager import FontProperties
 import matplotlib.colors as mcolors  # For brightness calculation
+import plotly.graph_objects as go
 
 
 def time_series_analysis(df, path_a, loop_counter):
@@ -707,5 +708,69 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
     plt.tight_layout()
     plt.savefig(path_a, transparent=True, dpi=450)  # Save as high-quality image
     plt.close()
+
+
+def sankey_graph(df, path_a):
+    df["Api"] = df["Api"].replace(
+        {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
+    )
+
+    color_pallete_a = "#0D1B2A"
+    # Ομαδοποίηση δεδομένων: Υπολογίζουμε το πλήθος επιθέσεων ανά Api και Port
+    grouped_data = df.groupby(["Api", "Port"]).size().reset_index(name="Attacks")
+    highlight_color = "#D7C9AA"
+
+    # Δημιουργία λιστών Api και Ports (για τη μοναδική τιμή κάθε κόμβου)
+    apis = grouped_data["Api"].unique().tolist()
+    ports = (
+        grouped_data["Port"].astype(str).unique().tolist()
+    )  # Κάνουμε τις τιμές string
+
+    # Δημιουργία λιστών για source-target-value
+    sources = (
+        grouped_data["Api"].apply(lambda x: apis.index(x)).tolist()
+    )  # Index των Apis
+    targets = (
+        grouped_data["Port"]
+        .astype(str)
+        .apply(lambda x: len(apis) + ports.index(x))
+        .tolist()
+    )  # Κάνουμε string πριν το .apply
+    values = grouped_data["Attacks"].tolist()  # Αριθμός επιθέσεων
+
+    # Δημιουργία Sankey Diagram
+    fig = go.Figure(
+        data=[
+            go.Sankey(
+                node=dict(
+                    pad=15,
+                    thickness=20,
+                    line=dict(color="black", width=0.5),
+                    label=apis + ports,
+                    # Προσδιορισμός χρωμάτων για κάθε κόμβο
+                    color=color_pallete_a
+
+                    ,  # Χρώμα για κάθε κόμβο
+                ),
+
+                link=dict(
+                    source=sources,  # Πηγές (θέσεις των Apis)
+                    target=targets,  # Προορισμοί (θέσεις των Ports)
+                    value=values,  # Τιμές, δηλαδή αριθμός επιθέσεων
+                    color=highlight_color,
+                ),
+            )
+        ]
+    )
+
+    fig.update_layout(
+        width=400,  # Προσαρμοσμένο πλάτος
+        height=600,  # Προσαρμοσμένο ύψος
+        paper_bgcolor="rgba(0,0,0,0)",  # Διαφάνεια φόντου
+    )
+
+    # Αποθήκευση ως εικόνα
+    fig.write_image(path_a, scale=4)  # Αποθηκεύει το γράφημα στη θέση του script
+
 
 
