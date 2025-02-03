@@ -12,6 +12,7 @@ from scipy.ndimage.filters import gaussian_filter1d
 from mikrotik import app
 from Youtrack import youtrack_plots
 
+
 def run_daily(all_years, specific_day, path_a, path_b):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
@@ -186,18 +187,18 @@ def plot_run_youtrack(i, youtrack_df, youtrack_image, color_pallete_a, color_pal
     glue_image_general(youtrack_image, path_b, box, resize)
 
 
-def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
+def plot_run_mikrotik(loop_counter, pie_df, pie_path, sankey_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
     # RUN MIKROTIK
     path = [0, secured_path, secured_path_b, secured_path_c]
     if loop_counter == 1:
-        app.plot_run(pie_df, pie_path, line_path, color_a, loop_counter)
+        app.plot_run(pie_df, pie_path, sankey_path, color_a, loop_counter)
     elif loop_counter == 2:
-        app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
+        app.plot_run(pie_df, pie_path, sankey_path, color_b, loop_counter)
     else:
-        app.plot_run(pie_df, pie_path, line_path, color_b, loop_counter)
-    glue_images_for_pie(pie_path, path_b)
-    # glue_images_for_line(line_path, path_b)
-    glue_images_for_secured(path[loop_counter], path_b)
+        app.plot_run(pie_df, pie_path, sankey_path, color_b, loop_counter)
+    glue_image_general(pie_path, path_b, (9500, 50), .5)
+    glue_image_general(sankey_path, path_b, (9800, 2000))
+    glue_image_general(path[loop_counter], path_b, (10170, 700))
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
@@ -219,7 +220,7 @@ def glue_images_for_secured(path_a, path_b):
     width, height = overlay.size
     # print(width, height)
     overlay = overlay.resize((width , height ))
-    my_image.paste(overlay, (10120, 700), mask=overlay)
+    my_image.paste(overlay, (10170, 700), mask=overlay)
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
 
@@ -246,7 +247,6 @@ def glue_images_for_pie(path_a, path_b):
     my_image.paste(overlay, (9500, 50), mask=overlay)
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
-
 
 
 def glue_images_2(path_a, path_b):
