@@ -10,6 +10,7 @@ from scipy.ndimage import gaussian_gradient_magnitude
 from matplotlib import font_manager
 from scipy.ndimage.filters import gaussian_filter1d
 from mikrotik import app
+from Youtrack import youtrack_plots
 
 def run_daily(all_years, specific_day, path_a, path_b):
     year = specific_day.year
@@ -177,6 +178,14 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c,
     glue_images_smooth(path_a, path_b)
 
 
+def plot_run_youtrack(i, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,path_b):
+    colors = [None, color_pallete_a, color_pallete_b, color_pallete_b]
+    youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i])
+    box = (150, 1500)
+    resize = 1
+    glue_image_general(youtrack_image, path_b, box, resize)
+
+
 def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
     # RUN MIKROTIK
     path = [0, secured_path, secured_path_b, secured_path_c]
@@ -189,6 +198,18 @@ def plot_run_mikrotik(loop_counter, pie_df, pie_path, line_path, color_a, color_
     glue_images_for_pie(pie_path, path_b)
     # glue_images_for_line(line_path, path_b)
     glue_images_for_secured(path[loop_counter], path_b)
+
+
+def glue_image_general(path_a, path_b, box_, resize=1):
+    img_file = f"{path_a}"
+    my_image = Image.open(f"{path_b}")
+    overlay = Image.open(img_file)
+    width, height = overlay.size
+    # print(width, height)
+    overlay = overlay.resize((int(width * resize), int(height * resize)))
+    my_image.paste(overlay, box_, mask=overlay)
+    # image_editable = ImageDraw.Draw(my_image)
+    my_image.save(f"{path_b}")
 
 
 def glue_images_for_secured(path_a, path_b):
