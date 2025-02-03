@@ -209,12 +209,12 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
         youtrack_df = youtrack_app.main()
         pie_path = f"{path}/pie.png"
         youtrack_image = f"{path}/youtrack.png"
-        line_path = f"{path}/line.png"
+        sankey_path = f"{path}/sankey.png"
         secured_path = f"{path}/fingerprint_1.png"
         secured_path_b = f"{path}/fingerprint_2.png"
         secured_path_c = f"{path}/fingerprint_3.png"
         for i in range(1, 4):
-            plot.plot_run_mikrotik(i, dataframe, pie_path, line_path, color_pallete_a, color_pallete_b,
+            plot.plot_run_mikrotik(i, dataframe, pie_path, sankey_path, color_pallete_a, color_pallete_b,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
                                    secured_path=secured_path,
                                    secured_path_b=secured_path_b,
