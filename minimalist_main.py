@@ -1,12 +1,9 @@
 #  Copyright (c) Ioannis E. Kommas 2022. All Rights Reserved
 import logging
-import os
 import shutil
 import sys
 import time
 import pandas as pd
-
-from Private import stores_sensitive_info
 from SQL_FOLDER import fetch_data, sql_connect
 from Files import minimalist_write
 from datetime import datetime
