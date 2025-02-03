@@ -219,7 +219,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
                                    secured_path=secured_path,
                                    secured_path_b=secured_path_b,
                                    secured_path_c=secured_path_c)
-            plot.plot_run_youtrack(i,youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,
+            plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
 
     if multiple_data == 3:
