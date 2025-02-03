@@ -179,12 +179,14 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c,
     glue_images_smooth(path_a, path_b)
 
 
-def plot_run_youtrack(i, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,path_b):
+def plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b, path_b):
     colors = [None, color_pallete_a, color_pallete_b, color_pallete_b]
+    paths=[None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
     youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i])
     box = (150, 1500)
     resize = 1
     glue_image_general(youtrack_image, path_b, box, resize)
+    glue_image_general(paths[i], path_b, (150, 2300))
 
 
 def plot_run_mikrotik(loop_counter, pie_df, pie_path, sankey_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
@@ -197,7 +199,7 @@ def plot_run_mikrotik(loop_counter, pie_df, pie_path, sankey_path, color_a, colo
     else:
         app.plot_run(pie_df, pie_path, sankey_path, color_b, loop_counter)
     glue_image_general(pie_path, path_b, (9500, 50), .5)
-    glue_image_general(sankey_path, path_b, (9800, 2000))
+    glue_image_general(sankey_path, path_b, (9300, 1500))
     glue_image_general(path[loop_counter], path_b, (10170, 700))
 
 
