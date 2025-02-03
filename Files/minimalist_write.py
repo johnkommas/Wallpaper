@@ -8,7 +8,6 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from mikrotik import app
 from Youtrack import youtrack_app
-import pandas as pd
 
 
 def offline(emoji, path, offline_path, word):
@@ -159,7 +158,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     if multiple_data in (0, 3):
         # run mikrotik get dataframe
         dataframe = app.run()
-        o, p, r, c = youtrack_app.main()
 
         for image, editable in zip(images, editables):
             # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
@@ -167,15 +165,9 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
             mean_attacks = daily_attacks.mean()
             daily = f"{int(mean_attacks)}-{len(dataframe)}"
 
-            editable.text((5080, 600), daily, "#0D1B2A", font=number_font_parse)
-            editable.text((4950, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
+            editable.text((5080+500, 600), daily, "#0D1B2A", font=number_font_parse)
+            editable.text((4950+500, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
                           font=timestamp_font_parse)  # Σχεδίαση του αριθμού
-            editable.text((7250, 600), str(o), "#0D1B2A", font=number_font_parse)
-            editable.text((7600, 600), str(p), "#0D1B2A", font=number_font_parse)
-            editable.text((8050, 600), str(r), "#0D1B2A", font=number_font_parse)
-            editable.text((8550, 600), str(c), "#0D1B2A", font=number_font_parse)
-            editable.text((6900, 800), "Youtrack Opened - In Progress - Repeatable - Closed Tickets", "#0D1B2A",
-                          font=timestamp_font_parse)
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec Mikrotik - Youtrack || ", end="")
     c1 = ctime.perf_counter()
@@ -214,7 +206,9 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
     if multiple_data in (0, 3):
+        youtrack_df = youtrack_app.main()
         pie_path = f"{path}/pie.png"
+        youtrack_image = f"{path}/youtrack.png"
         line_path = f"{path}/line.png"
         secured_path = f"{path}/fingerprint_1.png"
         secured_path_b = f"{path}/fingerprint_2.png"
@@ -225,6 +219,8 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
                                    secured_path=secured_path,
                                    secured_path_b=secured_path_b,
                                    secured_path_c=secured_path_c)
+            plot.plot_run_youtrack(i,youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,
+                                   path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
 
     if multiple_data == 3:
 
