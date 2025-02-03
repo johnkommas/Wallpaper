@@ -710,12 +710,13 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
     plt.close()
 
 
-def sankey_graph(df, path_a):
+def sankey_graph(i, df, path_a):
+    colors = ["#0D1B2A", "#0D1B2A", "#778DA9", "#D7C9AA"]
+    text_colors = [None, "#D7C9AA", "#0D1B2A", "#0D1B2A"]
     df["Api"] = df["Api"].replace(
         {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
     )
 
-    color_pallete_a = "#0D1B2A"
     # Ομαδοποίηση δεδομένων: Υπολογίζουμε το πλήθος επιθέσεων ανά Api και Port
     grouped_data = df.groupby(["Api", "Port"]).size().reset_index(name="Attacks")
     highlight_color = "#D7C9AA"
@@ -745,19 +746,18 @@ def sankey_graph(df, path_a):
                 node=dict(
                     pad=15,
                     thickness=20,
-                    line=dict(color="black", width=0.5),
+                    line=dict(color=colors[0], width=0.5),
                     label=apis + ports,
                     # Προσδιορισμός χρωμάτων για κάθε κόμβο
-                    color=color_pallete_a
+                    color=colors[0],
 
-                    ,  # Χρώμα για κάθε κόμβο
                 ),
 
                 link=dict(
                     source=sources,  # Πηγές (θέσεις των Apis)
                     target=targets,  # Προορισμοί (θέσεις των Ports)
                     value=values,  # Τιμές, δηλαδή αριθμός επιθέσεων
-                    color=highlight_color,
+                    color=colors[i],
                 ),
             )
         ]
@@ -770,7 +770,7 @@ def sankey_graph(df, path_a):
     )
 
     # Αποθήκευση ως εικόνα
-    fig.write_image(path_a, scale=4)  # Αποθηκεύει το γράφημα στη θέση του script
+    fig.write_image(path_a, scale=6)  # Αποθηκεύει το γράφημα στη θέση του script
 
 
 
