@@ -103,13 +103,8 @@ def main():
     complete_df["update_date"] = pd.to_datetime(complete_df["update_date"], unit="ms")
     complete_df["year"] = complete_df["update_date"].dt.year
     complete_df = complete_df[complete_df.year == datetime.now().year]
-    # print(complete_df)
-    opened = complete_df[complete_df.state_name == "Open"]
-    progress = complete_df[complete_df.state_name.isin(["In_Progress", "To_Be_Discussed"])]
-    repeatable = complete_df[complete_df.state_name == "REPEATABLE"]
-    closed = complete_df[complete_df.state_name == "Fixed"]
-
-    return len(opened), len(progress), len(repeatable), len(closed)
+    df = complete_df.state_name.value_counts().to_frame()
+    return df
 
 
 
