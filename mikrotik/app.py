@@ -300,6 +300,6 @@ def run(csv_file="emails_data.csv"):
 
 def plot_run(df, path, sankey_path, color, loop_counter):
     data_analysis.visualize_api_hackers_ports_donut(df, path_a=path, color=color)
-    data_analysis.sankey_graph(df,path_a=sankey_path)
+    data_analysis.sankey_graph(loop_counter, df, path_a=sankey_path)
 
 
