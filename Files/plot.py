@@ -11,6 +11,7 @@ from matplotlib import font_manager
 from scipy.ndimage.filters import gaussian_filter1d
 from mikrotik import app
 from Youtrack import youtrack_plots
+from matplotlib.patches import FancyBboxPatch
 
 
 def run_daily(all_years, specific_day, path_a, path_b):
@@ -92,7 +93,9 @@ def run_daily(all_years, specific_day, path_a, path_b):
     glue_images_2(path_a, path_b)
 
 
-def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c, loop_counter):
+def run_daily_smooth(
+    all_years, specific_day, path_a, path_b, color_a, color_c, loop_counter
+):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -132,7 +135,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c,
             pass
 
     with plt.rc_context(
-            {"axes.edgecolor": color_a, "xtick.color": color_a, "ytick.color": color_a}
+        {"axes.edgecolor": color_a, "xtick.color": color_a, "ytick.color": color_a}
     ):
         # plt.rcParams["font.family"] = "Poiret One"
         plt.rcParams["font.family"] = "Futura"
@@ -145,16 +148,26 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c,
     mean_val = np.mean(Y_all)
     currnet_max = np.max(Y)
     if loop_counter == 0:
-        print(f"🟢MEDIAN = {median}€", end='')
+        print(f"🟢MEDIAN = {median}€", end="")
     if loop_counter == 3:
         colors = [color_c if i >= currnet_max else color_a for i in Y]
     else:
         colors = [color_a if i > currnet_max else color_a for i in Y]
 
     plt.bar(X, Y, alpha=0.9, color=colors)
-    line_color = ["#778DA9", "#0D1B2A", "#778DA9", "#D7C9AA",]
+    line_color = [
+        "#778DA9",
+        "#0D1B2A",
+        "#778DA9",
+        "#D7C9AA",
+    ]
     ysmoothed = gaussian_filter1d(Y_all, sigma=2)
-    plt.plot(X, ysmoothed if loop_counter in (1, 3) else Y_all, alpha=0.9, color=line_color[1])
+    plt.plot(
+        X,
+        ysmoothed if loop_counter in (1, 3) else Y_all,
+        alpha=0.9,
+        color=line_color[1],
+    )
     for a, b in zip(X, Y):
         label = f"{b}€" if b > 0 else ""
         # this method is called for each point
@@ -177,6 +190,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b,  color_a, color_c,
     plt.savefig(img_file, transparent=True)
     plt.close()
     glue_images_smooth(path_a, path_b)
+    print("🟢DONE plotting Main Graph || ", end='')
 
 
 def plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b, path_b):
@@ -187,6 +201,7 @@ def plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, col
     resize = 1
     glue_image_general(youtrack_image, path_b, box, resize)
     glue_image_general(paths[i], path_b, (150, 2300))
+    print("🟢DONE plotting Youtrack Donut || ", end='')
 
 
 def plot_run_mikrotik(loop_counter, pie_df, pie_path, sankey_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
@@ -201,6 +216,7 @@ def plot_run_mikrotik(loop_counter, pie_df, pie_path, sankey_path, color_a, colo
     glue_image_general(pie_path, path_b, (9500, 50), .5)
     glue_image_general(sankey_path, path_b, (9300, 1500))
     glue_image_general(path[loop_counter], path_b, (10170, 700))
+    print("🟢DONE plotting Mikrotik Donut & Sankey || ", end='')
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
