@@ -32,8 +32,8 @@ def get_input_with_timeout(prompt, timeout, default):
         signal.alarm(0)  # Disable alarm
 
 
-refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 120))
-multiple_data = int(get_input_with_timeout("Multiple Data? (0: Mikrotik) (1: None) (2:Simple) (3:Full): ", 5, 3))
+refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 600))
+multiple_data = int(get_input_with_timeout("Multiple Data? (0: Mikrotik + Youtrack) (1: None) (2:Simple) (3:Full): ", 5, 3))
 
 
 print(f"Refresh rate: {refresh_rate}")
