@@ -157,7 +157,9 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
 
     if multiple_data in (0, 3):
         # run mikrotik get dataframe
+        print("Reading E-mail Mikrotik || ", end='')
         dataframe = app.run()
+
 
         for image, editable in zip(images, editables):
             # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
@@ -168,6 +170,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
             editable.text((5080+500, 600), daily, "#0D1B2A", font=number_font_parse)
             editable.text((4950+500, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
                           font=timestamp_font_parse)  # Σχεδίαση του αριθμού
+
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec Mikrotik - Youtrack || ", end="")
     c1 = ctime.perf_counter()
@@ -206,13 +209,18 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
     if multiple_data in (0, 3):
+        print("Getting Youtrack DATA || ", end='')
         youtrack_df = youtrack_app.main()
+        print("Getting Vpn Status vis SSH DATA || ", end='')
+        vpn_status = app.connect_via_ssh()
         pie_path = f"{path}/pie.png"
         youtrack_image = f"{path}/youtrack.png"
         sankey_path = f"{path}/sankey.png"
         secured_path = f"{path}/fingerprint_1.png"
         secured_path_b = f"{path}/fingerprint_2.png"
         secured_path_c = f"{path}/fingerprint_3.png"
+        Vpn_Online = f"{path}/Vpn_Online.png"
+        Vpn_Offline = f"{path}/Vpn_Offline.png"
         for i in range(1, 4):
             plot.plot_run_mikrotik(i, dataframe, pie_path, sankey_path, color_pallete_a, color_pallete_b,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
@@ -221,6 +229,25 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
                                    secured_path_c=secured_path_c)
             plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
+            vpn_X = 5600
+            step = 200
+            vpn_Y = 200
+            vpn_users = os.getenv("VPNUSERS").split(",")
+
+            # Βρόχος για κάθε χρήστη
+            for index, user in enumerate(vpn_users):
+                # Υπολογισμός του box_ δυναμικά
+                box = (vpn_X + step * index, vpn_Y)
+
+                # Έλεγχος αν το όνομα υπάρχει και καθορισμός της κατάστασης
+                vpn_status_result = (
+                    Vpn_Online if (vpn_status["name"] == user).any() else Vpn_Offline
+                )
+
+                # Δημιουργία του path και σύνδεση της εικόνας
+                plot.glue_image_general(
+                    vpn_status_result, path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg", box_=box, resize=.5
+                )
 
     if multiple_data == 3:
 
