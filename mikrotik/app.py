@@ -67,28 +67,34 @@ def connect_via_ssh():
             password=os.getenv("MIKROTIK_PASS"),
             port=int(os.getenv("MIKROTIK_PORT", 22)),  # Προεπιλογή port: 22
         )
-        print("Connected via SSH successfully.")
+        # print("Connected via SSH successfully.")
 
         # Εκτέλεση εντολής για ενεργές PPP συνδέσεις (VPN)
-        print("\nFetching active PPP connections:")
+        # print("\nFetching active PPP connections:")
         stdin, stdout, stderr = client.exec_command("/ppp active print terse")
         ppp_output = stdout.read().decode("utf-8")
-        print(ppp_output)
 
-        # Εκτέλεση εντολής για ενεργές IPsec peers
-        # print("\nFetching active IPsec peers:")
-        # stdin, stdout, stderr = client.exec_command("/ip ipsec active-peers print terse")
-        # ipsec_output = stdout.read().decode("utf-8")
-        # print(ipsec_output)
+        # Διαχωρισμός εξόδου σε λίστα, γραμμή ανά γραμμή
+        lines = ppp_output.strip().split("\n")
+
+        # Δημιουργία λίστας λεξικών για τα δεδομένα
+        data = []
+        for line in lines:
+            entry = {}
+            # Χώρισμα κάθε γραμμής με βάση το κενό διάστημα
+            for part in line.split():
+                if "=" in part:
+                    key, value = part.split("=", 1)  # Διαχωρισμός στο "="
+                    entry[key] = value
+            data.append(entry)
+
+        # Μετατροπή σε DataFrame
+        df = pd.DataFrame(data)
 
         # Κλείσιμο σύνδεσης
         client.close()
 
-        # Επιστροφή δεδομένων (αν απαιτείται για περαιτέρω επεξεργασία)
-        # return {
-        #     "ppp_active": ppp_output,
-        #     "ipsec_active_peers": ipsec_output,
-        # }
+        return df  # Επιστροφή του DataFrame
 
     except Exception as e:
         print(f"Error connecting via SSH: {e}")
