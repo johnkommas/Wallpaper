@@ -12,7 +12,7 @@ from Youtrack import youtrack_app
 
 def offline(emoji, path, offline_path, word):
     # Ορισμός χρωμάτων
-    color = "#0D1B2A"
+    color = os.getenv("COLOR_A")
     box = (10000, 500)  # Αρχική θέση για το κείμενο πάνω στην εικόνα
     if word == "VPN OFFLINE":
         box = (10000, 700)
@@ -23,7 +23,7 @@ def offline(emoji, path, offline_path, word):
         image_editable = ImageDraw.Draw(my_image)
 
         # Χρησιμοποιούμε διαφορετικά χρώματα για κάθε γράμμα σύμφωνα με τα palettes
-        font = ImageFont.truetype("25191766905.ttf", 200)  # Αλλαγή font αν χρειάζεται
+        font = ImageFont.truetype(os.getenv("FONT_POIRET_ONE"), 200)  # Αλλαγή font αν χρειάζεται
         x, y = box  # Ξεκινάμε από την προκαθορισμένη θέση
 
         # Διαχωρισμός γραμμάτων και χρωμάτων
@@ -70,7 +70,7 @@ def delete_all_files_inside_folder(folder, exception_file=None):
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter):
+def write_revenue_values(image_editable, data, number_font_parse, counter):
     x_offsets = [0, 310, 260, 215, 170, 120, 75]
     for i in data:
         revenue = str(int(i))
@@ -78,28 +78,25 @@ def write_revenue_values(image_editable, data, color_pallete_a, color_pallete_c,
             image_editable.text(
                 (x_offsets[len(revenue)] + 400, 700),
                 revenue,
-                color_pallete_c,
+                os.getenv("COLOR_C"),
                 font=number_font_parse,
             )
         else:
             image_editable.text(
                 (x_offsets[len(revenue)] + 400, 700),
                 revenue,
-                color_pallete_a,
+                os.getenv("COLOR_A"),
                 font=number_font_parse,
             )
         x_offsets = [y + 660 for y in x_offsets]
 
 
 def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
-                         dates_font_parse, color_pallete_a, color_pallete_b, timestamp_font_parse, time, counter):
+                         dates_font_parse, timestamp_font_parse, time, counter):
     years = [str(i) for i in df_years]
     x = 500
     check_year = specific_date.year - 5
-    if counter == 0:
-        custom_color = color_pallete_a
-    else:
-        custom_color = color_pallete_b
+    custom_color = os.getenv("COLOR_A") if counter == 0 else os.getenv("COLOR_C")
 
     for i, year in enumerate(years):
         # Ελέγχει αν το year ταιριάζει με το check_year
@@ -134,15 +131,10 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     start = ctime.perf_counter()
 
     # SETUP FONTS
-    title_font_year = ImageFont.truetype("Avenir Next.ttc", 200)
-    number_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 250)
-    dates_font_parse = ImageFont.truetype("DIN Condensed Bold.ttf", 80)
-    timestamp_font_parse = ImageFont.truetype("Futura.ttc", 80)
-
-    # SETUP COLORS
-    color_pallete_a = "#0D1B2A"
-    color_pallete_b = "#778DA9"
-    color_pallete_c = "#D7C9AA"
+    title_font_year = ImageFont.truetype(os.getenv("FONT_AVENIR_NEXT"), 200)
+    number_font_parse = ImageFont.truetype(os.getenv("FONT_DIN_CONDENSED_BOLD"), 250)
+    dates_font_parse = ImageFont.truetype(os.getenv("FONT_DIN_CONDENSED_BOLD"), 80)
+    timestamp_font_parse = ImageFont.truetype(os.getenv("FONT_FUTURA"), 80)
 
     # INITIALIZE IMAGE
     my_image_1 = Image.open(f"{path}/{file_in}_1.jpg")
@@ -202,7 +194,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
             else:
                 data = "ERROR"
             # print(user, data)
-            editable.text(pot, data, color_pallete_a, font=timestamp_font_parse)
+            editable.text(pot, data, os.getenv("COLOR_A"), font=timestamp_font_parse)
 
     for image in images:
         for user, pots in zip(EM_Users, image_potitions):
@@ -253,15 +245,13 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                 dates_for_every_year=dates_for_every_year,
                 title_font_year=title_font_year,
                 dates_font_parse=dates_font_parse,
-                color_pallete_a=color_pallete_a,
-                color_pallete_b=color_pallete_b,
                 timestamp_font_parse=timestamp_font_parse,
                 time=time,
                 counter=counter
             )
 
             # WRITING REVENUE VALUES
-            write_revenue_values(editable, data, color_pallete_a, color_pallete_c, number_font_parse, counter)
+            write_revenue_values(editable, data, number_font_parse, counter)
             counter += 1
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
@@ -272,25 +262,16 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
     if multiple_data in (0, 3):
-        print("Getting Youtrack DATA || ", end='')
         youtrack_df = youtrack_app.main()
-        print("Getting Vpn Status vis SSH DATA || ", end='')
         vpn_status = app.connect_via_ssh()
-        pie_path = f"{path}/pie.png"
         youtrack_image = f"{path}/youtrack.png"
-        sankey_path = f"{path}/sankey.png"
-        secured_path = f"{path}/fingerprint_1.png"
-        secured_path_b = f"{path}/fingerprint_2.png"
-        secured_path_c = f"{path}/fingerprint_3.png"
         Vpn_Online = f"{path}/Vpn_Online.png"
         Vpn_Offline = f"{path}/Vpn_Offline.png"
         for i in range(1, 4):
-            plot.plot_run_mikrotik(i, dataframe, pie_path, sankey_path, color_pallete_a, color_pallete_b,
+            plot.plot_run_mikrotik(i, dataframe,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
-                                   secured_path=secured_path,
-                                   secured_path_b=secured_path_b,
-                                   secured_path_c=secured_path_c)
-            plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b,
+                                   path=path)
+            plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
             vpn_X = 5600
             step = 200
@@ -320,8 +301,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                 specific_day=specific_date,
                 path_a=f"{path}/graph.png",
                 path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
-                color_a=color_pallete_a,
-                color_c=color_pallete_c,
                 loop_counter=i
             )
 
