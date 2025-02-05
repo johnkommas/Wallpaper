@@ -3,6 +3,8 @@ import logging
 import shutil
 import sys
 import time
+
+import numpy as np
 import pandas as pd
 from SQL_FOLDER import fetch_data, sql_connect
 from Files import minimalist_write
@@ -52,6 +54,7 @@ wp_logger.setLevel("WARNING")
 SQL_FILES = [
     "ESFIItemEntry_ESFIItemPeriodics_a.sql",
     "ESFIItemEntry_ESFIItemPeriodics_c.sql",
+    "ES00EventLog_a.sql",
 ]
 
 # SETUP SOUNDS
@@ -136,32 +139,32 @@ def run(temp_file, multiple_data):
     else:
         df = pd.DataFrame()
 
-    #get_online_offline_ users_info
-    # def calc(df):
-    #     if df["DIFF"].total_seconds() < 86400:  # less than one day in seconds
-    #         hours = df["DIFF"].seconds // 3600
-    #         minutes = (df["DIFF"].seconds // 60) % 60
-    #         return f"{hours}h.{minutes}m"
-    #
-    #     elif df["DIFF"].total_seconds() < 172800:  # less than two days in seconds
-    #         return "1Day"
-    #
-    #     else:
-    #         days = df["DIFF"].days
-    #         return f"{days}Days"
-    #
-    # def complete_df(temp_df: pd.DataFrame) -> pd.DataFrame:
-    #     temp_df["COLOR"] = np.where(temp_df["ID"] == "ESLOGOUT", "red", "green")
-    #     temp_df["DIFF"] = today - temp_df["EDate"]
-    #     temp_df["elapsed_time"] = temp_df.apply(lambda row: calc(row), axis=1)
-    #     return temp_df
-    #
-    # elounda_users = tuple(stores_sensitive_info.EM_users)
-    # em_df = fetch_data.get_sql_data(SQL_FILES[10], None, tuple_data=elounda_users)
-    # status_users_elounda = complete_df(em_df)
-    # status_users_elounda = filter_data(status_users_elounda)
+    # get_online_offline_ users_info
+    def calc(df):
+        if df["DIFF"].total_seconds() < 86400:  # less than one day in seconds
+            hours = df["DIFF"].seconds // 3600
+            minutes = (df["DIFF"].seconds // 60) % 60
+            return f"{hours}h.{minutes}m"
 
-    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data)
+        elif df["DIFF"].total_seconds() < 172800:  # less than two days in seconds
+            return "1Day"
+
+        else:
+            days = df["DIFF"].days
+            return f"{days}Days"
+
+    def complete_df(temp_df: pd.DataFrame) -> pd.DataFrame:
+        temp_df["COLOR"] = np.where(temp_df["ID"] == "ESLOGOUT", "red", "green")
+        temp_df["DIFF"] = today - temp_df["EDate"]
+        temp_df["elapsed_time"] = temp_df.apply(lambda row: calc(row), axis=1)
+        return temp_df
+
+    elounda_users = tuple(os.getenv("EMUSERS").split(","))
+    em_df = fetch_data.get_sql_data(SQL_FILES[2], None, tuple_data=elounda_users)
+    status_users_elounda = complete_df(em_df)
+    status_users_elounda = filter_data(status_users_elounda)
+
+    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda)
     stop_ = time.perf_counter()
     return start_, stop_
 
