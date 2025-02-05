@@ -96,7 +96,8 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
     years = [str(i) for i in df_years]
     x = 500
     check_year = specific_date.year - 5
-    custom_color = os.getenv("COLOR_A") if counter == 0 else os.getenv("COLOR_C")
+    colors = [os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
+    custom_color = colors[counter]
 
     for i, year in enumerate(years):
         # Ελέγχει αν το year ταιριάζει με το check_year
@@ -221,8 +222,8 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
             mean_attacks = daily_attacks.mean()
             daily = f"{int(mean_attacks)}-{len(dataframe)}"
 
-            editable.text((5080 + 500, 600), daily, "#0D1B2A", font=number_font_parse)
-            editable.text((4950 + 500, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
+            editable.text((5080 + 500, 600), daily, os.getenv("COLOR_A"), font=number_font_parse)
+            editable.text((4950 + 500, 800), "Daily vs Total Penetration Attempts", os.getenv("COLOR_A"),
                           font=timestamp_font_parse)  # Σχεδίαση του αριθμού
 
     c2 = ctime.perf_counter()
