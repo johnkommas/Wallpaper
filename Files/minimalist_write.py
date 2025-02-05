@@ -121,7 +121,16 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
     image_editable.text((10100, 6300), time, custom_color, font=timestamp_font_parse)
 
 
-def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
+def paste_image(my_image, overlay_image, xy, resize):
+    overlay = Image.open(overlay_image)
+    width, height = overlay.size
+    overlay = overlay.resize((width // resize, height // resize))
+    my_image.paste(overlay, xy, mask=overlay)
+    # image_editable = ImageDraw.Draw(my_image)
+    return my_image
+
+
+def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status_users_elounda):
     start = ctime.perf_counter()
 
     # SETUP FONTS
@@ -155,11 +164,64 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     c1 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
 
+    #ENTERSOFT ONLINE OFFLINE USERS
+    calibrate_y = 280
+    calibrate_x = 300
+    potitions = [
+        (8500, 4100 - calibrate_y),  # GIOTA 5Days
+        (7500, 3680 - calibrate_y),  # KOUTOULAKI 9h.29m
+        (8500, 2250 - calibrate_y),  # KYRIAKOS 4h.1m
+        (8500, 1400 - calibrate_y),  # M.KOUTOULAKIS 12h.52m
+        (7500, 1800 - calibrate_y),  # M.RAPANAKI 3h.52m
+        (7500, 950 - calibrate_y),   # RADMIN 13h.57m
+        (8500, 3250 - calibrate_y),  # XNARAKI 3h.58m
+    ]
+
+    image_potitions = [
+        (8080, 3980 - calibrate_y),  # GIOTA
+        (8230, 3550 - calibrate_y),  # KOUTOULAKI
+        (8080, 2100 - calibrate_y),  # KYRIAKOS
+        (8080, 1250 - calibrate_y),  # M.KOUTOULAKIS
+        (8230, 1670 - calibrate_y),  # M.RAPANAKI
+        (8230, 830 - calibrate_y),   # RADMIN
+        (8080, 3130 - calibrate_y),  # XNARAKI
+    ]
+    """
+
+    """
+    EM_Users = os.getenv("EMUSERS").split(",")
+    for image, editable in zip(images, editables):
+        for pot, user in zip(potitions, EM_Users):
+            filtered_data = status_users_elounda["elapsed_time"][
+                status_users_elounda.UserID.str.startswith(user)
+            ]
+
+            if not filtered_data.empty:
+                data = filtered_data.iloc[0]
+                # print(user, data)
+            else:
+                data = "ERROR"
+            # print(user, data)
+            editable.text(pot, data, color_pallete_a, font=timestamp_font_parse)
+
+    for image in images:
+        for user, pots in zip(EM_Users, image_potitions):
+            filtered_data = status_users_elounda["COLOR"][
+                status_users_elounda.UserID.str.startswith(user)
+            ]
+            if not filtered_data.empty:
+                color = filtered_data.iloc[0]
+            else:
+                color = "red"
+            # print(color)
+
+            image = paste_image(image, f"{path}/{color}.png", xy=pots, resize=4)
+        # image.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
+
     if multiple_data in (0, 3):
         # run mikrotik get dataframe
         print("Reading E-mail Mikrotik || ", end='')
         dataframe = app.run()
-
 
         for image, editable in zip(images, editables):
             # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
@@ -167,8 +229,8 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
             mean_attacks = daily_attacks.mean()
             daily = f"{int(mean_attacks)}-{len(dataframe)}"
 
-            editable.text((5080+500, 600), daily, "#0D1B2A", font=number_font_parse)
-            editable.text((4950+500, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
+            editable.text((5080 + 500, 600), daily, "#0D1B2A", font=number_font_parse)
+            editable.text((4950 + 500, 800), "Daily vs Total Penetration Attempts", "#0D1B2A",
                           font=timestamp_font_parse)  # Σχεδίαση του αριθμού
 
     c2 = ctime.perf_counter()
@@ -177,6 +239,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data):
     # WRITING YEARS
     counter = 0
     if multiple_data in (2, 3):
+
         # LIST DATA
         data = list(df.TurnOver.values)
         df_years = list(df.YEAR.values)
