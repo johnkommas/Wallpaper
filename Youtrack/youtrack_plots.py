@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
@@ -8,8 +9,8 @@ def cards_donut(df, path_a, color):
     # REMOVE Fixed
     df = df[df.index != "Fixed"]
     # Χρώματα παλέτας
-    color_pallete_a = "#0D1B2A"  # Σκούρο μπλε (κύριο χρώμα για τα κομμάτια)
-    highlight_color = "#D7C9AA"  # Ανοιχτό μπεζ για τη μεγαλύτερη φέτα
+    color_pallete_a = os.getenv("COLOR_A")  # Σκούρο μπλε (κύριο χρώμα για τα κομμάτια)
+    highlight_color = os.getenv("COLOR_C")   # Ανοιχτό μπεζ για τη μεγαλύτερη φέτα
 
     # Δεδομένα
     labels = df.index.tolist()  # Κατηγορίες (labels)
