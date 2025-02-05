@@ -1,4 +1,5 @@
 #  Copyright (c) Ioannis E. Kommas 2022. All Rights Reserved
+import os
 import numpy as np
 import pandas as pd
 import squarify
@@ -90,12 +91,10 @@ def run_daily(all_years, specific_day, path_a, path_b):
     img_file = f"{path_a}"
     plt.savefig(img_file, transparent=True)
     plt.close()
-    glue_images_2(path_a, path_b)
+    glue_image_general(path_b, path_b, (100, 4000))
 
 
-def run_daily_smooth(
-    all_years, specific_day, path_a, path_b, color_a, color_c, loop_counter
-):
+def run_daily_smooth(all_years, specific_day, path_a, path_b, loop_counter):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -135,7 +134,8 @@ def run_daily_smooth(
             pass
 
     with plt.rc_context(
-        {"axes.edgecolor": color_a, "xtick.color": color_a, "ytick.color": color_a}
+            {"axes.edgecolor": os.getenv("COLOR_A"), "xtick.color": os.getenv("COLOR_A"),
+             "ytick.color": os.getenv("COLOR_A")}
     ):
         # plt.rcParams["font.family"] = "Poiret One"
         plt.rcParams["font.family"] = "Futura"
@@ -146,21 +146,16 @@ def run_daily_smooth(
     font = font_manager.FontProperties(family="Futura")
     median = np.median(Y_all)
     mean_val = np.mean(Y_all)
-    currnet_max = np.max(Y)
+    current_max = np.max(Y)
     if loop_counter == 0:
         print(f"🟢MEDIAN = {median}€", end="")
     if loop_counter == 3:
-        colors = [color_c if i >= currnet_max else color_a for i in Y]
+        colors = [os.getenv("COLOR_C") if i >= current_max else os.getenv("COLOR_A") for i in Y]
     else:
-        colors = [color_a if i > currnet_max else color_a for i in Y]
+        colors = [os.getenv("COLOR_A") for _ in Y]
 
     plt.bar(X, Y, alpha=0.9, color=colors)
-    line_color = [
-        "#778DA9",
-        "#0D1B2A",
-        "#778DA9",
-        "#D7C9AA",
-    ]
+    line_color = [os.getenv("COLOR_B"), os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     ysmoothed = gaussian_filter1d(Y_all, sigma=2)
     plt.plot(
         X,
@@ -178,7 +173,7 @@ def run_daily_smooth(
             xytext=(0, 10),  # distance from text to points (x,y)
             ha="center",
             fontproperties=font,
-            color=color_a,
+            color=os.getenv("COLOR_A"),
         )  # horizontal alignment can be left, right or center
     plt.xticks(
         ticks=date,
@@ -189,34 +184,28 @@ def run_daily_smooth(
     img_file = f"{path_a}"
     plt.savefig(img_file, transparent=True)
     plt.close()
-    glue_images_smooth(path_a, path_b)
+    glue_image_general(path_a, path_b,(100, 4200))
     print("🟢DONE plotting Main Graph || ", end='')
 
 
-def plot_run_youtrack(i, path, youtrack_df, youtrack_image, color_pallete_a, color_pallete_b, path_b):
-    colors = [None, color_pallete_a, color_pallete_b, color_pallete_b]
-    paths=[None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
+def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
+    colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_B")]
+    paths = [None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
     youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i])
     box = (150, 1500)
     resize = 1
     glue_image_general(youtrack_image, path_b, box, resize)
     glue_image_general(paths[i], path_b, (150, 2300))
-    print("🟢DONE plotting Youtrack Donut || ", end='')
 
 
-def plot_run_mikrotik(loop_counter, pie_df, pie_path, sankey_path, color_a, color_b, path_b, secured_path, secured_path_b, secured_path_c):
+def plot_run_mikrotik(loop_counter, pie_df, path_b, path,):
     # RUN MIKROTIK
-    path = [0, secured_path, secured_path_b, secured_path_c]
-    if loop_counter == 1:
-        app.plot_run(pie_df, pie_path, sankey_path, color_a, loop_counter)
-    elif loop_counter == 2:
-        app.plot_run(pie_df, pie_path, sankey_path, color_b, loop_counter)
-    else:
-        app.plot_run(pie_df, pie_path, sankey_path, color_b, loop_counter)
-    glue_image_general(pie_path, path_b, (9500, 50), .5)
-    glue_image_general(sankey_path, path_b, (9300, 1500))
-    glue_image_general(path[loop_counter], path_b, (10170, 700))
-    print("🟢DONE plotting Mikrotik Donut & Sankey || ", end='')
+    _path = [0, f"{path}/fingerprint_1.png", f"{path}/fingerprint_2.png", f"{path}/fingerprint_3.png"]
+    color = os.getenv("COLOR_A") if loop_counter == 1 else os.getenv("COLOR_B")
+    app.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", color, loop_counter)
+    glue_image_general(f"{path}/pie.png", path_b, (9500, 50), .5)
+    glue_image_general(f"{path}/sankey.png", path_b, (9300, 1500))
+    glue_image_general(_path[loop_counter], path_b, (10170, 700))
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
@@ -230,64 +219,6 @@ def glue_image_general(path_a, path_b, box_, resize=1):
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path_b}")
 
-
-def glue_images_for_secured(path_a, path_b):
-    img_file = f"{path_a}"
-    my_image = Image.open(f"{path_b}")
-    overlay = Image.open(img_file)
-    width, height = overlay.size
-    # print(width, height)
-    overlay = overlay.resize((width , height ))
-    my_image.paste(overlay, (10170, 700), mask=overlay)
-    # image_editable = ImageDraw.Draw(my_image)
-    my_image.save(f"{path_b}")
-
-
-def glue_images_for_line(path_a, path_b):
-    img_file = f"{path_a}"
-    my_image = Image.open(f"{path_b}")
-    overlay = Image.open(img_file)
-    width, height = overlay.size
-    # print(width, height)
-    overlay = overlay.resize((width , height ))
-    my_image.paste(overlay, (4500, 300), mask=overlay)
-    # image_editable = ImageDraw.Draw(my_image)
-    my_image.save(f"{path_b}")
-
-
-def glue_images_for_pie(path_a, path_b):
-    img_file = f"{path_a}"
-    my_image = Image.open(f"{path_b}")
-    overlay = Image.open(img_file)
-    width, height = overlay.size
-    # print(width, height)
-    overlay = overlay.resize((width // 2, height // 2 ))
-    my_image.paste(overlay, (9500, 50), mask=overlay)
-    # image_editable = ImageDraw.Draw(my_image)
-    my_image.save(f"{path_b}")
-
-
-def glue_images_2(path_a, path_b):
-    img_file = f"{path_a}"
-    my_image = Image.open(f"{path_b}")
-    overlay = Image.open(img_file)
-    width, height = overlay.size
-    overlay = overlay.resize((width * 1, height * 1))
-    my_image.paste(overlay, (100, 4000), mask=overlay)
-    # image_editable = ImageDraw.Draw(my_image)
-    my_image.save(f"{path_b}")
-
-
-def glue_images_smooth(path_a, path_b):
-    img_file = f"{path_a}"
-    my_image = Image.open(f"{path_b}")
-    overlay = Image.open(img_file)
-    width, height = overlay.size
-    # print(width, height)
-    overlay = overlay.resize((width * 1, height * 1))
-    my_image.paste(overlay, (100, 4200), mask=overlay)
-    # image_editable = ImageDraw.Draw(my_image)
-    my_image.save(f"{path_b}")
 
 
 def randar_chart(categories, sales, path):
@@ -329,7 +260,6 @@ def glue_images_3(path):
     my_image.paste(overlay, (5000, 50), mask=overlay)
     # image_editable = ImageDraw.Draw(my_image)
     my_image.save(f"{path}/roll/finale.jpg")
-
     my_image.save(f"{path}/roll/finale.jpg")
     my_image.save(f"{path}/roll/finale_a.jpg")
     my_image.save(f"{path}/roll/finale_b.jpg")
