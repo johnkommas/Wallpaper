@@ -124,12 +124,15 @@ def run(temp_file, multiple_data):
 
     params = {"year": today.year - 5, "month": today.month, "day": today.day}
     params_2 = {"year": today.year - 5, "month": today.month}
+
+    #
     if multiple_data in (2, 3):
         df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
     else:
         df_sales_elounda = pd.DataFrame()
     first_q_timer = time.perf_counter()
     print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
+
     if multiple_data == 3:
         df = fetch_data_with_params(SQL_FILES[1], params_2)
         second_q_timer = time.perf_counter()
