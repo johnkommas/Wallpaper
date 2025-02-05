@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -13,7 +15,7 @@ def time_series_analysis(df, path_a, loop_counter):
     Εξάγουμε ένα διάγραμμα τύπου line όπου εμφανίζεται η δραστηριότητα στον χρόνο.
     """
     # SETUP COLORS
-    color = ["#778DA9", "#0D1B2A", "#778DA9", "#D7C9AA",]
+    color = [os.getenv("COLOR_B"), os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
 
 
     # Συνδυασμός ημερομηνίας και ώρας για δημιουργία πλήρους timestamp
@@ -32,8 +34,7 @@ def time_series_analysis(df, path_a, loop_counter):
         color=color[1],
         title=f"{len(df)} Attacks Over Time "
     )
-    # plt.xlabel("Time", fontsize=12, color=color_pallete_b)  # Προσαρμογή στα labels
-    # plt.ylabel("Number of Attacks", fontsize=12, color=color_pallete_b)
+
 
     # Αφαίρεση περιγράμματος (box off)
     ax = plt.gca()  # Λήψη του τρέχοντος άξονα
@@ -467,8 +468,8 @@ def visualize_api_hackers_ports(df, top_n=5, path_a="./hacker_analysis_donut.png
 
 
     # Color Palette Setup
-    color_pallete_a = "#0D1B2A"  # Dark Blue (Main colors for slices)
-    highlight_color = "#D7C9AA"  # Light Crème (Highlight color for the highest slice)
+    color_pallete_a = os.getenv("COLOR_A")  # Dark Blue (Main colors for slices)
+    highlight_color = os.getenv("COLOR_C") # Light Crème (Highlight color for the highest slice)
 
     # Compute Number of Hackers (Unique IP Count) for each API
     api_ips = (
@@ -533,10 +534,10 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
 
 
     # Color Palette Setup
-    color_pallete_a = "#0D1B2A"  # Dark Blue (Main colors for slices)
-    highlight_color = "#D7C9AA"  # Light Crème (Highlight color for the highest slice)
-    percent_font_color_light = "#D7C9AA"  # Light Crème for non-max percentage labels
-    percent_font_color_default = "#000000"  # Default darker font for max percentage label
+    color_pallete_a = os.getenv("COLOR_A")  # Dark Blue (Main colors for slices)
+    highlight_color = os.getenv("COLOR_C")  # Light Crème (Highlight color for the highest slice)
+    percent_font_color_light = os.getenv("COLOR_C") # Light Crème for non-max percentage labels
+    percent_font_color_default = os.getenv("COLOR_A")  # Default darker font for max percentage label
 
     # Compute Number of Hackers (Unique IP Count) for each API
     api_ips = (
@@ -607,7 +608,7 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
             autotext.set_fontsize(percentage_font_size)
             # autotext.set_fontweight("bold")
             # Adjust font color
-            if (count == max(hacker_counts)) and (color != "#0D1B2A"):
+            if (count == max(hacker_counts)) and (color != os.getenv("COLOR_A")):
                 autotext.set_color(
                     percent_font_color_default
                 )  # Default for the max slice
@@ -637,8 +638,8 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
     """
 
     # Color Palette Setup
-    color_pallete_a = "#0D1B2A"  # Dark Blue (Main color for slices)
-    highlight_color = "#D7C9AA"  # Light Crème (Highlight color for the highest slice)
+    color_pallete_a = os.getenv("COLOR_A") # Dark Blue (Main color for slices)
+    highlight_color = os.getenv("COLOR_C") # Light Crème (Highlight color for the highest slice)
 
 
     # Compute Number of Hackers (Unique IP Count) for each API
@@ -693,7 +694,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
         autotext.set_fontsize(percentage_font_size)
         # autotext.set_fontweight("bold")
         # Adjust font color
-        if (count == max(hacker_counts)) and (color != "#0D1B2A"):
+        if (count == max(hacker_counts)) and (color != os.getenv("COLOR_A")):
             autotext.set_color(color_pallete_a)  # Default for the max slice
         else:
             autotext.set_color(
@@ -711,15 +712,19 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
 
 
 def sankey_graph(i, df, path_a):
-    colors = ["#0D1B2A", "#0D1B2A", "#778DA9", "#D7C9AA"]
-    text_colors = [None, "#D7C9AA", "#0D1B2A", "#0D1B2A"]
+    colors = [os.getenv("COLOR_A"),
+              os.getenv("COLOR_A"),
+              os.getenv("COLOR_B"),
+              os.getenv("COLOR_C"),]
+
+    text_colors = [None, os.getenv("COLOR_C"), os.getenv("COLOR_A"),os.getenv("COLOR_A")]
     df["Api"] = df["Api"].replace(
         {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
     )
 
     # Ομαδοποίηση δεδομένων: Υπολογίζουμε το πλήθος επιθέσεων ανά Api και Port
     grouped_data = df.groupby(["Api", "Port"]).size().reset_index(name="Attacks")
-    highlight_color = "#D7C9AA"
+    highlight_color = os.getenv("COLOR_C")
 
     # Δημιουργία λιστών Api και Ports (για τη μοναδική τιμή κάθε κόμβου)
     apis = grouped_data["Api"].unique().tolist()
