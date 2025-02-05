@@ -10,6 +10,7 @@ from mikrotik import data_analysis
 from routeros_api import connect
 import routeros_api
 import paramiko
+from datetime import datetime
 
 # Προβολή όλων των στηλών
 pd.set_option("display.max_columns", None)
@@ -51,7 +52,38 @@ def connect_to_gmail():
         return None
 
 
-import paramiko
+# 📡 Who is Using the Most Bandwidth?
+def get_Bandwidth_Usage(client):
+    # Execute the command
+    command = "/ip accounting snapshot print"
+    stdin, stdout, stderr = client.exec_command(command)
+
+    # Read and Return output
+    return stdout.read().decode("utf-8")
+
+
+def get_active_vpn_users(client):
+    # Εκτέλεση εντολής για ενεργές PPP συνδέσεις (VPN)
+    stdin, stdout, stderr = client.exec_command("/ppp active print terse")
+    ppp_output = stdout.read().decode("utf-8")
+
+    # Διαχωρισμός εξόδου σε λίστα, γραμμή ανά γραμμή
+    lines = ppp_output.strip().split("\n")
+
+    # Δημιουργία λίστας λεξικών για τα δεδομένα
+    data = []
+    for line in lines:
+        entry = {}
+        # Χώρισμα κάθε γραμμής με βάση το κενό διάστημα
+        for part in line.split():
+            if "=" in part:
+                key, value = part.split("=", 1)  # Διαχωρισμός στο "="
+                entry[key] = value
+        data.append(entry)
+
+    # Μετατροπή σε DataFrame
+    df = pd.DataFrame(data)
+    return df
 
 
 def connect_via_ssh():
@@ -67,38 +99,14 @@ def connect_via_ssh():
             password=os.getenv("MIKROTIK_PASS"),
             port=int(os.getenv("MIKROTIK_PORT", 22)),  # Προεπιλογή port: 22
         )
-        # print("Connected via SSH successfully.")
-
-        # Εκτέλεση εντολής για ενεργές PPP συνδέσεις (VPN)
-        # print("\nFetching active PPP connections:")
-        stdin, stdout, stderr = client.exec_command("/ppp active print terse")
-        ppp_output = stdout.read().decode("utf-8")
-
-        # Διαχωρισμός εξόδου σε λίστα, γραμμή ανά γραμμή
-        lines = ppp_output.strip().split("\n")
-
-        # Δημιουργία λίστας λεξικών για τα δεδομένα
-        data = []
-        for line in lines:
-            entry = {}
-            # Χώρισμα κάθε γραμμής με βάση το κενό διάστημα
-            for part in line.split():
-                if "=" in part:
-                    key, value = part.split("=", 1)  # Διαχωρισμός στο "="
-                    entry[key] = value
-            data.append(entry)
-
-        # Μετατροπή σε DataFrame
-        df = pd.DataFrame(data)
-
-        # Κλείσιμο σύνδεσης
-        client.close()
-
-        return df  # Επιστροφή του DataFrame
-
     except Exception as e:
         print(f"Error connecting via SSH: {e}")
-        return None
+    finally:
+        if client:
+            VPN = get_active_vpn_users(client)
+            client.close()
+            return VPN
+
 
 
 # Συνάρτηση για ασφαλή αποκωδικοποίηση
@@ -114,9 +122,6 @@ def decode_safe(payload, encoding="utf-8"):
             print("None encoding found")
             # Fallback: αγνόησε μη έγκυρους χαρακτήρες για να προχωρήσεις στην επεξεργασία
             return payload.decode("utf-8", errors="ignore")
-
-
-from datetime import datetime
 
 
 def extend_df_with_columns(df):
@@ -231,8 +236,8 @@ def retrieve_mikrotik_emails(_mail, label, counter_file="counter.txt"):
                             content_disposition = str(part.get("Content-Disposition"))
 
                             if (
-                                content_type == "text/plain"
-                                and "attachment" not in content_disposition
+                                    content_type == "text/plain"
+                                    and "attachment" not in content_disposition
                             ):
                                 # Απόκτηση του περιεχομένου και ασφαλής αποκωδικοποίηση
                                 body = decode_safe(part.get_payload(decode=True))
@@ -263,7 +268,8 @@ def run(csv_file="emails_data.csv"):
     mail = connect_to_gmail()
     if mail:
         # Ελέγχουμε για νέα emails
-        new_emails_df = retrieve_mikrotik_emails(mail, label="MIKROTIK")  # Χρησιμοποιήστε το 'INBOX' ή το κατάλληλο label
+        new_emails_df = retrieve_mikrotik_emails(mail,
+                                                 label="MIKROTIK")  # Χρησιμοποιήστε το 'INBOX' ή το κατάλληλο label
         mail.logout()
 
         if new_emails_df is not None:
@@ -307,5 +313,3 @@ def run(csv_file="emails_data.csv"):
 def plot_run(df, path, sankey_path, color, loop_counter):
     data_analysis.visualize_api_hackers_ports_donut(df, path_a=path, color=color)
     data_analysis.sankey_graph(loop_counter, df, path_a=sankey_path)
-
-
