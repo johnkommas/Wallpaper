@@ -24,7 +24,7 @@ def cards_donut(df, path_a, color):
 
     # Χρώματα (dummy wedge παίρνει "none" για να είναι αόρατο)
     colors = [
-        color if count == max(card_count[:-1]) else color_pallete_a for count in card_count
+        highlight_color if count == max(card_count[:-1]) else color_pallete_a for count in card_count
     ]
     colors[-1] = "none"  # Το dummy wedge δεν έχει χρώμα
 
@@ -52,7 +52,7 @@ def cards_donut(df, path_a, color):
             # Επιλέγουμε χρώμα για το max κομμάτι
             text_color = (
                 color_pallete_a
-                if (card_count[i] == max(card_count[:-1]) and color != color_pallete_a)
+                if (card_count[i] == max(card_count[:-1]) and highlight_color != color_pallete_a)
                 else highlight_color
             )
 
@@ -69,7 +69,7 @@ def cards_donut(df, path_a, color):
 
 
     # Κεντρικός κύκλος για το σχεδιαστικό εφέ
-    center_circle = plt.Circle((0, 0), 0.60, fc="#415a77")  # Χρώμα διατηρούμε όπως θέλεις
+    center_circle = plt.Circle((0, 0), 0.60, fc=os.getenv('COLOR_BG'))  # Χρώμα διατηρούμε όπως θέλεις
     fig = plt.gcf()
     plt.gca().add_artist(center_circle)
 
