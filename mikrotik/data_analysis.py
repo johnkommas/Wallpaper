@@ -553,7 +553,7 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
     # Determine colors: Highlight the API with the highest count
 
     colors = [
-        color if count == max(hacker_counts) else color_pallete_a
+        highlight_color if count == max(hacker_counts) else color_pallete_a
         for count in hacker_counts
     ]
 
@@ -607,7 +607,7 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
             autotext.set_fontsize(percentage_font_size)
             # autotext.set_fontweight("bold")
             # Adjust font color
-            if (count == max(hacker_counts)) and (color != os.getenv("COLOR_A")):
+            if (count == max(hacker_counts)) and (highlight_color != os.getenv("COLOR_A")):
                 autotext.set_color(
                     percent_font_color_default
                 )  # Default for the max slice
@@ -651,7 +651,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color):
 
     # Determine colors: Highlight the API with the highest count
     colors = [
-        color if count == max(hacker_counts) else color_pallete_a
+        highlight_color if count == max(hacker_counts) else color_pallete_a
         for count in hacker_counts
     ]
 
@@ -692,7 +692,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color):
         autotext.set_fontsize(percentage_font_size)
         # autotext.set_fontweight("bold")
         # Adjust font color
-        if (count == max(hacker_counts)) and (color != os.getenv("COLOR_A")):
+        if (count == max(hacker_counts)) and (highlight_color != os.getenv("COLOR_A")):
             autotext.set_color(color_pallete_a)  # Default for the max slice
         else:
             autotext.set_color(
@@ -711,7 +711,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color):
 
 def sankey_graph(i, df, path_a):
     colors = [os.getenv("COLOR_A"),
-              os.getenv("COLOR_A"),
+              os.getenv("COLOR_C"),
               os.getenv("COLOR_C"),
               os.getenv("COLOR_C"),]
 
