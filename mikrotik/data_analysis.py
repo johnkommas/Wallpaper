@@ -51,7 +51,6 @@ def time_series_analysis(df, path_a, loop_counter):
     plt.savefig(path_a, transparent=True, dpi=300)
     plt.close()
 
-
     return attack_counts
 
 
@@ -631,7 +630,7 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
         plt.close()
 
 
-def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
+def visualize_api_hackers_ports_donut(df, path_a, color):
     """
     Visualize Number of Hackers (Unique IP Count) using a Donut Chart.
     Percent values follow the donut's curve with automatically calculated font colors for better visibility.
@@ -644,7 +643,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
 
     # Compute Number of Hackers (Unique IP Count) for each API
     api_ips = ( df.groupby("Api")["Public IP"].nunique().reset_index(name="Number of Hackers"))
-    sorted_data = api_ips.sort_values(by="Number of Hackers", ascending=False).head(top_n)
+    sorted_data = api_ips.sort_values(by="Number of Hackers", ascending=False)
 
     # Data for Chart
     labels = sorted_data["Api"]
@@ -658,7 +657,6 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
 
     # Font setup for annotations (bigger and bold)
     percentage_font_size = 18  # Adjusted for better visibility
-    label_font_size = 18  # Label size adjusted for better alignment
     labels = sorted_data["Api"].replace(
         {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
     )
@@ -702,7 +700,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
             )  # Light crème for non-max slices
 
     # Add a colored circle at the center to create a donut effect
-    center_circle = plt.Circle((0, 0), 0.60, fc="#415a77")  # Custom color
+    center_circle = plt.Circle((0, 0), 0.60, fc=os.getenv("COLOR_BG"))  # Custom color
     plt.gca().add_artist(center_circle)
 
     # Save Image
@@ -714,7 +712,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color, top_n=5):
 def sankey_graph(i, df, path_a):
     colors = [os.getenv("COLOR_A"),
               os.getenv("COLOR_A"),
-              os.getenv("COLOR_B"),
+              os.getenv("COLOR_C"),
               os.getenv("COLOR_C"),]
 
     text_colors = [None, os.getenv("COLOR_C"), os.getenv("COLOR_A"),os.getenv("COLOR_A")]
@@ -724,7 +722,6 @@ def sankey_graph(i, df, path_a):
 
     # Ομαδοποίηση δεδομένων: Υπολογίζουμε το πλήθος επιθέσεων ανά Api και Port
     grouped_data = df.groupby(["Api", "Port"]).size().reset_index(name="Attacks")
-    highlight_color = os.getenv("COLOR_C")
 
     # Δημιουργία λιστών Api και Ports (για τη μοναδική τιμή κάθε κόμβου)
     apis = grouped_data["Api"].unique().tolist()
