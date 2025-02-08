@@ -6,6 +6,8 @@ from PIL import Image
 
 def cards_donut(df, path_a, color):
 
+    # font_name = f"/System/Library/Fonts/{os.getenv('FONT_AVENIR_NEXT')}"
+
     # REMOVE Fixed
     df = df[df.index != "Fixed"]
     # Χρώματα παλέτας
@@ -35,7 +37,9 @@ def cards_donut(df, path_a, color):
         startangle=90,  # Ξεκινάει από την κορυφή και περιστρέφεται
         counterclock=False,  # Δεξιόστροφη φορά
         wedgeprops=dict(width=0.4),  # Πάχος ντόνατ
-        textprops={"fontsize": 12},
+        textprops={"fontsize": 12,
+                   # "fontproperties": font_name
+                   },
     )
 
     # Προσθήκη απόλυτων αριθμών πάνω από τις φέτες (χωρίς υπολογισμό ποσοστού)
@@ -45,6 +49,13 @@ def cards_donut(df, path_a, color):
             angle = (wedge.theta2 + wedge.theta1) / 2  # Γωνία wedge
             x = np.cos(np.radians(angle)) * 0.8  # Υπολογισμός x
             y = np.sin(np.radians(angle)) * 0.8  # Υπολογισμός y
+            # Επιλέγουμε χρώμα για το max κομμάτι
+            text_color = (
+                color_pallete_a
+                if (card_count[i] == max(card_count[:-1]) and color != color_pallete_a)
+                else highlight_color
+            )
+
             plt.text(
                 x,
                 y,
@@ -52,8 +63,10 @@ def cards_donut(df, path_a, color):
                 ha="center",
                 va="center",
                 fontsize=10,
-                color="white"
+                color= text_color,
+                # fontproperties= font_name
             )
+
 
     # Κεντρικός κύκλος για το σχεδιαστικό εφέ
     center_circle = plt.Circle((0, 0), 0.60, fc="#415a77")  # Χρώμα διατηρούμε όπως θέλεις
