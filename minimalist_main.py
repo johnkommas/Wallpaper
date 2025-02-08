@@ -42,9 +42,9 @@ print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
 
 OneDrive = os.getenv('ONEDRIVE')
-path = f"{OneDrive}/Pictures/Wallpaper/in"
-path_2 = f"{OneDrive}/Pictures/Wallpaper/roll"
-path_3 = f"{OneDrive}/Pictures/Wallpaper/in/OFFLINE"
+path = f"{OneDrive}/Wallpaper/in"
+path_2 = f"{OneDrive}/Wallpaper/roll"
+path_3 = f"{OneDrive}/Wallpaper/in/OFFLINE"
 log_path = f"{os.getcwd()}/std.log"
 logging.basicConfig(
     filename=log_path, filemode="w", format="%(asctime)s - %(levelname)s - %(message)s"
@@ -203,6 +203,7 @@ play_sound(SOUND_B)
 # start_at_exact_second()
 play_sound(SOUND_C)
 running = True
+total_timers =[]
 while running:
     file = "wallpaper"
     delete_all_files_inside_folder(f"{path}/TEMP/")
@@ -223,9 +224,9 @@ while running:
             timers[file] = sleep_t
 
             times += 1
-
+            total_timers.append(round(stop - start))
             print(
-                f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
+                f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND} || TIMERS TABLE {total_timers}",
                 end="", )
             play_sound(SOUND_B)
             if multiple_data == 1:
