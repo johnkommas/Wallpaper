@@ -3,7 +3,6 @@ import logging
 import shutil
 import sys
 import time
-
 import numpy as np
 import pandas as pd
 from SQL_FOLDER import fetch_data, sql_connect
@@ -42,9 +41,9 @@ print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
 
 OneDrive = os.getenv('ONEDRIVE')
-path = f"{OneDrive}/Wallpaper/in"
+path = f"{OneDrive}/Wallpaper/in/{os.getenv('COLOR_PALLETE')}"
 path_2 = f"{OneDrive}/Wallpaper/roll"
-path_3 = f"{OneDrive}/Wallpaper/in/OFFLINE"
+
 log_path = f"{os.getcwd()}/std.log"
 logging.basicConfig(
     filename=log_path, filemode="w", format="%(asctime)s - %(levelname)s - %(message)s"
@@ -234,8 +233,6 @@ while running:
 
         else:
             play_sound(SOUND_A)
-            # wp_logger.error("VPN OFFLINE")
-            # minimalist_write.offline(path, path_2, path_3, "VPN OFFLINE")
             sql_connect.open_vpn(failed)
             failed += 1
             print(
@@ -243,7 +240,6 @@ while running:
                 end="")
     except KeyboardInterrupt:
         play_sound(SOUND_A)
-        # minimalist_write.offline(path, path_2, path_3,  "SRV OFFLINE")
         print("\n🟢 Safely stopping the app... Cleaning up resources.")
         pygame.mixer.quit()
         print("🟢 The App will Now stop Running")
