@@ -189,7 +189,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, loop_counter):
 
 
 def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
-    colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_B")]
+    colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     paths = [None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
     youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i])
     box = (150, 1500)
@@ -198,14 +198,14 @@ def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
     glue_image_general(paths[i], path_b, (150, 2300))
 
 
-def plot_run_mikrotik(loop_counter, pie_df, path_b, path,):
+def plot_run_mikrotik(i, pie_df, path_b, path,):
     # RUN MIKROTIK
     _path = [0, f"{path}/fingerprint_1.png", f"{path}/fingerprint_2.png", f"{path}/fingerprint_3.png"]
-    color = os.getenv("COLOR_A") if loop_counter == 1 else os.getenv("COLOR_B")
-    app.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", color, loop_counter)
+    colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
+    app.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", f"{path}/line.png",colors[i], i)
     glue_image_general(f"{path}/pie.png", path_b, (9500, 50), .5)
     glue_image_general(f"{path}/sankey.png", path_b, (9300, 1500))
-    glue_image_general(_path[loop_counter], path_b, (10170, 700))
+    glue_image_general(_path[i], path_b, (10170, 700))
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
