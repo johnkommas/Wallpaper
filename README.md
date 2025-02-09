@@ -51,6 +51,14 @@ https://github.com/user-attachments/assets/1a1cb852-ee46-4a13-93d9-823a55b1c30c
 
 ![12](https://github.com/user-attachments/assets/cef2168f-ed51-4b65-b567-3b3e89a0a96e)
 
+![2E13F2D1-9165-45DE-AAB6-C4D87B30C62E_1_105_c](https://github.com/user-attachments/assets/4cabed69-1cde-41d1-a588-09d7dfd62bbd)
+
+## 🛠️ Tool Kit Color Pallete Examples
+![1](https://github.com/user-attachments/assets/3b18ab72-562f-46ea-8a67-d643b52374d4)
+![2](https://github.com/user-attachments/assets/3d30a5de-05a2-404a-b6cc-1ba34bcc9d83)
+![3](https://github.com/user-attachments/assets/e7276208-c7b4-4bc6-8495-a1df478b395b)
+
+
 ---
 
 ## 📈 Business Impact
