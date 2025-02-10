@@ -711,9 +711,10 @@ def visualize_api_hackers_ports_donut(df, path_a, color, i):
 
 def sankey_graph(i, df, path_a):
     colors = [os.getenv("COLOR_A"),
-              os.getenv("COLOR_C"),
-              os.getenv("COLOR_C"),
+              os.getenv("COLOR_A"),
+              os.getenv("COLOR_B"),
               os.getenv("COLOR_C"),]
+    text_color = [os.getenv("COLOR_A"), os.getenv("COLOR_C"), os.getenv("COLOR_C"), os.getenv("COLOR_A"),]
 
     df["Api"] = df["Api"].replace(
         {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
@@ -767,7 +768,8 @@ def sankey_graph(i, df, path_a):
     fig.update_layout(
         width=400,  # Προσαρμοσμένο πλάτος
         height=600,  # Προσαρμοσμένο ύψος
-        paper_bgcolor="rgba(0,0,0,0)",  # Διαφάνεια φόντου
+        paper_bgcolor="rgba(0,0,0,0)", # Διαφάνεια φόντου
+        font_color=text_color[i],
     )
 
     # Αποθήκευση ως εικόνα
