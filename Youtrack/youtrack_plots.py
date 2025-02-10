@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 
-def cards_donut(df, path_a, color):
+def cards_donut(df, path_a, color, counter):
 
     # font_name = f"/System/Library/Fonts/{os.getenv('FONT_AVENIR_NEXT')}"
 
@@ -24,7 +24,7 @@ def cards_donut(df, path_a, color):
 
     # Χρώματα (dummy wedge παίρνει "none" για να είναι αόρατο)
     colors = [
-        highlight_color if count == max(card_count[:-1]) else color_pallete_a for count in card_count
+        color if count == max(card_count[:-1]) else color_pallete_a for count in card_count
     ]
     colors[-1] = "none"  # Το dummy wedge δεν έχει χρώμα
 
@@ -52,7 +52,7 @@ def cards_donut(df, path_a, color):
             # Επιλέγουμε χρώμα για το max κομμάτι
             text_color = (
                 color_pallete_a
-                if (card_count[i] == max(card_count[:-1]) and highlight_color != color_pallete_a)
+                if (card_count[i] == max(card_count[:-1]) and counter == 3)
                 else highlight_color
             )
 
