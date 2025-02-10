@@ -630,7 +630,7 @@ def visualize_api_hackers_ports_pie(df, path_a, color, top_n=5):
         plt.close()
 
 
-def visualize_api_hackers_ports_donut(df, path_a, color):
+def visualize_api_hackers_ports_donut(df, path_a, color, i):
     """
     Visualize Number of Hackers (Unique IP Count) using a Donut Chart.
     Percent values follow the donut's curve with automatically calculated font colors for better visibility.
@@ -651,7 +651,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color):
 
     # Determine colors: Highlight the API with the highest count
     colors = [
-        highlight_color if count == max(hacker_counts) else color_pallete_a
+        color if count == max(hacker_counts) else color_pallete_a
         for count in hacker_counts
     ]
 
@@ -692,7 +692,7 @@ def visualize_api_hackers_ports_donut(df, path_a, color):
         autotext.set_fontsize(percentage_font_size)
         # autotext.set_fontweight("bold")
         # Adjust font color
-        if (count == max(hacker_counts)) and (highlight_color != os.getenv("COLOR_A")):
+        if (count == max(hacker_counts)) and (i == 3):
             autotext.set_color(color_pallete_a)  # Default for the max slice
         else:
             autotext.set_color(
@@ -715,7 +715,6 @@ def sankey_graph(i, df, path_a):
               os.getenv("COLOR_C"),
               os.getenv("COLOR_C"),]
 
-    text_colors = [None, os.getenv("COLOR_C"), os.getenv("COLOR_A"),os.getenv("COLOR_A")]
     df["Api"] = df["Api"].replace(
         {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
     )
