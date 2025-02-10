@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def monthly_turnover_donut(df, path_a):
+def monthly_turnover_donut(df, path_a, color, i):
     """
     Visualize Number of Hackers (Unique IP Count) using a Donut Chart.
     Percent values follow the donut's curve with automatically calculated font colors for better visibility.
@@ -21,7 +21,7 @@ def monthly_turnover_donut(df, path_a):
 
     # Determine colors: Highlight the API with the highest count
     colors = [
-        highlight_color if count == max(turn_over) else color_pallete_a
+        color if count == max(turn_over) else color_pallete_a
         for count in turn_over
     ]
 
@@ -82,7 +82,7 @@ def monthly_turnover_donut(df, path_a):
         autotext.set_fontsize(percentage_font_size)
         # autotext.set_fontweight("bold")
         # Adjust font color
-        if (count == max(turn_over)) and (highlight_color != os.getenv("COLOR_A")):
+        if (count == max(turn_over)) and (i == 3):
             autotext.set_color(color_pallete_a)  # Default for the max slice
         else:
             autotext.set_color(highlight_color)  # Light crème for non-max slices
