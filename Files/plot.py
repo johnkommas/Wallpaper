@@ -12,6 +12,7 @@ from matplotlib import font_manager
 from scipy.ndimage.filters import gaussian_filter1d
 from mikrotik import app
 from Youtrack import youtrack_plots
+from Entersoft import entersoft_plot
 from matplotlib.patches import FancyBboxPatch
 
 
@@ -206,6 +207,12 @@ def plot_run_mikrotik(i, pie_df, path_b, path,):
     glue_image_general(f"{path}/pie.png", path_b, (9500, 50), .5)
     glue_image_general(f"{path}/sankey.png", path_b, (9300, 1500))
     glue_image_general(_path[i], path_b, (10130, 700))
+
+
+def plot_run_monthly_turnover(i,dataframe, path_b, path):
+    _path = f"{path}/monthly_turn_over.png"
+    entersoft_plot.monthly_turnover_donut(dataframe, _path)
+    glue_image_general(_path, path_b, (2050, 1400))
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
