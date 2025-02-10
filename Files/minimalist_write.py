@@ -128,7 +128,7 @@ def paste_image(my_image, overlay_image, xy, resize):
     return my_image
 
 
-def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status_users_elounda):
+def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status_users_elounda, monthly_turnover_df):
     start = ctime.perf_counter()
 
     # SETUP FONTS
@@ -166,7 +166,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         (8500, 2250 - calibrate_y),  # KYRIAKOS 4h.1m
         (8500, 1400 - calibrate_y),  # M.KOUTOULAKIS 12h.52m
         (7500, 1800 - calibrate_y),  # M.RAPANAKI 3h.52m
-        (7500, 950 - calibrate_y),   # RADMIN 13h.57m
+        (7500, 950 - calibrate_y),  # RADMIN 13h.57m
         (8500, 3250 - calibrate_y),  # XNARAKI 3h.58m
     ]
 
@@ -176,7 +176,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         (8080, 2100 - calibrate_y),  # KYRIAKOS
         (8080, 1250 - calibrate_y),  # M.KOUTOULAKIS
         (8230, 1670 - calibrate_y),  # M.RAPANAKI
-        (8230, 830 - calibrate_y),   # RADMIN
+        (8230, 830 - calibrate_y),  # RADMIN
         (8080, 3130 - calibrate_y),  # XNARAKI
     ]
     """
@@ -239,7 +239,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
         for image, editable in zip(images, editables):
             write_years_and_days(
-
                 image_editable=editable,
                 df_years=df_years,
                 specific_date=specific_date,
@@ -274,6 +273,13 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                                    path=path)
             plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
+
+            # Call PLOT for Donut Monthly TurnOver
+            plot.plot_run_monthly_turnover(i,
+                                           monthly_turnover_df,
+                                           path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+                                           path=path)
+
             vpn_X = 5600
             step = 200
             vpn_Y = 200
@@ -285,9 +291,11 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                 box = (vpn_X + step * index, vpn_Y)
 
                 # Έλεγχος αν το όνομα υπάρχει και καθορισμός της κατάστασης
-                vpn_status_result = (
-                    Vpn_Online if (vpn_status["name"] == user).any() else Vpn_Offline
-                )
+                try:
+                    vpn_status_result = (Vpn_Online if (vpn_status["name"] == user).any() else Vpn_Offline)
+                except KeyError:
+
+                    vpn_status_result = Vpn_Offline
 
                 # Δημιουργία του path και σύνδεση της εικόνας
                 plot.glue_image_general(
