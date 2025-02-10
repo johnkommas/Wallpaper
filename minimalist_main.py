@@ -13,7 +13,6 @@ import signal
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
 
 
@@ -34,8 +33,8 @@ def get_input_with_timeout(prompt, timeout, default):
 
 
 refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 120))
-multiple_data = int(get_input_with_timeout("Multiple Data? (0: Mikrotik + Youtrack) (1: None) (2:Simple) (3:Full): ", 5, 3))
-
+multiple_data = int(
+    get_input_with_timeout("Multiple Data? (0: Mikrotik + Youtrack) (1: None) (2:Simple) (3:Full): ", 5, 3))
 
 print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
@@ -51,9 +50,10 @@ logging.basicConfig(
 wp_logger = logging.getLogger()
 wp_logger.setLevel("WARNING")
 SQL_FILES = [
-    "ESFIItemEntry_ESFIItemPeriodics_a.sql",
-    "ESFIItemEntry_ESFIItemPeriodics_c.sql",
-    "ES00EventLog_a.sql",
+    "ESFIItemEntry_ESFIItemPeriodics_a.sql",  # 0
+    "ESFIItemEntry_ESFIItemPeriodics_c.sql",  # 1
+    "ES00EventLog_a.sql",  # 2
+    "ESFIItemPeriodics_MonthlyTurnOver.sql"  # 3
 ]
 
 # SETUP SOUNDS
@@ -166,7 +166,10 @@ def run(temp_file, multiple_data):
     status_users_elounda = complete_df(em_df)
     status_users_elounda = filter_data(status_users_elounda)
 
-    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda)
+    # GET MONTHLY TURNOVER DATA
+    monthly_turnover_df = fetch_data.get_sql_data(SQL_FILES[3])
+
+    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda, monthly_turnover_df)
     stop_ = time.perf_counter()
     return start_, stop_
 
@@ -202,7 +205,7 @@ play_sound(SOUND_B)
 # start_at_exact_second()
 play_sound(SOUND_C)
 running = True
-total_timers =[]
+total_timers = []
 while running:
     file = "wallpaper"
     delete_all_files_inside_folder(f"{path}/TEMP/")
@@ -253,4 +256,3 @@ while running:
         print(
             f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
             end="")
-
