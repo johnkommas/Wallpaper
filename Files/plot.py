@@ -150,10 +150,12 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, loop_counter):
     current_max = np.max(Y)
     if loop_counter == 0:
         print(f"🟢MEDIAN = {median}€", end="")
-    if loop_counter == 3:
-        colors = [os.getenv("COLOR_C") if i >= current_max else os.getenv("COLOR_A") for i in Y]
-    else:
+    if loop_counter == 1:
         colors = [os.getenv("COLOR_A") for _ in Y]
+    elif loop_counter == 2:
+        colors = [os.getenv("COLOR_B") for _ in Y]
+    elif loop_counter == 3:
+        colors = [os.getenv("COLOR_C") if i >= current_max else os.getenv("COLOR_A") for i in Y]
 
     plt.bar(X, Y, alpha=0.9, color=colors)
     line_color = [os.getenv("COLOR_B"), os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
@@ -162,7 +164,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, loop_counter):
         X,
         ysmoothed if loop_counter in (1, 3) else Y_all,
         alpha=0.9,
-        color=line_color[1],
+        color=line_color[loop_counter],
     )
     for a, b in zip(X, Y):
         label = f"{b}€" if b > 0 else ""
@@ -192,7 +194,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path_b, loop_counter):
 def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     paths = [None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
-    youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i])
+    youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i], i)
     box = (150, 1500)
     resize = 1
     glue_image_general(youtrack_image, path_b, box, resize)
@@ -209,10 +211,13 @@ def plot_run_mikrotik(i, pie_df, path_b, path,):
     glue_image_general(_path[i], path_b, (10130, 700))
 
 
-def plot_run_monthly_turnover(i,dataframe, path_b, path):
+def plot_run_monthly_turnover(i, dataframe, path_b, path):
     _path = f"{path}/monthly_turn_over.png"
-    entersoft_plot.monthly_turnover_donut(dataframe, _path)
+    colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
+    logo_path = f"{path}/gears_{i}.png"
+    entersoft_plot.monthly_turnover_donut(dataframe, _path, colors[i], i)
     glue_image_general(_path, path_b, (2050, 1400))
+    glue_image_general(logo_path, path_b, (2900, 2250), 1.5)
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
