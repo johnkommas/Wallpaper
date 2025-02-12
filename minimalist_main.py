@@ -33,8 +33,16 @@ def get_input_with_timeout(prompt, timeout, default):
 
 
 refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 3600))
-multiple_data = int(
-    get_input_with_timeout("Multiple Data? (0: Mikrotik + Youtrack) (1: None) (2:Simple) (3:Full): ", 5, 3))
+data = ["MIKROTIK", "NONE", "SIMPLE"]
+# Λήψη της τιμής της μεταβλητής περιβάλλοντος
+color_pallete = os.getenv("COLOR_PALLETE")
+
+# Έλεγχος εάν η μεταβλητή περιβάλλοντος είναι έγκυρη και υπάρχει στη λίστα
+if color_pallete in data:
+    multiple_data = data.index(color_pallete)
+else:
+    multiple_data = 3
+
 
 print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
