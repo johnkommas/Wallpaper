@@ -148,8 +148,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     images = [my_image_1, my_image_2, my_image_3]
     editables = [image_editable_1, image_editable_2, image_editable_3]
 
-    # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
-    dates_for_every_year = get_date_for_every_year(specific_date)
+
 
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
@@ -157,59 +156,56 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     c1 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
 
-    #ENTERSOFT ONLINE OFFLINE USERS
-    calibrate_y = 280
-    calibrate_x = 300
-    potitions = [
-        (8500, 4100 - calibrate_y),  # GIOTA 5Days
-        (7500, 3680 - calibrate_y),  # KOUTOULAKI 9h.29m
-        (8500, 2250 - calibrate_y),  # KYRIAKOS 4h.1m
-        (8500, 1400 - calibrate_y),  # M.KOUTOULAKIS 12h.52m
-        (7500, 1800 - calibrate_y),  # M.RAPANAKI 3h.52m
-        (7500, 950 - calibrate_y),  # RADMIN 13h.57m
-        (8500, 3250 - calibrate_y),  # XNARAKI 3h.58m
-    ]
+    if multiple_data == 3:
+        # ENTERSOFT ONLINE OFFLINE USERS
+        calibrate_y = 280
+        calibrate_x = 300
+        potitions = [
+            (8500, 4100 - calibrate_y),  # GIOTA 5Days
+            (7500, 3680 - calibrate_y),  # KOUTOULAKI 9h.29m
+            (8500, 2250 - calibrate_y),  # KYRIAKOS 4h.1m
+            (8500, 1400 - calibrate_y),  # M.KOUTOULAKIS 12h.52m
+            (7500, 1800 - calibrate_y),  # M.RAPANAKI 3h.52m
+            (7500, 950 - calibrate_y),  # RADMIN 13h.57m
+            (8500, 3250 - calibrate_y),  # XNARAKI 3h.58m
+        ]
 
-    image_potitions = [
-        (8080, 3980 - calibrate_y),  # GIOTA
-        (8230, 3550 - calibrate_y),  # KOUTOULAKI
-        (8080, 2100 - calibrate_y),  # KYRIAKOS
-        (8080, 1250 - calibrate_y),  # M.KOUTOULAKIS
-        (8230, 1670 - calibrate_y),  # M.RAPANAKI
-        (8230, 830 - calibrate_y),  # RADMIN
-        (8080, 3130 - calibrate_y),  # XNARAKI
-    ]
-    """
+        image_potitions = [
+            (8080, 3980 - calibrate_y),  # GIOTA
+            (8230, 3550 - calibrate_y),  # KOUTOULAKI
+            (8080, 2100 - calibrate_y),  # KYRIAKOS
+            (8080, 1250 - calibrate_y),  # M.KOUTOULAKIS
+            (8230, 1670 - calibrate_y),  # M.RAPANAKI
+            (8230, 830 - calibrate_y),  # RADMIN
+            (8080, 3130 - calibrate_y),  # XNARAKI
+        ]
+        EM_Users = os.getenv("EMUSERS").split(",")
+        for image, editable in zip(images, editables):
+            for pot, user in zip(potitions, EM_Users):
+                filtered_data = status_users_elounda["elapsed_time"][
+                    status_users_elounda.UserID.str.startswith(user)
+                ]
 
-    """
-    EM_Users = os.getenv("EMUSERS").split(",")
-    for image, editable in zip(images, editables):
-        for pot, user in zip(potitions, EM_Users):
-            filtered_data = status_users_elounda["elapsed_time"][
-                status_users_elounda.UserID.str.startswith(user)
-            ]
-
-            if not filtered_data.empty:
-                data = filtered_data.iloc[0]
+                if not filtered_data.empty:
+                    data = filtered_data.iloc[0]
+                    # print(user, data)
+                else:
+                    data = "ERROR"
                 # print(user, data)
-            else:
-                data = "ERROR"
-            # print(user, data)
-            editable.text(pot, data, os.getenv("COLOR_A"), font=timestamp_font_parse)
+                editable.text(pot, data, os.getenv("COLOR_A"), font=timestamp_font_parse)
 
-    for image in images:
-        for user, pots in zip(EM_Users, image_potitions):
-            filtered_data = status_users_elounda["COLOR"][
-                status_users_elounda.UserID.str.startswith(user)
-            ]
-            if not filtered_data.empty:
-                color = filtered_data.iloc[0]
-            else:
-                color = "red"
-            # print(color)
+        for image in images:
+            for user, pots in zip(EM_Users, image_potitions):
+                filtered_data = status_users_elounda["COLOR"][
+                    status_users_elounda.UserID.str.startswith(user)
+                ]
+                if not filtered_data.empty:
+                    color = filtered_data.iloc[0]
+                else:
+                    color = "red"
+                # print(color)
 
-            image = paste_image(image, f"{path}/{color}.png", xy=pots, resize=4)
-        # image.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
+                image = paste_image(image, f"{path}/{color}.png", xy=pots, resize=4)
 
     if multiple_data in (0, 3):
         # run mikrotik get dataframe
@@ -228,10 +224,13 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec Mikrotik - Youtrack || ", end="")
+
     c1 = ctime.perf_counter()
     # WRITING YEARS
     counter = 0
     if multiple_data in (2, 3):
+        # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
+        dates_for_every_year = get_date_for_every_year(specific_date)
 
         # LIST DATA
         data = list(df.TurnOver.values)
@@ -261,6 +260,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     c2 = ctime.perf_counter()
     print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
+
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
         vpn_status = app.connect_via_ssh()
@@ -274,11 +274,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
             plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
 
-            # Call PLOT for Donut Monthly TurnOver
-            plot.plot_run_monthly_turnover(i,
-                                           monthly_turnover_df,
-                                           path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
-                                           path=path)
+
 
             vpn_X = 5600
             step = 200
@@ -303,8 +299,12 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                 )
 
     if multiple_data == 3:
-
         for i in range(1, 4):
+            # Call PLOT for Donut Monthly TurnOver
+            plot.plot_run_monthly_turnover(i,
+                                           monthly_turnover_df,
+                                           path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+                                           path=path)
             plot.run_daily_smooth(
                 plot_df,
                 specific_day=specific_date,
