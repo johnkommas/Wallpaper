@@ -115,32 +115,6 @@ def run(temp_file, multiple_data):
     start_ = time.perf_counter()
     today = datetime.now()
 
-    def fetch_data_with_params(sql_file, params=None):
-        result = fetch_data.get_sql_data(sql_file, params)
-        if result is None or isinstance(result, type):
-            raise ValueError(f"SQL file '{sql_file}' returned invalid data!")
-        return result
-
-    params = {"year": today.year - 5, "month": today.month, "day": today.day}
-    params_2 = {"year": today.year - 5, "month": today.month}
-
-    #
-    if multiple_data in (2, 3):
-        df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
-    else:
-        df_sales_elounda = pd.DataFrame()
-    first_q_timer = time.perf_counter()
-    print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
-
-    if multiple_data == 3:
-        df = fetch_data_with_params(SQL_FILES[1], params_2)
-        second_q_timer = time.perf_counter()
-        df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
-        df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
-        print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
-    else:
-        df = pd.DataFrame()
-
     # get_online_offline_ users_info
     def calc(df):
         if df["DIFF"].total_seconds() < 86400:  # less than one day in seconds
@@ -161,10 +135,39 @@ def run(temp_file, multiple_data):
         temp_df["elapsed_time"] = temp_df.apply(lambda row: calc(row), axis=1)
         return temp_df
 
-    elounda_users = tuple(os.getenv("EMUSERS").split(","))
-    em_df = fetch_data.get_sql_data(SQL_FILES[2], None, tuple_data=elounda_users)
-    status_users_elounda = complete_df(em_df)
-    status_users_elounda = filter_data(status_users_elounda)
+    def fetch_data_with_params(sql_file, params=None):
+        result = fetch_data.get_sql_data(sql_file, params)
+        if result is None or isinstance(result, type):
+            raise ValueError(f"SQL file '{sql_file}' returned invalid data!")
+        return result
+
+    params = {"year": today.year - 5, "month": today.month, "day": today.day}
+    params_2 = {"year": today.year - 5, "month": today.month}
+
+    #
+    if multiple_data >= 2:
+        df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
+    else:
+        df_sales_elounda = pd.DataFrame()
+
+    first_q_timer = time.perf_counter()
+    print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
+
+    if multiple_data == 3:
+        df = fetch_data_with_params(SQL_FILES[1], params_2)
+        second_q_timer = time.perf_counter()
+        df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
+        df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
+        print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
+
+        elounda_users = tuple(os.getenv("EMUSERS").split(","))
+        em_df = fetch_data.get_sql_data(SQL_FILES[2], None, tuple_data=elounda_users)
+        status_users_elounda = complete_df(em_df)
+        status_users_elounda = filter_data(status_users_elounda)
+
+    else:
+        df = pd.DataFrame()
+        status_users_elounda = None
 
     # GET MONTHLY TURNOVER DATA
     monthly_turnover_df = fetch_data.get_sql_data(SQL_FILES[3])
