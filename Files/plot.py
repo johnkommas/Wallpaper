@@ -208,7 +208,7 @@ def plot_run_mikrotik(i, pie_df, path_b, path,):
     app.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", f"{path}/line.png",colors[i], i)
     glue_image_general(f"{path}/pie.png", path_b, (9500, 50), .5)
     glue_image_general(f"{path}/sankey.png", path_b, (9300, 1500))
-    glue_image_general(_path[i], path_b, (10130, 700))
+    glue_image_general(_path[i], path_b, (10100, 700))
 
 
 def plot_run_monthly_turnover(i, dataframe, path_b, path):
