@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from mikrotik import app
 from Youtrack import youtrack_app
+from Entersoft import PoS
 
 
 def offline(emoji, path, offline_path, word):
@@ -300,6 +301,8 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     if multiple_data == 3:
         for i in range(1, 4):
+            PoS.get_Pos(path=path, path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
+
             # Call PLOT for Donut Monthly TurnOver
             plot.plot_run_monthly_turnover(i,
                                            monthly_turnover_df,
