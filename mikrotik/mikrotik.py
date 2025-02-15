@@ -108,7 +108,6 @@ def connect_via_ssh():
             return VPN
 
 
-
 # Συνάρτηση για ασφαλή αποκωδικοποίηση
 def decode_safe(payload, encoding="utf-8"):
     try:
@@ -314,3 +313,15 @@ def plot_run(df, path, sankey_path, line_path, color, loop_counter):
     data_analysis.visualize_api_hackers_ports_donut(df, path_a=path, color=color, i=loop_counter)
     data_analysis.time_series_analysis(df, path_a=line_path, loop_counter=loop_counter)
     data_analysis.sankey_graph(loop_counter, df, path_a=sankey_path)
+
+
+def write(dataframe, images, editables, number_font_parse, timestamp_font_parse):
+    for image, editable in zip(images, editables):
+        # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
+        daily_attacks = dataframe.groupby(dataframe["Date"]).size()
+        mean_attacks = daily_attacks.mean()
+        daily = f"{int(mean_attacks)}-{len(dataframe)}"
+
+        editable.text((5080 + 500, 600), daily, os.getenv("COLOR_A"), font=number_font_parse)
+        editable.text((4950 + 500, 800), "Daily vs Total Penetration Attempts", os.getenv("COLOR_A"),
+                      font=timestamp_font_parse)  # Σχεδίαση του αριθμού
