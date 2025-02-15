@@ -4,11 +4,10 @@ import os
 import shutil
 from Files import plot
 from PIL import Image, ImageFont, ImageDraw
-from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from mikrotik import app
+from mikrotik import mikrotik
 from Youtrack import youtrack_app
-from Entersoft import PoS, Online_Offline
+from Entersoft import PoS, Online_Offline, compare_years
 
 
 def offline(emoji, path, offline_path, word):
@@ -41,22 +40,6 @@ def offline(emoji, path, offline_path, word):
     delete_all_files_inside_folder(offline_path)
 
 
-def get_date_for_every_year(today):
-    english = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    greek = ["(ΔΕ)", "(ΤΡ)", "(ΤΕ)", "(ΠΕ)", "(ΠΑ)", "(ΣΑ)", "(ΚΥ)"]
-    x = []
-    y = []
-    for i in range(0, 6):
-        a = today - relativedelta(years=i)
-        eng = a.strftime("%a")
-        x.append(greek[english.index(eng)])
-        y.append(a.year)
-    x.reverse()
-    # y.reverse()
-    # print(*zip(x, y))
-    return x
-
-
 def delete_all_files_inside_folder(folder, exception_file=None):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
@@ -69,55 +52,6 @@ def delete_all_files_inside_folder(folder, exception_file=None):
                 shutil.rmtree(file_path)
         except Exception as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
-
-
-def write_revenue_values(image_editable, data, number_font_parse, counter):
-    x_offsets = [0, 310, 260, 215, 170, 120, 75]
-    for i in data:
-        revenue = str(int(i))
-        if i == max(data) and counter == 2:
-            image_editable.text(
-                (x_offsets[len(revenue)] + 400, 700),
-                revenue,
-                os.getenv("COLOR_C"),
-                font=number_font_parse,
-            )
-        else:
-            image_editable.text(
-                (x_offsets[len(revenue)] + 400, 700),
-                revenue,
-                os.getenv("COLOR_A"),
-                font=number_font_parse,
-            )
-        x_offsets = [y + 660 for y in x_offsets]
-
-
-def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
-                         dates_font_parse, timestamp_font_parse, time, counter):
-    years = [str(i) for i in df_years]
-    x = 500
-    check_year = specific_date.year - 5
-    colors = [os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
-    custom_color = colors[counter]
-
-    for i, year in enumerate(years):
-        # Ελέγχει αν το year ταιριάζει με το check_year
-        text_to_draw = (dates_for_every_year[i] if year == str(check_year) else dates_for_every_year[i])
-        image_editable.text(
-            (x, 900),
-            text_to_draw,
-            custom_color,
-            font=dates_font_parse,
-        )
-        # Ενημερώνει το check_year αν χρειάζεται
-        if year == str(check_year):
-            check_year = int(year)
-        image_editable.text((x, 400), year, custom_color, font=title_font_year)
-        x += 660
-        check_year += 1
-
-    # write timestamp refreshed data
-    image_editable.text((10100, 6300), time, custom_color, font=timestamp_font_parse)
 
 
 def paste_image(my_image, overlay_image, xy, resize):
@@ -137,7 +71,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     number_font_parse = ImageFont.truetype(os.getenv("FONT_DIN_CONDENSED_BOLD"), 250)
     dates_font_parse = ImageFont.truetype(os.getenv("FONT_DIN_CONDENSED_BOLD"), 80)
     timestamp_font_parse = ImageFont.truetype(os.getenv("FONT_FUTURA"), 80)
-    pos_font_parse = ImageFont.truetype(os.getenv("FONT_AVENIR_NEXT"), 80)
 
     # INITIALIZE IMAGE
     my_image_1 = Image.open(f"{path}/{file_in}_1.jpg")
@@ -161,55 +94,21 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     if multiple_data == 3:
         # Entersoft PoS
         PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)
+        print("🟢Entersoft PoS || ", end="")
 
         # ENTERSOFT ONLINE OFFLINE USERS
         Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)
-
+        print("🟢Entersoft Online Offline Users || ", end="")
     if multiple_data in (0, 3):
         # run mikrotik get dataframe
-        print("Reading E-mail Mikrotik || ", end='')
-        dataframe = app.run()
-
-        for image, editable in zip(images, editables):
-            # Υπολογισμός πλάτους και ύψους για το κείμενο και τον αριθμό
-            daily_attacks = dataframe.groupby(dataframe["Date"]).size()
-            mean_attacks = daily_attacks.mean()
-            daily = f"{int(mean_attacks)}-{len(dataframe)}"
-
-            editable.text((5080 + 500, 600), daily, os.getenv("COLOR_A"), font=number_font_parse)
-            editable.text((4950 + 500, 800), "Daily vs Total Penetration Attempts", os.getenv("COLOR_A"),
-                          font=timestamp_font_parse)  # Σχεδίαση του αριθμού
-
-    c2 = ctime.perf_counter()
-    print(f"🟢DONE IN: {round(c2 - c1)} sec Mikrotik - Youtrack || ", end="")
-
+        dataframe = mikrotik.run()
+        mikrotik.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
+        print("🟢Mikrotik Total Attacks || ", end="")
     c1 = ctime.perf_counter()
-    # WRITING YEARS
-    counter = 0
     if multiple_data in (2, 3):
-        # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
-        dates_for_every_year = get_date_for_every_year(specific_date)
-
-        # LIST DATA
-        data = list(df.TurnOver.values)
-        df_years = list(df.YEAR.values)
-
-        for image, editable in zip(images, editables):
-            write_years_and_days(
-                image_editable=editable,
-                df_years=df_years,
-                specific_date=specific_date,
-                dates_for_every_year=dates_for_every_year,
-                title_font_year=title_font_year,
-                dates_font_parse=dates_font_parse,
-                timestamp_font_parse=timestamp_font_parse,
-                time=time,
-                counter=counter
-            )
-
-            # WRITING REVENUE VALUES
-            write_revenue_values(editable, data, number_font_parse, counter)
-            counter += 1
+        # Entersoft Years To Date
+        compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse, time, number_font_parse)
+        print("🟢Entersoft Compare Years|| ", end="")
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
@@ -221,7 +120,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
-        vpn_status = app.connect_via_ssh()
+        vpn_status = mikrotik.connect_via_ssh()
         youtrack_image = f"{path}/youtrack.png"
         Vpn_Online = f"{path}/Vpn_Online.png"
         Vpn_Offline = f"{path}/Vpn_Offline.png"
