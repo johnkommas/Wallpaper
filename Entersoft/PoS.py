@@ -1,26 +1,49 @@
+import pandas as pd
+
 from SQL_FOLDER import fetch_data
 from Files import plot
+import os
+from Files import minimalist_write
 
 
-def get_Pos(path, path_b):
+def get_Pos(path, images, editables, font):
     # Εκτέλεση SQL ερωτήματος και φόρτωση δεδομένων
     query = "PoS.sql"
     df = fetch_data.get_sql_data(query)
 
     # Έλεγχος των συνθηκών για pos_a και pos_b
-    pos_a = True
+    pos_a = False
     pos_b = df.loc[df["POSID"] == "01655516", "Status"].eq("Εκκρεμής").any()
 
+    # Στατιστικά για κάθε PoS
+    # df_pos_a = df[df["POSID"] == "???????"]
+    data_to_text_pos_a = "POS A: Επ:000 Απ:00"
+    # for status, count in zip(df_pos_a.Status.value_counts().index, df_pos_a.Status.value_counts()):
+    #     data_to_text_pos_b = data_to_text_pos_b + f"{count} "
+
+    df_pos_b = df[df["POSID"] == "01655516"]
+    data_to_text_pos_b = "POS B: "
+    for status, count in zip(df_pos_b.Status.value_counts().index, df_pos_b.Status.value_counts()):
+        data_to_text_pos_b = data_to_text_pos_b + f"{status[:2]}:{count} "
+
+    data_to_text = [data_to_text_pos_a, data_to_text_pos_b]
+
+    for image, editable in zip(images, editables):
+        text_offset = 0
+        for entry in data_to_text:
+            editable.text(
+                (3400, 80 + text_offset), entry, os.getenv("COLOR_A"), font=font
+            )  # Χρήση καθεμιάς εγγραφής
+            text_offset += 100
+
     # Λειτουργία για την κατασκευή της εικόνας
-    def handle_image(pos_condition, offset):
+    def handle_image(pos_condition, offset, image):
         path_a = f"{path}/bad_pos.png" if pos_condition else f"{path}/good_pos.png"
         box_ = (2800 + offset, 50)
-        plot.glue_image_general(path_a, path_b, box_, resize=.5)
+        image = minimalist_write.paste_image(image, path_a, box_, resize=2)
 
-    # Εικόνα για pos_a
-    handle_image(pos_a, 0)
-
-    # Εικόνα για pos_b
-    handle_image(pos_b, 250)
-
-
+    for image in images:
+        # Εικόνα για pos_a
+        handle_image(pos_a, 0, image)
+        # Εικόνα για pos_b
+        handle_image(pos_b, 250, image)
