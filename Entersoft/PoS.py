@@ -1,7 +1,4 @@
-import pandas as pd
-
 from SQL_FOLDER import fetch_data
-from Files import plot
 import os
 from Files import minimalist_write
 
