@@ -160,7 +160,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     if multiple_data == 3:
         # Entersoft PoS
-        PoS.get_Pos(path=path, images=images, editables=editables, font=pos_font_parse)
+        PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)
 
         # ENTERSOFT ONLINE OFFLINE USERS
         Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)
