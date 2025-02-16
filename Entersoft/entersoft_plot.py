@@ -141,5 +141,5 @@ def plot_run_monthly_turnover(dataframe, path, images):
         # print(f"TEST {i}")
         monthly_turnover_donut(dataframe, _path, colors[i], i)
         # y+750
-        image = minimalist_write.paste_image(image, _path, (150, 2300), 2)
-        image = minimalist_write.paste_image(image, logo_path, (150, 3050), 2)
+        image = minimalist_write.paste_image(image, _path, (150, 2350), 2)
+        image = minimalist_write.paste_image(image, logo_path, (150, 3100), 2)
