@@ -99,10 +99,10 @@ def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     paths = [None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
     youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i], i)
-    box = (150, 1500)
-    resize = 1
+    box = (150, 2800)
+    resize = .5
     glue_image_general(youtrack_image, path_b, box, resize)
-    glue_image_general(paths[i], path_b, (150, 2300))
+    glue_image_general(paths[i], path_b, (150, 3550), .5)
 
 
 def plot_run_mikrotik(i, pie_df, path_b, path,):
