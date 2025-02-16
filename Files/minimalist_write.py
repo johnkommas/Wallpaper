@@ -87,17 +87,17 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
     c1 = ctime.perf_counter()
-    print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
+    # print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
 
     if multiple_data == 3:
         PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
-        print("🟢Entersoft PoS || ", end="")
+        # print("🟢Entersoft PoS || ", end="")
         entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, images)  # Entersoft Monthly TurnOver Donut
-        print("🟢Entersoft Donut Monthly TurnOver || ", end='')
+        # print("🟢Entersoft Donut Monthly TurnOver || ", end='')
         daily_bar_plot.run_daily_smooth(plot_df, specific_date, f"{path}/graph.png", path, images)     # Entersoft Daily TurnOver Bar
-        print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
+        # print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
         Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)  # ENTERSOFT ONLINE OFFLINE USERS
-        print("🟢Entersoft Online Offline Users || ", end="")
+        # print("🟢Entersoft Online Offline Users || ", end="")
 
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
@@ -110,7 +110,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         # run mikrotik get dataframe
 
         mikrotik.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
-        print("🟢Mikrotik Total Attacks || ", end="")
+        # print("🟢Mikrotik Total Attacks || ", end="")
 
         for i, image in enumerate(images, start=1):
             plot.plot_run_mikrotik(i, dataframe,
@@ -144,7 +144,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         # Entersoft Years To Date
         compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
                           time, number_font_parse)
-        print("🟢Entersoft Compare Years|| ", end="")
+        # print("🟢Entersoft Compare Years|| ", end="")
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
@@ -152,7 +152,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
 
     c2 = ctime.perf_counter()
-    print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
+    # print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
 
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
@@ -160,5 +160,5 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_3.jpg", f"{path_2}/{file_in}_3.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_4.jpg")
     c3 = ctime.perf_counter()
-    print(f" 🟢DONE IN: {round(c3 - c2)} sec PLOTTING GRAPH ", end="")
+    # print(f" 🟢DONE IN: {round(c3 - c2)} sec PLOTTING GRAPH ", end="")
     ctime.sleep(2)
