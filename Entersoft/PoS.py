@@ -29,14 +29,14 @@ def get_Pos(path, images, editables, font):
         text_offset = 0
         for entry in data_to_text:
             editable.text(
-                (2050 + text_offset, 160), entry, os.getenv("COLOR_A"), font=font
+                (2480 + text_offset, 160), entry, os.getenv("COLOR_A"), font=font
             )  # Χρήση καθεμιάς εγγραφής
-            text_offset += 1560
+            text_offset += 1540
 
     # Λειτουργία για την κατασκευή της εικόνας
     def handle_image(pos_condition, offset, image):
         path_a = f"{path}/bad_pos.png" if pos_condition else f"{path}/good_pos.png"
-        box_ = (1550 + offset, 0)
+        box_ = (1980 + offset, 0)
         image = minimalist_write.paste_image(image, path_a, box_, resize=2)
 
     for image in images:
