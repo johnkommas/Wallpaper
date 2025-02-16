@@ -159,7 +159,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         # Entersoft Daily TurnOver Bar
         daily_bar_plot.run_daily_smooth(plot_df, specific_date,f"{path}/graph.png", path, file_in, time,)
         print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
-        PDA.run(f"{path}/sankey_pda.png", path, file_in, time)
+        # PDA.run(f"{path}/sankey_pda.png", path, file_in, time)
 
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
