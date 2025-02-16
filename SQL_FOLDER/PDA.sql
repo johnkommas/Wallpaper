@@ -18,6 +18,7 @@ SELECT
         WHEN IMP_MobileDocumentHeaders.CheckState = 1 THEN 'Ναι'
         ELSE 'Όχι'
         END AS Katahorimeno,
+--     FORMAT(RealImportTime, 'dd MMM', 'el-GR') AS 'MONTH'
     FORMAT(RealImportTime, 'MMM', 'el-GR') AS 'MONTH'
 FROM IMP_MobileDocumentLines
          LEFT JOIN IMP_MobileDocumentHeaders
@@ -26,7 +27,10 @@ FROM IMP_MobileDocumentLines
                    ON ESFITradeAccount.gid = IMP_MobileDocumentHeaders.Supplier
 WHERE
     DATEPART(YEAR, RealImportTime) = DATEPART(YEAR, GETDATE())
+-- AND DATEPART(MONTH, RealImportTime) = DATEPART(MONTH, GETDATE())
 GROUP BY
+    FORMAT(RealImportTime, 'MMM', 'el-GR'),
+--     FORMAT(RealImportTime, 'dd MMM', 'el-GR'),
     CASE
         WHEN OrderType IN ('ΑΤΔ', 'ΑΔΠ', 'ΑΧΔ') THEN 'ΑΓΟΡΕΣ'
         WHEN OrderType = 'ΔΕΑ' THEN 'ΕΠΙΣΤΡΟΦΕΣ'
@@ -36,4 +40,4 @@ GROUP BY
         ELSE 'ΛΟΙΠΑ'
         END,
     IMP_MobileDocumentHeaders.CheckState,
-    FORMAT(RealImportTime, 'MMM', 'el-GR'), IMP_MobileDocumentHeaders.PdaId;
+     IMP_MobileDocumentHeaders.PdaId;

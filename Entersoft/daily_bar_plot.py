@@ -76,7 +76,8 @@ def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
         ysmoothed = gaussian_filter1d(Y_all, sigma=2)
         plt.plot(
             X,
-            ysmoothed if loop_counter in (1, 3) else Y_all,
+            Y_all,
+            # ysmoothed if loop_counter in (1, 3) else Y_all,
             alpha=0.9,
             color=line_color[loop_counter],
         )
