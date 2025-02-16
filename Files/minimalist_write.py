@@ -54,7 +54,7 @@ def delete_all_files_inside_folder(folder, exception_file=None):
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def paste_image(my_image, overlay_image, xy, resize):
+def paste_image(my_image, overlay_image, xy, resize=1):
     overlay = Image.open(overlay_image)
     width, height = overlay.size
     overlay = overlay.resize((width // resize, height // resize))
@@ -90,45 +90,34 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
 
     if multiple_data == 3:
-        # Entersoft PoS
-        PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)
+        PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
         print("🟢Entersoft PoS || ", end="")
-
-        # ENTERSOFT ONLINE OFFLINE USERS
-        Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)
+        entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, images)  # Entersoft Monthly TurnOver Donut
+        print("🟢Entersoft Donut Monthly TurnOver || ", end='')
+        daily_bar_plot.run_daily_smooth(plot_df, specific_date, f"{path}/graph.png", path, images)     # Entersoft Daily TurnOver Bar
+        print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
+        Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)  # ENTERSOFT ONLINE OFFLINE USERS
         print("🟢Entersoft Online Offline Users || ", end="")
-    if multiple_data in (0, 3):
-        # run mikrotik get dataframe
-        dataframe = mikrotik.run()
-        mikrotik.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
-        print("🟢Mikrotik Total Attacks || ", end="")
-    c1 = ctime.perf_counter()
-    if multiple_data in (2, 3):
-        # Entersoft Years To Date
-        compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
-                          time, number_font_parse)
-        print("🟢Entersoft Compare Years|| ", end="")
-
-    time = datetime.now().strftime("%d%m%Y%H%M%S")
-    my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
-    my_image_2.save(f"{path}/TEMP/{file_in}_{time}_2.jpg")
-    my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
-
-    c2 = ctime.perf_counter()
-    print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
 
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
+        dataframe = mikrotik.run()
         vpn_status = mikrotik.connect_via_ssh()
+
         youtrack_image = f"{path}/youtrack.png"
         Vpn_Online = f"{path}/Vpn_Online.png"
         Vpn_Offline = f"{path}/Vpn_Offline.png"
-        for i in range(1, 4):
+        # run mikrotik get dataframe
+
+        mikrotik.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
+        print("🟢Mikrotik Total Attacks || ", end="")
+
+        for i, image in enumerate(images, start=1):
             plot.plot_run_mikrotik(i, dataframe,
-                                   path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
+                                   path_b=image,
                                    path=path)
             plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
-                                   path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
+                                   path_b=image)
 
             vpn_X = 5600
             step = 200
@@ -148,18 +137,22 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                     vpn_status_result = Vpn_Offline
 
                 # Δημιουργία του path και σύνδεση της εικόνας
-                plot.glue_image_general(
-                    vpn_status_result, path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg", box_=box, resize=.5
-                )
+                image = paste_image(image,vpn_status_result, box, 2)
 
-    if multiple_data == 3:
-        # Entersoft Monthly TurnOver Donut
-        entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, file_in, time)
-        print("🟢Entersoft Donut Monthly TurnOver || ", end='')
-        # Entersoft Daily TurnOver Bar
-        daily_bar_plot.run_daily_smooth(plot_df, specific_date,f"{path}/graph.png", path, file_in, time,)
-        print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
-        # PDA.run(f"{path}/sankey_pda.png", path, file_in, time)
+    c1 = ctime.perf_counter()
+    if multiple_data in (2, 3):
+        # Entersoft Years To Date
+        compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
+                          time, number_font_parse)
+        print("🟢Entersoft Compare Years|| ", end="")
+
+    time = datetime.now().strftime("%d%m%Y%H%M%S")
+    my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
+    my_image_2.save(f"{path}/TEMP/{file_in}_{time}_2.jpg")
+    my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
+
+    c2 = ctime.perf_counter()
+    print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
 
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
