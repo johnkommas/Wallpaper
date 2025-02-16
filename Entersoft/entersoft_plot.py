@@ -1,97 +1,142 @@
 import os
-
+from Files import plot
 import numpy as np
 from matplotlib import pyplot as plt
+from PIL import Image
+
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def monthly_turnover_donut(df, path_a, color, i):
     """
-    Visualize Number of Hackers (Unique IP Count) using a Donut Chart.
-    Percent values follow the donut's curve with automatically calculated font colors for better visibility.
+    Visualize Number of Hackers (Unique IP Count) using a Half Donut Chart.
+    Percent values follow the donut's curve with automatically calculated font colors
+    for better visibility (closer to the edge of the circle).
     """
-
     # Color Palette Setup
-    color_pallete_a = os.getenv("COLOR_A")  # Dark Blue (Main color for slices)
-    highlight_color = os.getenv( "COLOR_C")  # Light Crème (Highlight color for the highest slice)
+    color_pallete_a = os.getenv("COLOR_A")
+    highlight_color = os.getenv("COLOR_C")
 
     sorted_data = df.sort_values(by="TurnOver", ascending=False)
+    sorted_data = sorted_data.head(6)
 
     # Data for Chart
     turn_over = sorted_data["TurnOver"]
 
-    # Determine colors: Highlight the API with the highest count
+    # Determine colors
     colors = [
-        color if count == max(turn_over) else color_pallete_a
-        for count in turn_over
+        color if count == max(turn_over) else color_pallete_a for count in turn_over
     ]
 
-    # Font setup for annotations (bigger and bold)
-    percentage_font_size = 18  # Adjusted for better visibility
+    # Add a dummy slice for the empty half
+    turn_over = turn_over.tolist() + [sum(turn_over)]
     month_map = {
-        1: "January",
-        2: "February",
-        3: "March",
-        4: "April",
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
         5: "May",
-        6: "June",
-        7: "July",
-        8: "August",
-        9: "September",
-        10: "October",
-        11: "November",
-        12: "December",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec",
     }
 
-    labels = (
-            sorted_data["FiscalMonth"]
-            .map(month_map)  # Μετατροπή του αριθμού μήνα στο όνομα του μήνα
-            + "\n"  # Δημιουργία νέας γραμμής
-            + sorted_data["TurnOver"].apply(
-        lambda x: f"{x:,.1f}".replace(",", "X").replace(".", ",").replace("X", ".") + "€")
-    )
+    labels = [
+        f"{month_map[row['FiscalMonth']]}\n"
+        f"{row['TurnOver']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        + "€"
+        for _, row in sorted_data.iterrows()
+    ] + [""]
 
-    # Figure Setup with Transparency
-    plt.figure(figsize=(7, 7), dpi=350)  # Higher resolution
+    colors.append("none")  # Make the dummy slice transparent
 
     # Calculate percentages
-    percentages = (turn_over / np.sum(turn_over)) * 100
+    percentages = (np.array(turn_over) / np.sum(turn_over)) * 100
 
-    # Find the index of the largest slice
-    max_index = np.argmax(percentages)
-
-    # Calculate rotation angle for the largest slice to start in the top-right
-    offset = sum(percentages[:max_index]) + percentages[max_index] / 2
-    startangle = 330 - offset  # Rotating to place it in the top-right
-
-    # Create the donut chart with autopct to display percentages
+    # Create the half-donut chart
     wedges, texts, autotexts = plt.pie(
         turn_over,
         labels=labels,
-        explode=[0.01] * len(turn_over),  # Small gaps
+        explode=[0.01] * len(turn_over),
         colors=colors,
-        startangle=startangle,  # Start from top-center
-        autopct="%1.1f%%",  # Automatically calculate and display percentages
-        textprops={
-            "fontsize": percentage_font_size
-        },  # Font size for labels and percentages
-        pctdistance=0.8,  # Adjust percentage text position closer to the center
+        startangle=90,
+        counterclock=False,
+        wedgeprops=dict(width=0.4),
+        autopct=lambda pct: "",
+        textprops={"fontsize": 12},
     )
-    # Configure the percentage text (inside the slices)
-    for count, autotext in zip(turn_over, autotexts):
-        # Larger, bold text for percentage annotation
-        autotext.set_fontsize(percentage_font_size)
-        # autotext.set_fontweight("bold")
-        # Adjust font color
-        if (count == max(turn_over)) and (i == 3):
-            autotext.set_color(color_pallete_a)  # Default for the max slice
-        else:
-            autotext.set_color(highlight_color)  # Light crème for non-max slices
 
-    # Add a colored circle at the center to create a donut effect
-    center_circle = plt.Circle((0, 0), 0.60, fc=os.getenv("COLOR_BG"))  # Custom color
+    # Move percentages closer to the edge
+    for enum, (wedge, count, pct) in enumerate(zip(wedges,turn_over, percentages)):
+        if enum < len(turn_over) - 1:  # Αγνοούμε το dummy μέρος
+            x, y = wedge.center  # Κέντρο wedge
+            angle = (wedge.theta2 + wedge.theta1) / 2  # Γωνία wedge
+            x = np.cos(np.radians(angle)) * 0.8  # Υπολογισμός x
+            y = np.sin(np.radians(angle)) * 0.8  # Υπολογισμός y
+            # Επιλέγουμε χρώμα για το max κομμάτι
+            text_color = (
+                color_pallete_a
+                if (count == max(turn_over[:-1]) and i == 3)
+                else highlight_color
+            )
+            plt.text(
+                x,
+                y,
+                f"{pct * 2:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=12,
+                color=text_color,
+            )
+
+    # Add a transparent circle in the center
+    center_circle = plt.Circle((0, 0), 0.60, fc=os.getenv("COLOR_BG"))
     plt.gca().add_artist(center_circle)
 
-    # Save Image
+    # Ensure equal aspect
+    plt.axis("equal")
+
+    # Save the figure
     plt.tight_layout()
-    plt.savefig(path_a, transparent=True, dpi=350)  # Save as high-quality image
+    plt.savefig(path_a, transparent=True, dpi=450)
     plt.close()
+    split_image_in_half(path_a, path_a)
+
+
+def split_image_in_half(image_path, output_path):
+    # Φόρτωση της εικόνας
+    image = Image.open(image_path)
+
+    # Διαστάσεις της εικόνας
+    width, height = image.size
+    # print(f"Αρχικές διαστάσεις εικόνας: {width}x{height}")
+
+    # Υπολογισμός του σημείου έναρξης (για 1500 pixels πλάτος από τα δεξιά)
+    start_x = max(
+        width - 1620, 0
+    )  # Ξεκίνα 1500 pixels πριν το τέλος ή 0 αν η εικόνα είναι μικρότερη
+    end_x = width  # Μέχρι το τέλος της εικόνας
+
+    # Κόψιμο της περιοχής που θέλουμε
+    cropped_image = image.crop((start_x, 0, end_x, height))
+
+    # Αποθήκευση της κομμένης εικόνας
+    cropped_image.save(output_path)
+
+
+def plot_run_monthly_turnover(dataframe, path, file_in, time):
+    for i in range(1, 4):
+        path_b = f"{path}/TEMP/{file_in}_{time}_{i}.jpg"
+        _path = f"{path}/monthly_turn_over.png"
+        colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
+        logo_path = f"{path}/gears_{i}.png"
+        # print(f"TEST {i}")
+        monthly_turnover_donut(dataframe, _path, colors[i], i)
+        plot.glue_image_general(_path, path_b, (150, 4000))
+        plot.glue_image_general(logo_path, path_b, (150, 4800))
