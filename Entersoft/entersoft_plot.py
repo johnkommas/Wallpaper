@@ -59,6 +59,8 @@ def monthly_turnover_donut(df, path_a, color, i):
     # Calculate percentages
     percentages = (np.array(turn_over) / np.sum(turn_over)) * 100
 
+    plt.figure(figsize=(8, 8), dpi=450)  # Higher resolution
+
     # Create the half-donut chart
     wedges, texts, autotexts = plt.pie(
         turn_over,
@@ -69,7 +71,7 @@ def monthly_turnover_donut(df, path_a, color, i):
         counterclock=False,
         wedgeprops=dict(width=0.4),
         autopct=lambda pct: "",
-        textprops={"fontsize": 12},
+        textprops={"fontsize": 18},
     )
 
     # Move percentages closer to the edge
@@ -91,7 +93,7 @@ def monthly_turnover_donut(df, path_a, color, i):
                 f"{pct * 2:.1f}%",
                 ha="center",
                 va="center",
-                fontsize=12,
+                fontsize=18,
                 color=text_color,
             )
 
@@ -119,7 +121,7 @@ def split_image_in_half(image_path, output_path):
 
     # Υπολογισμός του σημείου έναρξης (για 1500 pixels πλάτος από τα δεξιά)
     start_x = max(
-        width - 1620, 0
+        width - 2000, 0
     )  # Ξεκίνα 1500 pixels πριν το τέλος ή 0 αν η εικόνα είναι μικρότερη
     end_x = width  # Μέχρι το τέλος της εικόνας
 
@@ -138,5 +140,5 @@ def plot_run_monthly_turnover(dataframe, path, file_in, time):
         logo_path = f"{path}/gears_{i}.png"
         # print(f"TEST {i}")
         monthly_turnover_donut(dataframe, _path, colors[i], i)
-        plot.glue_image_general(_path, path_b, (150, 4000))
-        plot.glue_image_general(logo_path, path_b, (150, 4800))
+        plot.glue_image_general(_path, path_b, (150, 4700), .5)
+        plot.glue_image_general(logo_path, path_b, (150, 5450), .5)
