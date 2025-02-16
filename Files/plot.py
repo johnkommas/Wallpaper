@@ -14,95 +14,19 @@ from mikrotik import mikrotik
 from Youtrack import youtrack_plots
 from Entersoft import entersoft_plot
 from matplotlib.patches import FancyBboxPatch
+from Files import minimalist_write
 
-
-def run_daily(all_years, specific_day, path_a, path_b):
-    year = specific_day.year
-    # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
-    df = all_years[all_years.YEAR == year]
-    first_day = specific_day.replace(day=1)
-    current_month = specific_day.month
-    if current_month == 12:
-        last_day = specific_day.replace(day=31)
-    else:
-        next_month = specific_day.replace(day=1).replace(month=current_month + 1)
-        last_day = next_month - timedelta(days=1)
-
-    date_range = pd.date_range(first_day, last_day, freq="D")
-    date = [i.strftime("%d/%m/%Y") for i in date_range]
-    x = df["DATE"].to_list()
-    x_all = list(all_years["DAY"].unique())
-    y = df["TurnOver"].to_list()
-    y_all = []
-    for day in all_years.DAY.unique():
-        y_all.append(round(all_years["TurnOver"][all_years.DAY == day].mean(), 2))
-    X = date
-    Y = []
-    Y_all = []
-    counter = 0
-    counter_all = 0
-    for i in date:
-        Y_all.append(0)
-        if i in x:
-            Y.append(int(y[counter]))
-            counter += 1
-        else:
-            Y.append(0)
-    for i in x_all:
-        try:
-            Y_all[i - 1] = y_all[counter_all]
-            counter_all += 1
-        except Exception:
-            pass
-
-    with plt.rc_context(
-            {"axes.edgecolor": "white", "xtick.color": "white", "ytick.color": "white"}
-    ):
-        # plt.rcParams["font.family"] = "Poiret One"
-        plt.rcParams["font.family"] = "Futura"
-        # DIN Condensed Bold.ttf
-        # plt.rcParams["font.monospace"] = ["FreeMono"]
-        plt.figure(figsize=(22, 5), dpi=450, facecolor="#1a376e")
-        plt.subplot()
-    font = font_manager.FontProperties(family="Futura")
-    median = np.median(Y_all)
-    print(f"🟢MEDIAN = {median}€", end='')
-    colors = ["#FF5732" if i > median else "white" for i in Y]
-    plt.bar(X, Y, alpha=0.9, color=colors)
-    # plt.plot(X, Y_all, alpha=0.9, color="grey")
-    # plt.fill_between(X, Y_all, alpha=0.05, color="white")
-    for a, b in zip(X, Y):
-        label = f"{b}€" if b > 0 else ""
-        # this method is called for each point
-        plt.annotate(
-            label,  # this is the text
-            (a, b),  # this is the point to label
-            textcoords="offset points",  # how to position the text
-            xytext=(0, 10),  # distance from text to points (x,y)
-            ha="center",
-            fontproperties=font,
-            color="white",
-        )  # horizontal alignment can be left, right or center
-    plt.xticks(
-        ticks=date,
-        labels=[f"{i.strftime('%a')}\n{i.strftime('%d/%m')}" for i in date_range],
-    )
-    plt.box(False)
-    plt.tight_layout()
-    img_file = f"{path_a}"
-    plt.savefig(img_file, transparent=True)
-    plt.close()
-    glue_image_general(path_b, path_b, (100, 4000))
 
 
 def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     paths = [None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
     youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i], i)
-    box = (150, 2800)
-    resize = .5
-    glue_image_general(youtrack_image, path_b, box, resize)
-    glue_image_general(paths[i], path_b, (150, 3550), .5)
+    box = (150, 800)
+    # y+750
+    resize = 2
+    path_b = minimalist_write.paste_image(path_b, youtrack_image, box, resize)
+    path_b = minimalist_write.paste_image(path_b, paths[i], (150, 1550), resize)
 
 
 def plot_run_mikrotik(i, pie_df, path_b, path,):
@@ -110,18 +34,9 @@ def plot_run_mikrotik(i, pie_df, path_b, path,):
     _path = [0, f"{path}/fingerprint_1.png", f"{path}/fingerprint_2.png", f"{path}/fingerprint_3.png"]
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     mikrotik.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", f"{path}/line.png",colors[i], i)
-    glue_image_general(f"{path}/pie.png", path_b, (9500, 50), .5)
-    glue_image_general(f"{path}/sankey.png", path_b, (9300, 1500))
-    glue_image_general(_path[i], path_b, (10100, 700))
-
-
-def plot_run_monthly_turnover(i, dataframe, path_b, path):
-    _path = f"{path}/monthly_turn_over.png"
-    colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
-    logo_path = f"{path}/gears_{i}.png"
-    entersoft_plot.monthly_turnover_donut(dataframe, _path, colors[i], i)
-    glue_image_general(_path, path_b, (2050, 1400))
-    glue_image_general(logo_path, path_b, (2900, 2250), 1.5)
+    path_b = minimalist_write.paste_image(path_b,f"{path}/pie.png", (9500, 50), 2)
+    path_b = minimalist_write.paste_image(path_b, f"{path}/sankey.png", (9300, 1500))
+    path_b = minimalist_write.paste_image(path_b, _path[i], (10100, 700))
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):

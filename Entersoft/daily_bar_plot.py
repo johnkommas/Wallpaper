@@ -6,9 +6,10 @@ import pandas as pd
 from matplotlib import pyplot as plt, font_manager
 from scipy.ndimage import gaussian_filter1d
 from Files import plot
+from Files import minimalist_write
 
 
-def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
+def run_daily_smooth(all_years, specific_day, path_a, path, images):
     year = specific_day.year
     # df = all_years[all_years.YEAR == year].sort_values(by='DATE')
     df = all_years[all_years.YEAR == year]
@@ -47,7 +48,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
         except Exception:
             pass
 
-    for loop_counter in range(1, 4):
+    for loop_counter, image in enumerate(images, start=1):
         with plt.rc_context(
                 {"axes.edgecolor": os.getenv("COLOR_A"), "xtick.color": os.getenv("COLOR_A"),
                  "ytick.color": os.getenv("COLOR_A")}
@@ -56,7 +57,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
             plt.rcParams["font.family"] = "Futura"
             # DIN Condensed Bold.ttf
             # plt.rcParams["font.monospace"] = ["FreeMono"]
-            plt.figure(figsize=(18, 3), dpi=450, facecolor="#1a376e")
+            plt.figure(figsize=(22, 5), dpi=450, facecolor="#1a376e")
             plt.subplot()
         font = font_manager.FontProperties(family="Futura")
         median = np.median(Y_all)
@@ -102,4 +103,4 @@ def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
         img_file = f"{path_a}"
         plt.savefig(img_file, transparent=True)
         plt.close()
-        plot.glue_image_general(path_a, f"{path}/TEMP/{file_in}_{time}_{loop_counter}.jpg",(1500, 5000))
+        image = minimalist_write.paste_image(image, path_a, (100, 4200))
