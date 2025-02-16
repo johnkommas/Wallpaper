@@ -27,7 +27,7 @@ def cards_donut(df, path_a, color, counter):
         color if count == max(card_count[:-1]) else color_pallete_a for count in card_count
     ]
     colors[-1] = "none"  # Το dummy wedge δεν έχει χρώμα
-
+    plt.figure(figsize=(8, 8), dpi=450)  # Higher resolution
     # Δημιουργία ντόνατ διαγράμματος
     wedges, texts = plt.pie(
         card_count,
@@ -37,7 +37,7 @@ def cards_donut(df, path_a, color, counter):
         startangle=90,  # Ξεκινάει από την κορυφή και περιστρέφεται
         counterclock=False,  # Δεξιόστροφη φορά
         wedgeprops=dict(width=0.4),  # Πάχος ντόνατ
-        textprops={"fontsize": 12,
+        textprops={"fontsize": 18,
                    # "fontproperties": font_name
                    },
     )
@@ -62,7 +62,7 @@ def cards_donut(df, path_a, color, counter):
                 f"{card_count[i]}",  # Ακριβής αριθμός από το DataFrame
                 ha="center",
                 va="center",
-                fontsize=10,
+                fontsize=18,
                 color= text_color,
                 # fontproperties= font_name
             )
@@ -93,7 +93,7 @@ def split_image_in_half(image_path, output_path):
 
     # Υπολογισμός του σημείου έναρξης (για 1500 pixels πλάτος από τα δεξιά)
     start_x = max(
-        width - 1620, 0
+        width - 2000, 0
     )  # Ξεκίνα 1500 pixels πριν το τέλος ή 0 αν η εικόνα είναι μικρότερη
     end_x = width  # Μέχρι το τέλος της εικόνας
 
