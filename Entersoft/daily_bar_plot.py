@@ -56,7 +56,7 @@ def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
             plt.rcParams["font.family"] = "Futura"
             # DIN Condensed Bold.ttf
             # plt.rcParams["font.monospace"] = ["FreeMono"]
-            plt.figure(figsize=(18, 4), dpi=450, facecolor="#1a376e")
+            plt.figure(figsize=(18, 3), dpi=450, facecolor="#1a376e")
             plt.subplot()
         font = font_manager.FontProperties(family="Futura")
         median = np.median(Y_all)
@@ -101,4 +101,4 @@ def run_daily_smooth(all_years, specific_day, path_a, path, file_in, time):
         img_file = f"{path_a}"
         plt.savefig(img_file, transparent=True)
         plt.close()
-        plot.glue_image_general(path_a, f"{path}/TEMP/{file_in}_{time}_{loop_counter}.jpg",(1800, 4650))
+        plot.glue_image_general(path_a, f"{path}/TEMP/{file_in}_{time}_{loop_counter}.jpg",(1500, 5000))
