@@ -3,6 +3,7 @@ from Files import plot
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
+from Files import minimalist_write
 
 
 import matplotlib.pyplot as plt
@@ -132,13 +133,13 @@ def split_image_in_half(image_path, output_path):
     cropped_image.save(output_path)
 
 
-def plot_run_monthly_turnover(dataframe, path, file_in, time):
-    for i in range(1, 4):
-        path_b = f"{path}/TEMP/{file_in}_{time}_{i}.jpg"
+def plot_run_monthly_turnover(dataframe, path, images):
+    for i, image in enumerate(images, start=1):
         _path = f"{path}/monthly_turn_over.png"
         colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
         logo_path = f"{path}/gears_{i}.png"
         # print(f"TEST {i}")
         monthly_turnover_donut(dataframe, _path, colors[i], i)
-        plot.glue_image_general(_path, path_b, (150, 4700), .5)
-        plot.glue_image_general(logo_path, path_b, (150, 5450), .5)
+        # y+750
+        image = minimalist_write.paste_image(image, _path, (150, 2300), 2)
+        image = minimalist_write.paste_image(image, logo_path, (150, 3050), 2)
