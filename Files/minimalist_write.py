@@ -7,7 +7,7 @@ from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 from mikrotik import mikrotik
 from Youtrack import youtrack_app
-from Entersoft import PoS, Online_Offline, compare_years
+from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_bar_plot
 
 
 def offline(emoji, path, offline_path, word):
@@ -83,8 +83,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     images = [my_image_1, my_image_2, my_image_3]
     editables = [image_editable_1, image_editable_2, image_editable_3]
 
-
-
     # add timestamp
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
@@ -107,7 +105,8 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     c1 = ctime.perf_counter()
     if multiple_data in (2, 3):
         # Entersoft Years To Date
-        compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse, time, number_font_parse)
+        compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
+                          time, number_font_parse)
         print("🟢Entersoft Compare Years|| ", end="")
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
@@ -130,8 +129,6 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                                    path=path)
             plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
                                    path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg")
-
-
 
             vpn_X = 5600
             step = 200
@@ -156,19 +153,12 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
                 )
 
     if multiple_data == 3:
-        for i in range(1, 4):
-            # Call PLOT for Donut Monthly TurnOver
-            plot.plot_run_monthly_turnover(i,
-                                           monthly_turnover_df,
-                                           path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
-                                           path=path)
-            plot.run_daily_smooth(
-                plot_df,
-                specific_day=specific_date,
-                path_a=f"{path}/graph.png",
-                path_b=f"{path}/TEMP/{file_in}_{time}_{i}.jpg",
-                loop_counter=i
-            )
+        # Entersoft Monthly TurnOver Donut
+        entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, file_in, time)
+        print("🟢Entersoft Donut Monthly TurnOver || ", end='')
+        # Entersoft Daily TurnOver Bar
+        daily_bar_plot.run_daily_smooth(plot_df, specific_date,f"{path}/graph.png", path, file_in, time,)
+        print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
 
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
