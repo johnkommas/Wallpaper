@@ -146,4 +146,4 @@ def run(path_a, path, file_in, time):
     box_ = (750, 2200)
     for i in range(1, 4):
         create_sankey(i, df, path_a)
-        plot.glue_image_general(path_a, f"{path}/TEMP/{file_in}_{time}_{i}.jpg", box_,)
+        # plot.glue_image_general(path_a, f"{path}/TEMP/{file_in}_{time}_{i}.jpg", box_,)
