@@ -13,7 +13,7 @@ def get_Pos():
     return df
 
 
-def create_sankey(i, data, path):
+def create_sankey(data, path):
     """
     Δημιουργεί ένα Sankey Diagram από δεδομένα που περιλαμβάνουν τις στήλες:
     MONTH, TYPE, PdaId, Katahorimeno, DOCS, LINES.
@@ -87,19 +87,19 @@ def create_sankey(i, data, path):
     # Ανάμεσα στα MONTH -> TYPE
     for _, row in df.iterrows():
         sources.append(node_indices[row["TYPE"]])
+        targets.append(node_indices[row["PdaId"]])
+        values.append(1)
+
+    # Ανάμεσα στα MONTH -> PdaId
+    for _, row in df.iterrows():
+        sources.append(node_indices[row["PdaId"]])
         targets.append(node_indices[row["MONTH"]])
         values.append(1)
 
-    # # Ανάμεσα στα TYPE -> PdaId
-    # for _, row in df.iterrows():
-    #     sources.append(node_indices[row["TYPE"]])
-    #     targets.append(node_indices[row["PdaId"]])
-    #     values.append(1)
-    #
-    # # Ανάμεσα στα PdaId -> Katahorimeno
+    # Ανάμεσα στα PdaId -> Katahorimeno
     # for _, row in df.iterrows():
     #     sources.append(node_indices[row["PdaId"]])
-    #     targets.append(node_indices[row["Katahorimeno"]])
+    #     targets.append(node_indices[row["TYPE"]])
     #     values.append(1)
 
     # Εφαρμογή των χρωμάτων στους κόμβους ανάλογα με τη στήλη MONTH
@@ -131,7 +131,7 @@ def create_sankey(i, data, path):
 
     # Ενημέρωση layout για εναλλάξ χρώματα στο κείμενο
     fig.update_layout(
-        width=370,  # Προσαρμοσμένο πλάτος
+        width=900,  # Προσαρμοσμένο πλάτος
         height=760,  # Προσαρμοσμένο ύψος
         paper_bgcolor="rgba(0,0,0,0)",  # Διαφάνεια φόντου
         font=dict(color=color_c, size=10 ),  # Σταθερό χρώμα για το κείμενο ολόκληρου του layout
@@ -141,9 +141,9 @@ def create_sankey(i, data, path):
     fig.write_image(path, scale=6)
 
 
-def run(path_a, path, file_in, time):
+def run(path_a, images):
     df = get_Pos()
     box_ = (750, 2200)
-    for i in range(1, 4):
-        create_sankey(i, df, path_a)
-        # plot.glue_image_general(path_a, f"{path}/TEMP/{file_in}_{time}_{i}.jpg", box_,)
+    create_sankey(df, path_a)
+    # for image in images:
+    #     pass
