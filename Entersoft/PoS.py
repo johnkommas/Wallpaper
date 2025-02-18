@@ -8,17 +8,19 @@ def get_Pos(path, images, editables, font):
     query = "PoS.sql"
     df = fetch_data.get_sql_data(query)
 
+    PDA_ID_A = "01655515"
+    PDA_ID_B = "01655516"
     # Έλεγχος των συνθηκών για pos_a και pos_b
-    pos_a = False
-    pos_b = df.loc[df["POSID"] == "01655516", "Status"].eq("Εκκρεμής").any()
+    pos_a = df.loc[df["POSID"] == PDA_ID_A, "Status"].eq("Εκκρεμής").any()
+    pos_b = df.loc[df["POSID"] == PDA_ID_B, "Status"].eq("Εκκρεμής").any()
 
     # Στατιστικά για κάθε PoS
-    # df_pos_a = df[df["POSID"] == "???????"]
-    data_to_text_pos_a = "Επ:000 Απ:00"
-    # for status, count in zip(df_pos_a.Status.value_counts().index, df_pos_a.Status.value_counts()):
-    #     data_to_text_pos_b = data_to_text_pos_b + f"{count} "
+    df_pos_a = df[df["POSID"] == PDA_ID_A]
+    data_to_text_pos_a = ""
+    for status, count in zip(df_pos_a.Status.value_counts().index, df_pos_a.Status.value_counts()):
+        data_to_text_pos_a = data_to_text_pos_a + f"{status[:2]}:{count} "
 
-    df_pos_b = df[df["POSID"] == "01655516"]
+    df_pos_b = df[df["POSID"] == PDA_ID_B]
     data_to_text_pos_b = ""
     for status, count in zip(df_pos_b.Status.value_counts().index, df_pos_b.Status.value_counts()):
         data_to_text_pos_b = data_to_text_pos_b + f"{status[:2]}:{count} "
