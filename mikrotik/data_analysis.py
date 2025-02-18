@@ -640,13 +640,15 @@ def visualize_api_hackers_ports_donut(df, path_a, color, i):
     color_pallete_a = os.getenv("COLOR_A") # Dark Blue (Main color for slices)
     highlight_color = os.getenv("COLOR_C") # Light Crème (Highlight color for the highest slice)
 
+    df["Api"] = df["Api"].replace(
+        {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"})
 
     # Compute Number of Hackers (Unique IP Count) for each API
     api_ips = ( df.groupby("Api")["Public IP"].nunique().reset_index(name="Number of Hackers"))
     sorted_data = api_ips.sort_values(by="Number of Hackers", ascending=False)
-
+    # print()
+    # print(sorted_data)
     # Data for Chart
-    labels = sorted_data["Api"]
     hacker_counts = sorted_data["Number of Hackers"]
 
     # Determine colors: Highlight the API with the highest count
@@ -657,9 +659,9 @@ def visualize_api_hackers_ports_donut(df, path_a, color, i):
 
     # Font setup for annotations (bigger and bold)
     percentage_font_size = 18  # Adjusted for better visibility
-    labels = sorted_data["Api"].replace(
-        {"Entersoft Business Suite": "EBS", "Slack Bolt": "SLACK"}
-    )
+
+    # Δημιουργία labels για κάθε API
+    labels = [f"{row['Api']}\n{row['Number of Hackers']}" for _, row in sorted_data.iterrows()]
 
     # Figure Setup with Transparency
     plt.figure(figsize=(8, 8), dpi=450)  # Higher resolution
