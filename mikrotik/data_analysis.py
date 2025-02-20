@@ -749,7 +749,7 @@ def sankey_graph(i, df, path_a):
             go.Sankey(
                 node=dict(
                     pad=15,
-                    thickness=20,
+                    thickness=5,
                     line=dict(color=colors[0], width=0.5),
                     label=apis + ports,
                     # Προσδιορισμός χρωμάτων για κάθε κόμβο
