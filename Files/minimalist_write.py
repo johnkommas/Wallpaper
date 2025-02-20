@@ -5,7 +5,7 @@ import shutil
 from Files import plot
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
-from mikrotik import mikrotik
+from mikrotik import mikrotik_app
 from Youtrack import youtrack_app
 from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_bar_plot, PDA
 
@@ -102,15 +102,15 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
-        dataframe = mikrotik.run()
-        vpn_status = mikrotik.connect_via_ssh()
+        dataframe = mikrotik_app.run()
+        vpn_status = mikrotik_app.connect_via_ssh()
 
         youtrack_image = f"{path}/youtrack.png"
         Vpn_Online = f"{path}/Vpn_Online.png"
         Vpn_Offline = f"{path}/Vpn_Offline.png"
         # run mikrotik get dataframe
 
-        mikrotik.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
+        mikrotik_app.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
         # print("🟢Mikrotik Total Attacks || ", end="")
 
         for i, image in enumerate(images, start=1):
