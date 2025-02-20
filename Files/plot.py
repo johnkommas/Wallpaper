@@ -10,7 +10,7 @@ from wordcloud import WordCloud, ImageColorGenerator
 from scipy.ndimage import gaussian_gradient_magnitude
 from matplotlib import font_manager
 from scipy.ndimage.filters import gaussian_filter1d
-from mikrotik import mikrotik
+from mikrotik import mikrotik_app
 from Youtrack import youtrack_plots
 from Entersoft import entersoft_plot
 from matplotlib.patches import FancyBboxPatch
@@ -32,7 +32,7 @@ def plot_run_mikrotik(i, pie_df, path_b, path,):
     # RUN MIKROTIK
     _path = [0, f"{path}/fingerprint_1.png", f"{path}/fingerprint_2.png", f"{path}/fingerprint_3.png"]
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
-    mikrotik.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", f"{path}/line.png",colors[i], i)
+    mikrotik_app.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", f"{path}/line.png",colors[i], i)
     path_b = minimalist_write.paste_image(path_b,f"{path}/pie.png", (9500, 50), 2)
     path_b = minimalist_write.paste_image(path_b, f"{path}/sankey.png", (9300, 1500))
     path_b = minimalist_write.paste_image(path_b, _path[i], (10100, 700))
