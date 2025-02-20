@@ -7,8 +7,6 @@ import os
 import re
 from tqdm import tqdm
 from mikrotik import data_analysis
-from routeros_api import connect
-import routeros_api
 import paramiko
 from datetime import datetime
 
@@ -154,7 +152,7 @@ def extend_df_with_columns(df):
             try:
                 # Διαχωρισμός Time και Date
                 time_part, date_part = value.split(" on ")
-                # Μετατροπή του date_part (π.χ. "jan/30/2025") στη μορφή 2025.30.01
+                # Μετατροπή του date_part (π.χ. "Jan/30/2025") στη μορφή 2025.30.01
                 date_obj = datetime.strptime(date_part, "%b/%d/%Y")
                 formatted_date = date_obj.strftime("%Y.%d.%m")
                 return pd.Series({"Time": time_part.strip(), "Date": formatted_date})
@@ -272,13 +270,13 @@ def run(csv_file="emails_data.csv"):
         mail.logout()
 
         if new_emails_df is not None:
-            print("New emails fetched. Processing...", end="")
+            # print("New emails fetched. Processing...", end="")
 
             # Επεξεργασία δεδομένων
             new_emails_df = extend_df_with_columns(new_emails_df)
 
             if os.path.exists(csv_file):
-                print(f"CSV file {csv_file} exists. Appending data...", end="")
+                # print(f"CSV file {csv_file} exists. Appending data...", end="")
                 # Διαβάζουμε τα υπάρχοντα δεδομένα
                 try:
                     existing_df = pd.read_csv(csv_file)
@@ -292,7 +290,7 @@ def run(csv_file="emails_data.csv"):
                     combined_df = new_emails_df
 
             else:
-                print(f"CSV file {csv_file} does not exist. Creating...", end="")
+                # print(f"CSV file {csv_file} does not exist. Creating...", end="")
                 combined_df = new_emails_df
 
             # Αποθήκευση συγχωνευμένου DataFrame στο CSV
@@ -300,7 +298,7 @@ def run(csv_file="emails_data.csv"):
             return combined_df
 
         else:
-            print("No new emails. Loading data from CSV...", end="")
+            # print("No new emails. Loading data from CSV...", end="")
             # Δεν υπάρχουν νέα emails, διαβάζουμε από το CSV (αν υπάρχει)
             if os.path.exists(csv_file):
                 return pd.read_csv(csv_file)
