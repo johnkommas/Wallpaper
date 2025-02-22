@@ -2,11 +2,13 @@
  * Copyright (c) Ioannis E. Kommas 2023. All Rights Reserved
  */
 
- SELECT
-       isnull(count(ESFIItem.Code),0)                                                     AS COUNT
-FROM ESFIPricelistItem
-         LEFT JOIN ESFIItem
-                   on ESFIPricelistItem.fItemGID = ESFIItem.GID
-         INNER JOIN ESFIPricelist
-                    on ESFIPricelistItem.fPricelistGID = ESFIPricelist.GID
-WHERE convert(varchar, GETDATE(), 102) BETWEEN  convert(varchar, ValidFromDate, 102) AND convert(varchar, ValidToDate, 102)
+SELECT
+    COUNT(ESFIItem.Code) AS COUNT -- Υπολογισμός του συνολικού αριθμού των κωδικών (Code)
+FROM
+    ESFIPricelistItem
+    LEFT JOIN ESFIItem
+        ON ESFIPricelistItem.fItemGID = ESFIItem.GID -- Σύνδεση με τον πίνακα των αντικειμένων βάσει GID
+    INNER JOIN ESFIPricelist
+        ON ESFIPricelistItem.fPricelistGID = ESFIPricelist.GID -- Σύνδεση με τον πίνακα των τιμοκαταλόγων βάσει GID
+WHERE
+    GETDATE() BETWEEN ValidFromDate AND ValidToDate -- Φίλτρο για το διάστημα ισχύος του τιμοκαταλόγου
