@@ -3,10 +3,11 @@
  */
 
 SELECT
-    isnull(count(Distinct ESFIItem.Code),0)                                                                    AS COUNT
+    ISNULL(COUNT(DISTINCT ESFIItem.Code), 0) AS COUNT
 FROM ESFIItemEntry_ESFIItemPeriodics
      LEFT JOIN ESFIItem
         ON ESFIItemEntry_ESFIItemPeriodics.fItemGID = ESFIItem.GID
-WHERE   ESFIItemEntry_ESFIItemPeriodics.fSiteGID= '86947579-6885-4E86-914E-46378DB3794F'
-        AND (ESFIItemEntry_ESFIItemPeriodics.DocumentCode like 'ΑΠΛ%' or ESFIItemEntry_ESFIItemPeriodics.DocumentCode like 'ΤΔΑ%')
-        AND convert(varchar, ESFIItemEntry_ESFIItemPeriodics.RegistrationDate, 102) = convert(varchar, getdate(), 102)
+WHERE
+    ESFIItemEntry_ESFIItemPeriodics.fSiteGID = '86947579-6885-4E86-914E-46378DB3794F'
+    AND (ESFIItemEntry_ESFIItemPeriodics.DocumentCode LIKE 'ΑΠΛ%' OR ESFIItemEntry_ESFIItemPeriodics.DocumentCode LIKE 'ΤΔΑ%')
+    AND CAST(ESFIItemEntry_ESFIItemPeriodics.RegistrationDate AS DATE) = CAST(GETDATE() AS DATE);
