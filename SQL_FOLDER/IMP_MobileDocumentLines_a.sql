@@ -18,8 +18,8 @@ SELECT      count(distinct IMP_MobileDocumentHeaders.Code)                     A
             left join ESFITradeAccount
             on ESFITradeAccount.gid = IMP_MobileDocumentHeaders.Supplier
             WHERE
-
-            convert(varchar, RealImportTime, 102) =  convert(varchar, getdate(), 102)
+             CAST(IMP_MobileDocumentLines.RealImportTime AS DATE) = CAST(GETDATE() AS DATE)
+--             convert(varchar, RealImportTime, 102) =  convert(varchar, getdate(), 102)
 
             GROUP BY
                 CASE
@@ -30,3 +30,4 @@ SELECT      count(distinct IMP_MobileDocumentHeaders.Code)                     A
                 WHEN OrderType = 'ΑΠ_ΜΟΒ'               THEN 'ΡΑΦΙ ΤΙΜΕΣ'
                 ELSE 'ΛΟΙΠΑ'
                 END
+
