@@ -8,4 +8,4 @@ FROM ESFIItem
 LEFT JOIN ESFIItemEntry_ESFIItemPeriodics
                             ON ESFIItemEntry_ESFIItemPeriodics.fItemGID = ESFIItem.GID
 WHERE
-       convert(varchar, ESFIItem.ESDCreated, 102) =  convert(varchar, getdate(), 102)
+       CAST(ESFIItem.ESDCreated AS DATE) = CAST(GETDATE() AS DATE);
