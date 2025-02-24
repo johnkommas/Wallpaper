@@ -32,7 +32,7 @@ def get_input_with_timeout(prompt, timeout, default):
         signal.alarm(0)  # Disable alarm
 
 
-refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, 1800))
+refresh_rate = int(get_input_with_timeout("Enter Refresh Rate in: sec ", 5, os.getenv("REFRESH_TIMER")))
 data = ["MIKROTIK", "NONE", "SIMPLE"]
 # Λήψη της τιμής της μεταβλητής περιβάλλοντος
 color_pallete = os.getenv("COLOR_PALLETE")
