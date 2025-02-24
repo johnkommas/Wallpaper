@@ -8,8 +8,9 @@ def cards_donut(df, path_a, color, counter):
 
     # font_name = f"/System/Library/Fonts/{os.getenv('FONT_AVENIR_NEXT')}"
 
-    # REMOVE Fixed
-    df = df[df.index != "Fixed"]
+    # Sorten the names ofthe  index to max 10 characters
+    df.index = [i[:10] for i in df.index]
+
     # Χρώματα παλέτας
     color_pallete_a = os.getenv("COLOR_A")  # Σκούρο μπλε (κύριο χρώμα για τα κομμάτια)
     highlight_color = os.getenv("COLOR_C")   # Ανοιχτό μπεζ για τη μεγαλύτερη φέτα
@@ -29,7 +30,7 @@ def cards_donut(df, path_a, color, counter):
     colors[-1] = "none"  # Το dummy wedge δεν έχει χρώμα
     plt.figure(figsize=(8, 8), dpi=450)  # Higher resolution
     # Δημιουργία ντόνατ διαγράμματος
-    wedges, texts = plt.pie(
+    wedges, texts, autotexts = plt.pie(
         card_count,
         labels=labels,
         explode=[0.01] * len(card_count),  # Μικρό ξεκόλλημα για εφέ
@@ -37,6 +38,7 @@ def cards_donut(df, path_a, color, counter):
         startangle=90,  # Ξεκινάει από την κορυφή και περιστρέφεται
         counterclock=False,  # Δεξιόστροφη φορά
         wedgeprops=dict(width=0.4),  # Πάχος ντόνατ
+        autopct=lambda pct: "",
         textprops={"fontsize": 18,
                    # "fontproperties": font_name
                    },
@@ -70,7 +72,6 @@ def cards_donut(df, path_a, color, counter):
 
     # Κεντρικός κύκλος για το σχεδιαστικό εφέ
     center_circle = plt.Circle((0, 0), 0.60, fc=os.getenv('COLOR_BG'))  # Χρώμα διατηρούμε όπως θέλεις
-    fig = plt.gcf()
     plt.gca().add_artist(center_circle)
 
     # Ισομερής εμφάνιση
