@@ -23,7 +23,7 @@ if not YOU_TRACK_URL or not API_TOKEN or not PROJECT_ID:
     )
 
 # Ορίστε τις καταστάσεις που θέλετε να συλλέξετε
-states = ["Open", "In_Progress", "To_Be_Discussed", "REPEATABLE", "Fixed"]
+states = ["Open", "In_Progress", "To_Be_Discussed", "REPEATABLE"]
 
 # Κεφαλίδες για το αίτημα
 headers = {
