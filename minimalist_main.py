@@ -8,7 +8,7 @@ import pandas as pd
 from SQL_FOLDER import fetch_data, sql_connect
 from Files import minimalist_write
 from datetime import datetime
-import pygame
+from Sound_Pack import sound
 import signal
 from dotenv import load_dotenv
 import os
@@ -63,19 +63,6 @@ SQL_FILES = [
     "ES00EventLog_a.sql",  # 2
     "ESFIItemPeriodics_MonthlyTurnOver.sql"  # 3
 ]
-
-# SETUP SOUNDS
-SOUND_A = f"{os.getcwd()}/Sound_Pack/a.mp3"
-SOUND_B = f"{os.getcwd()}/Sound_Pack/b.mp3"
-SOUND_C = f"{os.getcwd()}/Sound_Pack/c.mp3"
-
-
-def play_sound(file_path):
-    pygame.mixer.init()
-    pygame.mixer.music.load(file_path)
-    pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy():  # Περιμένει μέχρι να τελειώσει η αναπαραγωγή
-        continue
 
 
 def delete_all_files_inside_folder(folder: str) -> None:
@@ -211,10 +198,10 @@ times = 0
 failed = 0
 timers = {"wallpaper": 0}
 
-play_sound(SOUND_B)
+sound.done()
 # Κλήση της συνάρτησης
 # start_at_exact_second()
-play_sound(SOUND_C)
+sound.run()
 running = True
 total_timers = []
 while running:
@@ -241,26 +228,26 @@ while running:
             print(
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND} || TIMERS TABLE {total_timers}",
                 end="", )
-            play_sound(SOUND_B)
+            sound.done()
             if multiple_data == 1:
                 raise KeyboardInterrupt
 
         else:
-            play_sound(SOUND_A)
+            sound.error()
             sql_connect.open_vpn(failed)
             failed += 1
             print(
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND}",
                 end="")
     except KeyboardInterrupt:
-        play_sound(SOUND_A)
+        sound.error()
         print("\n🟢 Safely stopping the app... Cleaning up resources.")
-        pygame.mixer.quit()
+        sound.exit()
         print("🟢 The App will Now stop Running")
         running = False
         sys.exit(0)
     except Exception as e:
-        play_sound(SOUND_A)
+        sound.error()
         print(f"\rException Occured", end="")
         wp_logger.error(e)
         failed += 1
