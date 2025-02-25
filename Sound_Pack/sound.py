@@ -63,7 +63,6 @@ class SoundManager:
         pygame.mixer.quit()
 
 
-
 # Δημιουργία αντικειμένου για τη διαχείριση των ήχων
 sound_manager = SoundManager()
 
@@ -112,7 +111,19 @@ def error():
 
     :return: None
     """
-    SOUND = f"{os.getcwd()}/Sound_Pack/error.mp3"
+    SOUND = f"{os.getcwd()}/Sound_Pack/c.mp3"
+    sound_manager.play_sound(SOUND)
+
+
+def get_notified():
+    """
+    Plays a notification sound using the sound_manager module. This function retrieves
+    the current working directory, constructs the path to the notification sound file,
+    and invokes the `play_sound` function of the `sound_manager`.
+
+    :return: None
+    """
+    SOUND = f"{os.getcwd()}/Sound_Pack/attention.mp3"
     sound_manager.play_sound(SOUND)
 
 
