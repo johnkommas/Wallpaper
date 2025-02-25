@@ -44,9 +44,7 @@ class SoundManager:
             pygame.mixer.music.load(file_path)
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy():
-                pygame.time.Clock().tick(
-                    10
-                )  # Αποφυγή συνεχούς loop, χρησιμοποιούμε sleep
+                pygame.time.Clock().tick(1)  # Αποφυγή συνεχούς loop, χρησιμοποιούμε sleep
         except pygame.error as e:
             print(f"Σφάλμα κατά την αναπαραγωγή ήχου: {e}")
 
