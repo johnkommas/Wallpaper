@@ -1,6 +1,7 @@
 from SQL_FOLDER import fetch_data
 import os
 from Files import minimalist_write
+from Sound_Pack import sound
 
 
 def get_Pos(path, images, editables, font):
@@ -13,6 +14,9 @@ def get_Pos(path, images, editables, font):
     # Έλεγχος των συνθηκών για pos_a και pos_b
     pos_a = df.loc[df["POSID"] == PDA_ID_A, "Status"].eq("Εκκρεμής").any()
     pos_b = df.loc[df["POSID"] == PDA_ID_B, "Status"].eq("Εκκρεμής").any()
+
+    if pos_a or pos_b:
+        sound.error()
 
     # Στατιστικά για κάθε PoS
     df_pos_a = df[df["POSID"] == PDA_ID_A]
