@@ -98,7 +98,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         # print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
         Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)  # ENTERSOFT ONLINE OFFLINE USERS
         # print("🟢Entersoft Online Offline Users || ", end="")
-        # PDA.run(f"{path}/sankey_pda.png", images)
+        PDA.run(f"{path}/sankey_pda.png", images)
 
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
