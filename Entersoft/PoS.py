@@ -16,7 +16,7 @@ def get_Pos(path, images, editables, font):
     pos_b = df.loc[df["POSID"] == PDA_ID_B, "Status"].eq("Εκκρεμής").any()
 
     if pos_a or pos_b:
-        sound.error()
+        sound.get_notified()
 
     # Στατιστικά για κάθε PoS
     df_pos_a = df[df["POSID"] == PDA_ID_A]
