@@ -205,7 +205,7 @@ def retrieve_mikrotik_emails(_mail, label, counter_file="counter.txt"):
 
         # Αν δεν υπάρχουν νέα emails
         if last_read_email_count >= total_emails:
-            print("No new emails to process.", end="")
+            # print("No new emails to process.", end="")
             return None  # Καμία νέα εγγραφή
 
         # Λίστα για την αποθήκευση δεδομένων email
