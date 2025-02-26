@@ -78,6 +78,5 @@ SELECT
 FROM ProcessedStatus
 LEFT JOIN ESFIMyDataPaymentRequest 
     ON ProcessedStatus.GID = ESFIMyDataPaymentRequest.GID
-WHERE ESFIMyDataPaymentRequest.ESDCreated >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)
-  AND ESFIMyDataPaymentRequest.ESDCreated < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0)
+WHERE CAST(ESFIMyDataPaymentRequest.ESDCreated AS DATE) = CAST(GETDATE() AS DATE)
 ORDER BY ESFIMyDataPaymentRequest.ESDCreated;
