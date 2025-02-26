@@ -6,9 +6,14 @@ from Sound_Pack import sound
 
 def get_Pos(path, images, editables, font):
     # Εκτέλεση SQL ερωτήματος και φόρτωση δεδομένων
-    query = "PoS.sql"
-    df = fetch_data.get_sql_data(query)
+    query = ["PoS.sql", "Retail_PerPoint_Today_Count_Sales.sql"]
 
+    df_retail = fetch_data.get_sql_data(query[1])
+    # Ανάκτηση των τιμών για "TAMEIO Α" και "TAMEIO Β"
+    RA = df_retail.loc[0, "TAMEIO Α"]  # Πρώτη γραμμή, στήλη "TAMEIO Α"
+    RB = df_retail.loc[0, "TAMEIO Β"]  # Πρώτη γραμμή, στήλη "TAMEIO Β"
+
+    df = fetch_data.get_sql_data(query[0])
     PDA_ID_A = "01655515"
     PDA_ID_B = "01655516"
     # Έλεγχος των συνθηκών για pos_a και pos_b
@@ -30,11 +35,13 @@ def get_Pos(path, images, editables, font):
         data_to_text_pos_b = data_to_text_pos_b + f"{status[:2]}:{count} "
 
     data_to_text = [data_to_text_pos_a, data_to_text_pos_b]
+    retail_per_point = [RA, RB]
 
     for image, editable in zip(images, editables):
         text_offset = 0
-        for entry in data_to_text:
-            editable.text((2480 + text_offset, 1310), entry, os.getenv("COLOR_A"), font=font)  # Χρήση καθεμιάς εγγραφής
+        for entry, retail  in zip(data_to_text, retail_per_point):
+            editable.text((2480 + text_offset, 1200), f"RECEIPTS: {retail}", os.getenv("COLOR_A"), font=font)
+            editable.text((2480 + text_offset, 1310), entry.upper(), os.getenv("COLOR_A"), font=font)  # Χρήση καθεμιάς εγγραφής
             text_offset += 1540
 
     # Λειτουργία για την κατασκευή της εικόνας
