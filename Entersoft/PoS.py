@@ -47,15 +47,15 @@ def get_Pos(path, images, editables, font):
     for image, editable in zip(images, editables):
         text_offset = 0
         for entry, retail  in zip(data_to_text, retail_per_point):
-            editable.text((2480 + text_offset, 1200), f"RECEIPTS: {retail}", os.getenv("COLOR_A"), font=font)
-            editable.text((2480 + text_offset, 1310), entry.upper(), os.getenv("COLOR_A"), font=font)  # Χρήση καθεμιάς εγγραφής
+            editable.text((2480 + text_offset, 1800), f"RECEIPTS: {retail}", os.getenv("COLOR_A"), font=font)
+            editable.text((2480 + text_offset, 1910), entry.upper(), os.getenv("COLOR_A"), font=font)  # Χρήση καθεμιάς εγγραφής
             text_offset += 1540
 
     # Λειτουργία για την κατασκευή της εικόνας
     def handle_image(pos_condition, offset, image, my_retail):
         path_a = f"{path}/bad_pos.png" if pos_condition else f"{path}/good_pos.png"
-        box_ = (1980 + offset, 1150)
-        box_polar = (1650 + offset, 1400)
+        box_ = (1980 + offset, 1780)
+        box_polar = (1650 + offset, 1180)
         image = minimalist_write.paste_image(image, path_a, box_, resize=2)
         image = minimalist_write.paste_image(image, my_retail, box_polar, resize=3)
 
