@@ -8,5 +8,7 @@ WHERE
     fShippingPurposeCode = N'ΠΩΛΗΣΗ'
     AND fADSiteGID = N'86947579-6885-4E86-914E-46378DB3794F'
     AND (ADCode LIKE N'ΑΠΛ-%' OR ADCode LIKE N'ΤΔΑ-%')
-    AND ESDCreated >= CAST(GETDATE() AS DATE)
-    AND ESDCreated < DATEADD(DAY, 1, CAST(GETDATE() AS DATE));
+--     AND ESDCreated >= CAST(GETDATE() AS DATE)
+--     AND ESDCreated < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+  AND   ESFIDocumentTrade.ESDCreated >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)
+  AND ESFIDocumentTrade.ESDCreated < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0);
