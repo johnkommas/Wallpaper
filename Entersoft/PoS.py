@@ -70,8 +70,8 @@ def get_Pos(path, images, editables, font):
 
 
 def polar_chart(cards, receipts, file, title="ΠΟΣΟΣΤΟ ΣΥΝΑΛΛΑΓΩΝ ΜΕ ΚΑΡΤΑ"):
-    colors = [os.getenv("COLOR_A"), os.getenv("COLOR_A"), os.getenv("COLOR_B")]  # Green, Orange, Red
-    ranges = [50, 20, 30]  # Ranges for low, medium and high
+    colors = [os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_A")]  # Green, Orange, Red
+    ranges = [25, 50, 25]  # Ranges for low, medium and high
 
     fig = plt.figure(figsize=(8, 8), dpi=450)
     ax = fig.add_subplot(projection="polar")
