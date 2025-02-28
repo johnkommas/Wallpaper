@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-
+import imessage
 from SQL_FOLDER import fetch_data
 import os
 from Files import minimalist_write
@@ -29,6 +29,8 @@ def get_Pos(path, images, editables, font):
 
     if pos_a or pos_b:
         sound.get_notified()
+        imessage.send()
+
 
     # Στατιστικά για κάθε PoS
     df_pos_a = df[df["POSID"] == PDA_ID_A]
