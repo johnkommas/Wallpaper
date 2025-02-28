@@ -70,8 +70,8 @@ def get_Pos(path, images, editables, font):
 
 
 def polar_chart(cards, receipts, file, title="ΠΟΣΟΣΤΟ ΣΥΝΑΛΛΑΓΩΝ ΜΕ ΚΑΡΤΑ"):
-    colors = [os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]  # Green, Orange, Red
-    ranges = [50, 25, 25]  # Ranges for low, medium and high
+    colors = [os.getenv("COLOR_A"), os.getenv("COLOR_A"), os.getenv("COLOR_B")]  # Green, Orange, Red
+    ranges = [50, 20, 30]  # Ranges for low, medium and high
 
     fig = plt.figure(figsize=(8, 8), dpi=450)
     ax = fig.add_subplot(projection="polar")
@@ -120,7 +120,7 @@ def polar_chart(cards, receipts, file, title="ΠΟΣΟΣΤΟ ΣΥΝΑΛΛΑΓΩ�
         arrowprops=dict(arrowstyle="wedge, tail_width=0.8", color=color, shrinkA=0),
         bbox=dict(boxstyle="circle", facecolor=color, linewidth=1.0, edgecolor=color),
         fontsize=40,
-        color=colors[-1],
+        color=os.getenv("COLOR_C"),
         ha="center",
     )
     # Add the title at the bottom of the chart
