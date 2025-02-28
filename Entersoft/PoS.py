@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-import imessage
+from Entersoft import imessage
 from SQL_FOLDER import fetch_data
 import os
 from Files import minimalist_write
@@ -28,8 +28,9 @@ def get_Pos(path, images, editables, font):
     Card_Payments = [Card_Payments_A, Card_Payments_B]
 
     if pos_a or pos_b:
+        text = "ΤΑΜΕΙΟ Α" if pos_a else "ΤΑΜΕΙΟ B"
         sound.get_notified()
-        imessage.send()
+        imessage.send(text)
 
 
     # Στατιστικά για κάθε PoS
