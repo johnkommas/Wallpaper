@@ -20,18 +20,19 @@ def send(retail_point):
     try:
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         message = (
-            f"⚠️ PoS ALERT! ⚠️\n\n"
-            f"🚨ΒΡΕΘΗΚΕ ΕΓΓΡΑΦΗ ΜΕ ΛΑΘΗ 🚨\n\n"
-            f"Παρακαλώ διορθώστε την εγγραφή πληρωμής με κάρτα.\n\n"
-            f"🛒 STORE: {os.getenv('MAIN_STORE_NAME')}\n\n"
-            f"💳 {retail_point}\n\n"
+            f"💳️e-pay\n\n"
+            f"🚨ΒΡΕΘΗΚΕ ΕΓΓΡΑΦΗ ΜΕ ΛΑΘΗ\n\n"
+            f"✔️Διορθώστε την εγγραφή πληρωμής με κάρτα, για να είναι εφικτή η έκδοση Ζ από τον Φορολογικό Μηχανισμό\n\n"
+            f"📌 STORE: {os.getenv('MAIN_STORE_NAME')}\n\n"
+            f"🖨️ ΦΗΜΑΣ: {retail_point}\n\n"
             f"⏰ TIME: {now}"
         )
 
-        recipient = os.getenv("IMESSAGE_PHONE")
+        recipients = tuple(os.getenv("IMESSAGE_PHONE").split(","))
 
         # Δοκιμάστε να καλέσετε τη συνάρτηση
-        mac_imessage.send_iMessage(message, recipient)
+        for recipient in recipients:
+            mac_imessage.send_iMessage(message, recipient)
 
     except TypeError as e:
         # Τυπώστε μια φιλική και περιγραφική πληροφορία για το σφάλμα
