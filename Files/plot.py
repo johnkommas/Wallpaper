@@ -21,11 +21,11 @@ def plot_run_youtrack(i, path, youtrack_df, youtrack_image, path_b):
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     paths = [None, f"{path}/to-do-list_1.png", f"{path}/to-do-list_2.png", f"{path}/to-do-list_3.png"]
     youtrack_plots.cards_donut(youtrack_df, youtrack_image, colors[i], i)
-    box = (150, 850)
     # y+750
+    ya = 900
     resize = 2
-    path_b = minimalist_write.paste_image(path_b, youtrack_image, box, resize)
-    path_b = minimalist_write.paste_image(path_b, paths[i], (150, 1600), resize)
+    path_b = minimalist_write.paste_image(path_b, youtrack_image, (150, ya), resize)
+    path_b = minimalist_write.paste_image(path_b, paths[i], (150, ya + 750), resize)
 
 
 def plot_run_mikrotik(i, pie_df, path_b, path,):
