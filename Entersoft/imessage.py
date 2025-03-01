@@ -1,10 +1,12 @@
 import os
 import mac_imessage
 from dotenv import load_dotenv
-load_dotenv()
 from datetime import datetime
 
-def send():
+load_dotenv()
+
+
+def send(retail_point):
     """
     Send an iMessage with a predefined alert message to a recipient retrieved from environment variables.
     Handles errors that may occur during the sending process.
@@ -22,6 +24,7 @@ def send():
             f"🚨ΒΡΕΘΗΚΕ ΕΓΓΡΑΦΗ ΜΕ ΛΑΘΗ 🚨\n\n"
             f"Παρακαλώ διορθώστε την εγγραφή πληρωμής με κάρτα.\n\n"
             f"🛒 STORE: {os.getenv('MAIN_STORE_NAME')}\n\n"
+            f"💳 {retail_point}\n\n"
             f"⏰ TIME: {now}"
         )
 
@@ -36,5 +39,3 @@ def send():
     except Exception as e:
         # Extra handling για οποιοδήποτε άλλο σφάλμα
         print(f"Απρόβλεπτο πρόβλημα: {e}")
-
-
