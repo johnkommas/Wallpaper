@@ -27,3 +27,5 @@ pytube~=15.0.0
 python-dotenv~=1.0.1
 pygame~=2.6.1
 colorama~=0.4.6
+paramiko~=3.5.0
+aioping~=0.4.0
