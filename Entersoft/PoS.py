@@ -46,6 +46,7 @@ def get_Pos(path, images, editables, font):
 
     data_to_text = [data_to_text_pos_a, data_to_text_pos_b]
     retail_per_point = [RA, RB]
+    # print(retail_per_point)
 
     for image, editable in zip(images, editables):
         text_offset = 0
@@ -63,6 +64,7 @@ def get_Pos(path, images, editables, font):
         image = minimalist_write.paste_image(image, my_retail, box_polar, resize=3)
 
     for enum, (a, b) in enumerate(zip(Card_Payments, retail_per_point)):
+        # print(f"Polar Chart {enum}, {a}, {b}")
         polar_chart(a, b, f"{path}/polar_chart_{enum}.png")
 
     for image in images:
@@ -100,7 +102,7 @@ def polar_chart(cards, receipts, file, title="ΠΟΣΟΣΤΟ ΣΥΝΑΛΛΑΓΩ�
         start += width
 
     # Get the percentage, for  50% of the 'medium' range
-    if receipts == 0:  # Handle 0 receipts
+    if receipts in [0, None] :  # Handle 0 receipts
         percent = 0  # Or set it to a default value
     else:
         percent = cards / receipts
