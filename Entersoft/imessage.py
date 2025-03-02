@@ -2,7 +2,7 @@ import os
 import mac_imessage
 from dotenv import load_dotenv
 from datetime import datetime
-
+from Entersoft import index, send_mail
 load_dotenv()
 
 
@@ -40,3 +40,19 @@ def send(retail_point):
     except Exception as e:
         # Extra handling για οποιοδήποτε άλλο σφάλμα
         print(f"Απρόβλεπτο πρόβλημα: {e}")
+    finally:
+        mailme(os.getenv('MAIN_STORE_NAME'), retail_point, now)
+
+
+def mailme(store_name, retail_point, time):
+    mail_lst = [
+        "johnkommas@hotmail.com",
+        "eloundamarket@yahoo.gr",
+        "accounts@latocrete.gr",
+    ]
+    body = index.main_body(store_name, retail_point, time)
+    title = 'E-PAY ENTERSOFT ESRETAIL ERROR'
+    titles = [title for _ in range(3)]
+
+    send_mail.send_mail(mail_lst, titles, body)
+
