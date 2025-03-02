@@ -166,6 +166,8 @@ def run(temp_file, multiple_data):
 
     # GET MONTHLY TURNOVER DATA
     monthly_turnover_df = fetch_data.get_sql_data(SQL_FILES[3])
+    print(f"🟢DONE MONTHLY TURNOVER || ", end="")
+
 
     minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda, monthly_turnover_df)
     stop_ = time.perf_counter()
