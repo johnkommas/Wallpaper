@@ -8,6 +8,7 @@ from datetime import datetime
 from mikrotik import mikrotik_app
 from Youtrack import youtrack_app
 from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_bar_plot, PDA
+from MyNetwork import network_devices
 
 
 def offline(emoji, path, offline_path, word):
@@ -92,6 +93,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     if multiple_data == 3:
         PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
         # print("🟢Entersoft PoS || ", end="")
+        network_devices.run(images, path)
         entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, images)  # Entersoft Monthly TurnOver Donut
         # print("🟢Entersoft Donut Monthly TurnOver || ", end='')
         daily_bar_plot.run_daily_smooth(plot_df, specific_date, f"{path}/graph.png", path, images)     # Entersoft Daily TurnOver Bar
