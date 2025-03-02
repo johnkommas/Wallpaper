@@ -3,13 +3,15 @@ import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
 
 
 def a_gmail(email_send, subj, word):
     email_user = os.getenv("GMAIL_USER")
     email_password = os.getenv("GMAIL_PASS")
     msg = MIMEMultipart()
-    msg["From"] = email_user
+    msg["From"] = formataddr(("Ioannis E. Kommas 🔑", email_user))
+    msg.set_charset("utf-8")
     msg["To"] = email_send
     msg["Subject"] = subj
     body = word
