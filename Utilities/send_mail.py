@@ -33,3 +33,5 @@ def send_mail(mail_lst, mail_names, word):
         c = "S: {}".format(mail_names[i])
         print("Αποστολή μηνύματος στον παραλήπτη {}".format(mail_names[i]))
         a_gmail(mail_lst[i], c, word)
+
+

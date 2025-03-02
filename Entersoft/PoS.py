@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from Entersoft import imessage
+from Utilities import imessage
 from SQL_FOLDER import fetch_data
 import os
 from Files import minimalist_write

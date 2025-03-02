@@ -2,7 +2,8 @@ import os
 import mac_imessage
 from dotenv import load_dotenv
 from datetime import datetime
-from Entersoft import index, send_mail
+from Utilities import send_mail, index
+
 load_dotenv()
 
 
