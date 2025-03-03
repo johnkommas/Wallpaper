@@ -41,19 +41,17 @@ def send(retail_point):
     except Exception as e:
         # Extra handling για οποιοδήποτε άλλο σφάλμα
         print(f"Απρόβλεπτο πρόβλημα: {e}")
-    finally:
-        mailme(os.getenv('MAIN_STORE_NAME'), retail_point, now)
 
 
-def mailme(store_name, retail_point, time):
+def mailme(retail_point):
+    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     mail_lst = [
         "johnkommas@hotmail.com",
         "eloundamarket@yahoo.gr",
         "accounts@latocrete.gr",
     ]
-    body = index.main_body(store_name, retail_point, time)
+    body = index.main_body(os.getenv('MAIN_STORE_NAME'), retail_point, now)
     title = 'E-PAY ENTERSOFT ESRETAIL ERROR'
     titles = [title for _ in range(3)]
 
     send_mail.send_mail(mail_lst, titles, body)
-
