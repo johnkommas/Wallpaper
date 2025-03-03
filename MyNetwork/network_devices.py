@@ -61,16 +61,17 @@ async def main(images, path):
     PCA = df.loc[df["Device"] == "A", "Status"].values[0]
     PCB = df.loc[df["Device"] == "B", "Status"].values[0]
 
-    def handle_image(path, status, offset, image):
-        path_a = f"{path}/switch-on.png" if status == 'Alive' else f"{path}/switch-off.png"
-        box_ = (2250 + offset, 1950)
+    def handle_image(path, status_a, status__b, image):
+        path_a = f"{path}/retail_a_on.png" if status_a == 'Alive' else f"{path}/retail_a_off.png"
+        path_b = f"{path}/retail_b_on.png" if status__b == 'Alive' else f"{path}/retail_b_off.png"
+        box_ = (2250, 1750)
         image = minimalist_write.paste_image(image, path_a, box_, resize=2)
+        box_ = (2250 + 1550, 1750)
+        image = minimalist_write.paste_image(image, path_b, box_, resize=2)
 
     for image in images:
-        # Εικόνα για pos_a
-        handle_image(path, PCA, 0, image)
-        # Εικόνα για pos_b
-        handle_image(path, PCB, 1550, image)
+        handle_image(path, PCA, PCB, image)
+
 
 
 def run(images, path):
