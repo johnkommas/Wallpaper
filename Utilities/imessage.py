@@ -45,11 +45,7 @@ def send(retail_point):
 
 def mailme(retail_point):
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    mail_lst = [
-        "johnkommas@hotmail.com",
-        "eloundamarket@yahoo.gr",
-        "accounts@latocrete.gr",
-    ]
+    mail_lst = os.getenv('LIST')
     body = index.main_body(os.getenv('MAIN_STORE_NAME'), retail_point, now)
     title = 'E-PAY ENTERSOFT ESRETAIL ERROR'
     titles = [title for _ in range(3)]
