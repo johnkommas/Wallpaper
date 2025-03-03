@@ -30,7 +30,8 @@ def get_Pos(path, images, editables, font):
     if pos_a or pos_b:
         text = "ΤΑΜΕΙΟ Α" if pos_a else "ΤΑΜΕΙΟ B"
         sound.get_notified()
-        imessage.send(text)
+        # imessage.send(text)
+        imessage.mailme(text)
 
 
     # Στατιστικά για κάθε PoS
