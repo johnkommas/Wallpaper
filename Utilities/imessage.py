@@ -44,8 +44,17 @@ def send(retail_point):
 
 
 def mailme(retail_point):
+    """
+    Sends an email notification regarding an E-PAY ENTERSOFT ESRETAIL error. The email
+    contains information about the retail point, current timestamp, and a predefined
+    error message title. The recipient(s) are fetched from environment variables.
+
+    :param retail_point: The retail point where the error occurred.
+    :type retail_point: str
+    :return: None
+    """
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    mail_lst = os.getenv('LIST')
+    mail_lst = os.getenv('LIST').split(',')
     body = index.main_body(os.getenv('MAIN_STORE_NAME'), retail_point, now)
     title = 'E-PAY ENTERSOFT ESRETAIL ERROR'
     titles = [title for _ in range(3)]
