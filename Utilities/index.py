@@ -532,21 +532,47 @@ def main_body(store_name, retail_point, complete_time):
                                                         <tr>
                                                             <td width="100%" valign="top" align="left" style="text-align: left; font-family: 'Apercu Pro', 'Work Sans', Helvetica, Arial, sans-serif; color: #000000; font-size: 16px; font-weight: normal; letter-spacing: normal; line-height: 24px; padding-bottom: 24px; width: 100%;">
                                                                 <p style="margin: 0px;">
-                                                                    <span style="font-size: 16px; line-height: 24px;">Αγαπητή ομάδα, εντοπίστηκε εγγραφή πληρωμής που περιέχει <b>σφάλματα</b>, τα οποία ενδέχεται να εμποδίσουν την ολοκλήρωση της διαδικασίας <b>κλεισίματος (Ζ)</b> από τον φορολογικό μηχανισμό το βράδυ. </span>
-                                                                    <div style="display: flex; align-items: center; text-align: center; margin: 20px 0; font-weight: bold; color: #2cb543;">
-                                                                    <div style="flex: 1; border-bottom: 1px solid #2cb543; margin: 0 10px;"></div>
-                                                                    Ενέργειες
-                                                                    <div style="flex: 1; border-bottom: 1px solid #2cb543; margin: 0 10px;"></div>
-                                                                    </div>
-                                                                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
-                                                                        <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/diamond.png?raw=true" alt="Diamond" style="margin-right: 8px; width: 16px; height: 16px;"> Διορθώστε την εγγραφή πληρωμής, ώστε να μην εμποδίζεται το κλείσιμο (Ζ).
-                                                                    </div>
-                                                                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
-                                                                        <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/diamond.png?raw=true" alt="Diamond" style="margin-right: 8px; width: 16px; height: 16px;"> Ενημερώστε για τις ενέργειες που πραγματοποιήσατε.
-                                                                    </div>
-                                                                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
-                                                                        <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/diamond.png?raw=true" alt="Diamond" style="margin-right: 8px; width: 16px; height: 16px;"> Επικοινωνήστε το πρόβλημα που προέκυψε και προτείνετε λύσεις για την αποφυγή παρόμοιων προβλημάτων στο μέλλον.
-                                                                    </div>
+                                                                     <span style="font-size: 16px; line-height: 24px;">Αγαπητή ομάδα, εντοπίστηκε εγγραφή πληρωμής που περιέχει <b>σφάλματα</b>, τα οποία ενδέχεται να εμποδίσουν την ολοκλήρωση της διαδικασίας <b>κλεισίματος (Ζ)</b> από τον φορολογικό μηχανισμό το βράδυ. </span>
+                                                                <br>
+                                                                <br>
+                                                                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                                                            <tr>
+                                                                                <td style="border-bottom: 1px solid #2cb543; width: 40%;"></td>
+                                                                                <td style="width: 20%; text-align: center; font-weight: bold; color: #2cb543;">
+                                                                                    Ενέργειες
+                                                                                </td>
+                                                                                <td style="border-bottom: 1px solid #2cb543; width: 40%;"></td>
+                                                                            </tr>
+                                                                    </table>
+                                                                <br>
+                                                                <br>
+                                                                    <table role="presentation" style="width: 100%; margin-bottom: 15px; border-collapse: collapse;">
+                                                                        <tr>
+                                                                            <td style="vertical-align: middle; width: 20px;">
+                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/diamond.png?raw=true" alt="Diamond" style="margin-right: 8px; width: 16px; height: 16px;">
+                                                                            </td>
+                                                                            <td style="vertical-align: middle; font-size: 14px; line-height: 20px; color: #000;">
+                                                                                Διορθώστε την εγγραφή πληρωμής, ώστε να μην εμποδίζεται το κλείσιμο (Ζ).
+                                                                            </td>
+                                                                        </tr>
+                                                                         <tr>
+                                                                            <td style="vertical-align: middle; width: 20px;">
+                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/diamond.png?raw=true" alt="Diamond" style="margin-right: 8px; width: 16px; height: 16px;">
+                                                                            </td>
+                                                                            <td style="vertical-align: middle; font-size: 14px; line-height: 20px; color: #000;">
+                                                                                Ενημερώστε για τις ενέργειες που πραγματοποιήσατε.
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="vertical-align: middle; width: 20px;">
+                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/diamond.png?raw=true" alt="Diamond" style="margin-right: 8px; width: 16px; height: 16px;">
+                                                                            </td>
+                                                                            <td style="vertical-align: middle; font-size: 14px; line-height: 20px; color: #000;">
+                                                                                Επικοινωνήστε το πρόβλημα που προέκυψε και προτείνετε λύσεις για την αποφυγή παρόμοιων προβλημάτων στο μέλλον.
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    </table>
 
                                                                 </p>
                                                                 <p style="margin: 0px;">
@@ -555,31 +581,50 @@ def main_body(store_name, retail_point, complete_time):
                                                                 </p>
                                                                 <p style="margin: 0px;">
                                                                     <span style="font-size: 16px; line-height: 24px;">
-                                                                        <div style="display: flex; align-items: center; text-align: center; margin: 20px 0; font-weight: bold; color: #2cb543;">
-                                                                            <div style="flex: 1; border-bottom: 1px solid #2cb543; margin: 0 10px;"></div>
-                                                                            Στοιχεία για το ζήτημα
-                                                                            <div style="flex: 1; border-bottom: 1px solid #2cb543; margin: 0 10px;"></div>
-                                                                        </div>
+                                                                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                                                            <tr>
+                                                                                <td style="border-bottom: 1px solid #2cb543; width: 30%;"></td>
+                                                                                <td style="width: 40%; text-align: center; font-weight: bold; color: #2cb543;">
+                                                                                    Στοιχεία για το ζήτημα
+                                                                                </td>
+                                                                                <td style="border-bottom: 1px solid #2cb543; width: 30%;"></td>
+                                                                            </tr>
+                                                                        </table>
+
                                                                         <br>
                                                                         <br>
-                                                                        <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #2cb543; border-radius: 12px; padding: 10px; text-align: center;">
-                                                                            <div style="flex: 1; text-align: center; font-weight: bold; color: #333;">
-                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/calendar.png?raw=true" alt="Calendar Icon" style="width: 20px; height: 20px;"> DATE: {date}
-                                                                            </div>
-                                                                            <div style="flex: 1; text-align: center; font-weight: bold; color: #333; border-left: 1px solid #2cb543; padding-left: 10px;">
-                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/wallclock.png?raw=true" alt="Clock Icon" style="width: 20px; height: 20px;"> TIME: {time}
-                                                                            </div>
-                                                                        </div>
+
+                                                                        <!-- Πρώτο Πλαίσιο: DATE και TIME -->
+                                                                        <table role="presentation" style="border: 1px solid #2cb543; border-radius: 12px; width: 100%; border-collapse: collapse; text-align: center; padding: 0;">
+                                                                            <tr>
+                                                                                <td style="width: 50%; font-weight: bold; color: #333; padding: 10px;">
+                                                                                    <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/calendar.png?raw=true" alt="Calendar Icon" style="width: 20px; height: 20px;"><br>
+                                                                                    DATE: {date}
+                                                                                </td>
+                                                                                <td style="width: 50%; font-weight: bold; color: #333; padding: 10px; border-left: 1px solid #2cb543;">
+                                                                                    <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/wallclock.png?raw=true" alt="Clock Icon" style="width: 20px; height: 20px;"><br>
+                                                                                    TIME: {time}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
                                                                         <br>
                                                                         <br>
-                                                                        <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #2cb543; border-radius: 12px; padding: 10px; text-align: center;">
-                                                                            <div style="flex: 1; text-align: center; font-weight: bold; color: #333;">
-                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/store.png?raw=true" alt="Store Image" style="width: 100px; height: 100px;"><br>Κατάστημα:<br>{store_name}
-                                                                            </div>
-                                                                            <div style="flex: 1; text-align: center; font-weight: bold; color: #333; border-left: 1px solid #2cb543; padding-left: 10px;">
-                                                                                <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/epay.png?raw=true" alt="Tax Machine Image" style="width: 100px; height: 86px;"><br>ΦΗΜΑΣ:<br>{retail_point}
-                                                                            </div>
-                                                                        </div>
+                                                                        <!-- Δεύτερο Πλαίσιο: Κατάστημα και ΦΗΜΑΣ -->
+                                                                        <table role="presentation" style="border: 1px solid #2cb543; border-radius: 12px; width: 100%; border-collapse: collapse; text-align: center; padding: 0;">
+                                                                            <tr>
+                                                                                <td style="width: 50%; font-weight: bold; color: #333; padding: 10px;">
+                                                                                    <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/store.png?raw=true" alt="Store Image" style="width: 100px; height: 100px;"><br>
+                                                                                    Κατάστημα:<br>
+                                                                                    {store_name}
+                                                                                </td>
+                                                                                <td style="width: 50%; font-weight: bold; color: #333; padding: 10px; border-left: 1px solid #2cb543;">
+                                                                                    <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/epay.png?raw=true" alt="Tax Machine Image" style="width: 100px; height: 86px;"><br>
+                                                                                    ΦΗΜΑΣ:<br>
+                                                                                    {retail_point}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+
                                                                         <br>
                                                                         <br>
                                                                         
