@@ -60,3 +60,6 @@ def mailme(retail_point):
     titles = [title for _ in range(3)]
 
     send_mail.send_mail(mail_lst, titles, body)
+
+
+# mailme('Retail A')
