@@ -13,7 +13,37 @@ import signal
 from dotenv import load_dotenv
 import os
 
+from main_app import wp_logger
+
 load_dotenv()
+
+
+def initialize_logger():
+    log_path = f"{os.getcwd()}/std.log"
+
+    # Αφαίρεση όλων των υπαρχόντων handlers
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+
+    # Εκ νέου ρύθμιση του logging
+    logging.basicConfig(
+        filename=log_path,
+        filemode="w",
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        level=logging.WARNING,
+    )
+
+    wp_logger = logging.getLogger()
+    wp_logger.info("Testing logging after removing handlers.")
+
+    if os.path.exists(log_path):
+        wp_logger.info(f"Log file successfully created: {log_path}")
+    else:
+        wp_logger.error("Log file still not created, check handlers or permissions.")
+        print("Log file still not created, check handlers or permissions.")
+
+
+initialize_logger()
 
 
 def timeout_handler(signum, frame):
@@ -26,6 +56,7 @@ def get_input_with_timeout(prompt, timeout, default):
     try:
         return input(prompt)
     except (TimeoutError, EOFError):
+        wp_logger.error(f"Input timed out. Defaulting to {default}.")
         print(f"\nInput timed out. Defaulting to {default}.")
         return default
     finally:
@@ -43,8 +74,9 @@ if color_pallete in data:
 else:
     multiple_data = 3
 
-
+wp_logger.info(f"Refresh rate: {refresh_rate}")
 print(f"Refresh rate: {refresh_rate}")
+wp_logger.info(f"Multiple Data: {multiple_data}")
 print(f"Multiple Data: {multiple_data}")
 
 
@@ -52,9 +84,10 @@ def create_folder_if_not_exists(folder: str) -> None:
     if not os.path.exists(folder):
         try:
             os.makedirs(folder)
+            wp_logger.info(f"Folder created: {folder}")
             print(f"Folder created: {folder}")
         except Exception as e:
-            logging.error(f"Failed to create folder {folder}. Reason: {e}")
+            wp_logger.error(f"Failed to create folder {folder}. Reason: {e}")
 
 
 path = f"{os.getcwd()}/in/{os.getenv('COLOR_PALLETE')}"
@@ -63,12 +96,7 @@ path_2 = f"{os.getcwd()}/roll"
 create_folder_if_not_exists(f'{path}/TEMP')
 create_folder_if_not_exists(path_2)
 
-log_path = f"{os.getcwd()}/std.log"
-logging.basicConfig(
-    filename=log_path, filemode="w", format="%(asctime)s - %(levelname)s - %(message)s"
-)
-wp_logger = logging.getLogger()
-wp_logger.setLevel("WARNING")
+
 SQL_FILES = [
     "ESFIItemEntry_ESFIItemPeriodics_a.sql",  # 0
     "ESFIItemEntry_ESFIItemPeriodics_c.sql",  # 1
@@ -88,7 +116,7 @@ def delete_all_files_inside_folder(folder: str) -> None:
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            logging.error(f"Failed to delete {file_path}. Reason: {e}")
+            wp_logger.error(f"Failed to delete {file_path}. Reason: {e}")
 
 
 def filter_data(df):
@@ -117,6 +145,7 @@ def filter_data(df):
 
 def run(temp_file, multiple_data):
     # print(refresh_rate, temp_file, flag)
+    wp_logger.info(f"Running {temp_file}")
     print(f"\r🟢 DATA @{datetime.now().strftime('%H:%M:%S')} -> ", end="")
 
     start_ = time.perf_counter()
@@ -158,6 +187,7 @@ def run(temp_file, multiple_data):
         df_sales_elounda = pd.DataFrame()
 
     first_q_timer = time.perf_counter()
+    wp_logger.info(f"DONE IN:{round(first_q_timer - start_)} sec DB YTD || ")
     print(f"🟢DONE IN:{round(first_q_timer - start_)} sec DB YTD || ", end="")
 
     if multiple_data == 3:
@@ -165,6 +195,7 @@ def run(temp_file, multiple_data):
         second_q_timer = time.perf_counter()
         df["DATE"] = df.apply(lambda x: f"{int(x.MONTH)}/{int(x.DAY)}/{int(x.YEAR)}", axis=1)
         df["DATE"] = pd.to_datetime(df["DATE"]).dt.strftime("%d/%m/%Y")
+        wp_logger.info(f"DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ")
         print(f"🟢DONE IN: {round(second_q_timer - first_q_timer)} sec MONTHLY DATA || ", end="")
 
         elounda_users = tuple(os.getenv("EMUSERS").split(","))
@@ -178,8 +209,8 @@ def run(temp_file, multiple_data):
 
     # GET MONTHLY TURNOVER DATA
     monthly_turnover_df = fetch_data.get_sql_data(SQL_FILES[3])
+    wp_logger.info(f"DONE MONTHLY TURNOVER || ")
     print(f"🟢DONE MONTHLY TURNOVER || ", end="")
-
 
     minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda, monthly_turnover_df)
     stop_ = time.perf_counter()
@@ -196,6 +227,7 @@ def start_at_exact_second():
 
         # Έλεγχος αν τα δευτερόλεπτα είναι 00
         if now.second == 56:
+            wp_logger.info("Starting the app...")
             print("Ξεκινάω το πρόγραμμα στις: ", now)
             break  # Σπάει το loop και ξεκινά το πρόγραμμα
 
@@ -241,6 +273,7 @@ while running:
 
             times += 1
             total_timers.append(round(stop - start))
+            wp_logger.info("Report Ready")
             print(
                 f"\r{CRED}Report Ready{CEND} :: {datetime.now().strftime('%H:%M:%S')} :: in {round(stop - start)} sec :: Refreshed {CGREEN}{times}{' time' if times == 1 else ' times'}{CEND} Faield {CRED}{failed} times {CEND} || TIMERS TABLE {total_timers}",
                 end="", )
@@ -257,6 +290,7 @@ while running:
                 end="")
     except KeyboardInterrupt:
         sound.error()
+        wp_logger.error("KeyboardInterrupt")
         print(" || 🟢Setting Offline Visuals", end='')
         minimalist_write.offline(path, path_2, f'{path}/TEMP')
 
