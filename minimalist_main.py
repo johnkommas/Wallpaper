@@ -54,7 +54,7 @@ def create_folder_if_not_exists(folder: str) -> None:
             os.makedirs(folder)
             print(f"Folder created: {folder}")
         except Exception as e:
-            print(f"Failed to create folder {folder}. Reason: {e}")
+            logging.error(f"Failed to create folder {folder}. Reason: {e}")
 
 
 path = f"{os.getcwd()}/in/{os.getenv('COLOR_PALLETE')}"
@@ -88,7 +88,7 @@ def delete_all_files_inside_folder(folder: str) -> None:
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            print(f"Failed to delete {file_path}. Reason: {e}")
+            logging.error(f"Failed to delete {file_path}. Reason: {e}")
 
 
 def filter_data(df):
@@ -218,6 +218,8 @@ sound.done()
 sound.run()
 running = True
 total_timers = []
+
+
 while running:
     file = "wallpaper"
     delete_all_files_inside_folder(f"{path}/TEMP/")
@@ -255,6 +257,9 @@ while running:
                 end="")
     except KeyboardInterrupt:
         sound.error()
+        print(" || 🟢Setting Offline Visuals", end='')
+        minimalist_write.offline(path, path_2, f'{path}/TEMP')
+
         print("\n🟢 Safely stopping the app... Cleaning up resources.")
         sound.exit()
         print("🟢 The App will Now stop Running")
@@ -262,7 +267,7 @@ while running:
         sys.exit(0)
     except Exception as e:
         sound.error()
-        print(f"\rException Occured", end="")
+        logging.error("Exception Occurred", exc_info=True)
         wp_logger.error(e)
         failed += 1
         print(
