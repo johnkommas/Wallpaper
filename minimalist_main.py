@@ -47,9 +47,21 @@ else:
 print(f"Refresh rate: {refresh_rate}")
 print(f"Multiple Data: {multiple_data}")
 
-OneDrive = os.getenv('ONEDRIVE')
-path = f"{OneDrive}/Wallpaper/in/{os.getenv('COLOR_PALLETE')}"
-path_2 = f"{OneDrive}/Wallpaper/roll"
+
+def create_folder_if_not_exists(folder: str) -> None:
+    if not os.path.exists(folder):
+        try:
+            os.makedirs(folder)
+            print(f"Folder created: {folder}")
+        except Exception as e:
+            print(f"Failed to create folder {folder}. Reason: {e}")
+
+
+path = f"{os.getcwd()}/in/{os.getenv('COLOR_PALLETE')}"
+path_2 = f"{os.getcwd()}/roll"
+
+create_folder_if_not_exists(f'{path}/TEMP')
+create_folder_if_not_exists(path_2)
 
 log_path = f"{os.getcwd()}/std.log"
 logging.basicConfig(
