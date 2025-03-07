@@ -11,30 +11,18 @@ from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_
 from MyNetwork import network_devices
 
 
-def offline(emoji, path, offline_path, word):
-    # Ορισμός χρωμάτων
-    color = os.getenv("COLOR_A")
-    box = (10000, 500)  # Αρχική θέση για το κείμενο πάνω στην εικόνα
-    if word == "VPN OFFLINE":
-        box = (10000, 700)
-    delete_all_files_inside_folder(offline_path)  # Διαγραφή όλων των αρχείων στον φάκελο offline_path
+def offline(emoji, path, offline_path):
+    delete_all_files_inside_folder(offline_path)
+    file = f"{emoji}/switch-off.png"
     dir_list = os.listdir(path)
     for dfile in dir_list:
         my_image = Image.open(f"{path}/{dfile}")
-        image_editable = ImageDraw.Draw(my_image)
-
-        # Χρησιμοποιούμε διαφορετικά χρώματα για κάθε γράμμα σύμφωνα με τα palettes
-        font = ImageFont.truetype(os.getenv("FONT_POIRET_ONE"), 200)  # Αλλαγή font αν χρειάζεται
-        x, y = box  # Ξεκινάμε από την προκαθορισμένη θέση
-
-        # Διαχωρισμός γραμμάτων και χρωμάτων
-
-        image_editable.text((x, y), word, font=font, fill=color)
-
-        # Αποθηκεύουμε την τροποποιημένη εικόνα στο offline_path
+        overlay = Image.open(file)
+        width, height = overlay.size
+        overlay = overlay.resize((width // 2, height // 2))
+        my_image.paste(overlay, (10950, 6270), mask=overlay)
+        # image_editable = ImageDraw.Draw(my_image)
         my_image.save(f"{offline_path}/{dfile}")
-
-    # Διαγραφές και αντιγραφές αρχείων
     delete_all_files_inside_folder(path)
     for dfile in os.listdir(offline_path):
         shutil.copy2(f"{offline_path}/{dfile}", f"{path}/{dfile}")
@@ -88,18 +76,22 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
     c1 = ctime.perf_counter()
-    # print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
+    print(f"🟢DONE IN: {round(c1 - start)} sec WALLPAPER INITIALIZED || ", end="")
+
+    print("🟢SETUP ONLINE BUTTON || ", end='')
+    for image in images:
+        paste_image(image, f"{path}/switch-on.png", (10950, 6270), 3)
 
     if multiple_data == 3:
         PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
-        # print("🟢Entersoft PoS || ", end="")
+        print("🟢Entersoft PoS || ", end="")
         network_devices.run(images, path)
         entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, images)  # Entersoft Monthly TurnOver Donut
-        # print("🟢Entersoft Donut Monthly TurnOver || ", end='')
+        print("🟢Entersoft Donut Monthly TurnOver || ", end='')
         daily_bar_plot.run_daily_smooth(plot_df, specific_date, f"{path}/graph.png", path, images)     # Entersoft Daily TurnOver Bar
-        # print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
+        print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
         Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)  # ENTERSOFT ONLINE OFFLINE USERS
-        # print("🟢Entersoft Online Offline Users || ", end="")
+        print("🟢Entersoft Online Offline Users || ", end="")
         PDA.run(f"{path}/sankey_pda.png", images)
 
     if multiple_data in (0, 3):
@@ -113,7 +105,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         # run mikrotik get dataframe
 
         mikrotik_app.write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
-        # print("🟢Mikrotik Total Attacks || ", end="")
+        print("🟢Mikrotik Total Attacks || ", end="")
 
         for i, image in enumerate(images, start=1):
             plot.plot_run_mikrotik(i, dataframe,
@@ -147,7 +139,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         # Entersoft Years To Date
         compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
                           time, number_font_parse)
-        # print("🟢Entersoft Compare Years|| ", end="")
+        print("🟢Entersoft Compare Years|| ", end="")
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
@@ -155,7 +147,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     my_image_3.save(f"{path}/TEMP/{file_in}_{time}_3.jpg")
 
     c2 = ctime.perf_counter()
-    # print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
+    print(f"🟢DONE IN: {round(c2 - c1)} sec WRITING YTD || ", end="")
 
     delete_all_files_inside_folder(f"{path_2}/", "kommas.png")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_1.jpg", f"{path_2}/{file_in}_1.jpg")
@@ -163,5 +155,5 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_3.jpg", f"{path_2}/{file_in}_3.jpg")
     shutil.copy2(f"{path}/TEMP/{file_in}_{time}_2.jpg", f"{path_2}/{file_in}_4.jpg")
     c3 = ctime.perf_counter()
-    # print(f" 🟢DONE IN: {round(c3 - c2)} sec PLOTTING GRAPH ", end="")
+    print(f" 🟢DONE IN: {round(c3 - c2)} sec PLOTTING GRAPH ", end="")
     ctime.sleep(2)
