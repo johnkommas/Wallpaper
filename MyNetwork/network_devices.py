@@ -75,6 +75,6 @@ async def main(images, path):
 
 
 def run(images, path):
-    print("Running Network Devices Check", end='')
+    print("🟢 Running Network Devices Check || ", end='')
     asyncio.run(main(images, path))
 
