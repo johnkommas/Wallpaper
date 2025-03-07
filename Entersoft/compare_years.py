@@ -1,6 +1,7 @@
 import os
 from dateutil.relativedelta import relativedelta
 
+
 def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
                          dates_font_parse, timestamp_font_parse, time, counter):
     years = [str(i) for i in df_years]
