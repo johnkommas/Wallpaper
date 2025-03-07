@@ -19,7 +19,7 @@ def offline(emoji, path, offline_path):
         my_image = Image.open(f"{path}/{dfile}")
         overlay = Image.open(file)
         width, height = overlay.size
-        overlay = overlay.resize((width // 2, height // 2))
+        overlay = overlay.resize((width // 3, height // 3))
         my_image.paste(overlay, (10950, 6270), mask=overlay)
         # image_editable = ImageDraw.Draw(my_image)
         my_image.save(f"{offline_path}/{dfile}")
