@@ -13,7 +13,6 @@ import signal
 from dotenv import load_dotenv
 import os
 
-from main_app import wp_logger
 
 load_dotenv()
 
@@ -41,9 +40,10 @@ def initialize_logger():
     else:
         wp_logger.error("Log file still not created, check handlers or permissions.")
         print("Log file still not created, check handlers or permissions.")
+    return wp_logger
 
 
-initialize_logger()
+wp_logger = initialize_logger()
 
 
 def timeout_handler(signum, frame):
