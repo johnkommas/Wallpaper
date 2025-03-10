@@ -1,11 +1,6 @@
 import os
-from Files import plot
-import numpy as np
-from matplotlib import pyplot as plt
 from PIL import Image
 from Files import minimalist_write
-
-
 import matplotlib.pyplot as plt
 import numpy as np
 
