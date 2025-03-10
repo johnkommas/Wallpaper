@@ -1,11 +1,9 @@
 import os
 from datetime import timedelta
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt, font_manager
 from scipy.ndimage import gaussian_filter1d
-from Files import plot
 from Files import minimalist_write
 
 
