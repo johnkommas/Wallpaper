@@ -24,14 +24,25 @@ def a_gmail(email_send, subj, word):
     server.login(email_user, email_password)
     server.sendmail(email_user, email_send, text)
     server.quit()
-    print("Το e-mail {} στάλθηκε επιτυχώς".format(email_send))
+    print(f"Το e-mail {email_send} στάλθηκε επιτυχώς")
 
 
 # ----------------MAIN PROGRAM--------------------
 def send_mail(mail_lst, mail_names, word):
-    for i in range(len(mail_lst)):
-        c = "S: {}".format(mail_names[i])
-        print("Αποστολή μηνύματος στον παραλήπτη {}".format(mail_names[i]))
-        a_gmail(mail_lst[i], c, word)
+    """
+    Στέλνει email σε μια λίστα παραληπτών με τα αντίστοιχα ονόματα και το κείμενο.
+
+    :param mail_lst: Λίστα με τις διευθύνσεις email των παραληπτών.
+    :param mail_names: Λίστα με τα ονόματα ή τους τίτλους των παραληπτών.
+    :param word: Το μήνυμα που θέλετε να στείλετε.
+    """
+    if len(mail_lst) != len(mail_names):
+        raise ValueError("Οι λίστες mail_lst και mail_names πρέπει να έχουν ίδιο μήκος.")
+
+    for email, name in zip(mail_lst, mail_names):
+        subject = f"S: {name}"  # Δημιουργία του subject για κάθε email
+        print(f"Αποστολή μηνύματος στον παραλήπτη ({email}) με θέμα: {subject}")
+        a_gmail(email, subject, word)
+
 
 
