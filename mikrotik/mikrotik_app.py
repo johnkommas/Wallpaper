@@ -320,6 +320,6 @@ def write(dataframe, images, editables, number_font_parse, timestamp_font_parse)
         mean_attacks = daily_attacks.mean()
         daily = f"{int(mean_attacks)}-{len(dataframe)}"
 
-        editable.text((5080 + 500, 600), daily, os.getenv("COLOR_A"), font=number_font_parse)
-        editable.text((4950 + 500, 800), "Daily vs Total Penetration Attempts", os.getenv("COLOR_A"),
+        editable.text((5080 + 500, 700), daily, os.getenv("COLOR_A"), font=number_font_parse)
+        editable.text((4950 + 500, 900), "Daily vs Total Penetration Attempts", os.getenv("COLOR_A"),
                       font=timestamp_font_parse)  # Σχεδίαση του αριθμού
