@@ -3,7 +3,7 @@ from Files import minimalist_write
 
 
 def online_offline(images, editables, status_users_elounda, path, timestamp_font_parse, i=0, path_b=None,):
-    calibrate_y = 500
+    calibrate_y = 220
     calibrate_y_2 = calibrate_y + 610
     potitions = [
         (7500, 4100 - calibrate_y_2),  # GIOTA 5Days
