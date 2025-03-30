@@ -94,7 +94,7 @@ def monthly_turnover_donut(df, path_a, color, i):
             )
 
     # Add a transparent circle in the center
-    center_circle = plt.Circle((0, 0), 0.60, fc=os.getenv("COLOR_BG"))
+    center_circle = plt.Circle((0, 0), 0.60, fc="none")
     plt.gca().add_artist(center_circle)
 
     # Ensure equal aspect
