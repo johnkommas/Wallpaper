@@ -53,11 +53,12 @@ def mailme(retail_point):
     :type retail_point: str
     :return: None
     """
-    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     mail_lst = os.getenv('LIST').split(',')
     body = index.main_body(os.getenv('MAIN_STORE_NAME'), retail_point, now)
-    title = 'E-PAY ENTERSOFT ESRETAIL ERROR'
-    titles = [title for _ in range(3)]
+    title = f'E-PAY ERROR || {now}'
+    titles = [title for _ in range(len(mail_lst))]
+
 
     send_mail.send_mail(mail_lst, titles, body)
 
