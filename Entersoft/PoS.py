@@ -7,7 +7,7 @@ from Files import minimalist_write
 from Sound_Pack import sound
 
 
-def get_Pos(path, images, editables, font):
+def get_Pos(path, images, editables, font, multiple_data):
     # Εκτέλεση SQL ερωτήματος και φόρτωση δεδομένων
     query = ["PoS.sql", "Retail_PerPoint_Today_Count_Sales.sql"]
 
@@ -33,46 +33,46 @@ def get_Pos(path, images, editables, font):
         # imessage.send(text)
         imessage.mailme(text)
 
+    if multiple_data == 3:
+        # Στατιστικά για κάθε PoS
+        df_pos_a = df[df["POSID"] == PDA_ID_A]
+        data_to_text_pos_a = ""
+        for status, count in zip(df_pos_a.Status.value_counts().index, df_pos_a.Status.value_counts()):
+            data_to_text_pos_a = data_to_text_pos_a + f"{status[:2]}:{count} "
 
-    # Στατιστικά για κάθε PoS
-    df_pos_a = df[df["POSID"] == PDA_ID_A]
-    data_to_text_pos_a = ""
-    for status, count in zip(df_pos_a.Status.value_counts().index, df_pos_a.Status.value_counts()):
-        data_to_text_pos_a = data_to_text_pos_a + f"{status[:2]}:{count} "
+        df_pos_b = df[df["POSID"] == PDA_ID_B]
+        data_to_text_pos_b = ""
+        for status, count in zip(df_pos_b.Status.value_counts().index, df_pos_b.Status.value_counts()):
+            data_to_text_pos_b = data_to_text_pos_b + f"{status[:2]}:{count} "
 
-    df_pos_b = df[df["POSID"] == PDA_ID_B]
-    data_to_text_pos_b = ""
-    for status, count in zip(df_pos_b.Status.value_counts().index, df_pos_b.Status.value_counts()):
-        data_to_text_pos_b = data_to_text_pos_b + f"{status[:2]}:{count} "
+        data_to_text = [data_to_text_pos_a, data_to_text_pos_b]
+        retail_per_point = [RA, RB]
+        # print(retail_per_point)
 
-    data_to_text = [data_to_text_pos_a, data_to_text_pos_b]
-    retail_per_point = [RA, RB]
-    # print(retail_per_point)
+        for image, editable in zip(images, editables):
+            text_offset = 0
+            for entry, retail  in zip(data_to_text, retail_per_point):
+                editable.text((2480 + text_offset, 1800), f"RECEIPTS: {retail}", os.getenv("COLOR_A"), font=font)
+                editable.text((2480 + text_offset, 1910), entry.upper(), os.getenv("COLOR_A"), font=font)  # Χρήση καθεμιάς εγγραφής
+                text_offset += 1540
 
-    for image, editable in zip(images, editables):
-        text_offset = 0
-        for entry, retail  in zip(data_to_text, retail_per_point):
-            editable.text((2480 + text_offset, 1800), f"RECEIPTS: {retail}", os.getenv("COLOR_A"), font=font)
-            editable.text((2480 + text_offset, 1910), entry.upper(), os.getenv("COLOR_A"), font=font)  # Χρήση καθεμιάς εγγραφής
-            text_offset += 1540
+        # Λειτουργία για την κατασκευή της εικόνας
+        def handle_image(pos_condition, offset, image, my_retail):
+            path_a = f"{path}/bad_pos.png" if pos_condition else f"{path}/good_pos.png"
+            box_ = (1980 + offset, 1780)
+            box_polar = (1650 + offset, 1180)
+            image = minimalist_write.paste_image(image, path_a, box_, resize=2)
+            image = minimalist_write.paste_image(image, my_retail, box_polar, resize=3)
 
-    # Λειτουργία για την κατασκευή της εικόνας
-    def handle_image(pos_condition, offset, image, my_retail):
-        path_a = f"{path}/bad_pos.png" if pos_condition else f"{path}/good_pos.png"
-        box_ = (1980 + offset, 1780)
-        box_polar = (1650 + offset, 1180)
-        image = minimalist_write.paste_image(image, path_a, box_, resize=2)
-        image = minimalist_write.paste_image(image, my_retail, box_polar, resize=3)
+        for enum, (a, b) in enumerate(zip(Card_Payments, retail_per_point)):
+            # print(f"Polar Chart {enum}, {a}, {b}")
+            polar_chart(a, b, f"{path}/polar_chart_{enum}.png")
 
-    for enum, (a, b) in enumerate(zip(Card_Payments, retail_per_point)):
-        # print(f"Polar Chart {enum}, {a}, {b}")
-        polar_chart(a, b, f"{path}/polar_chart_{enum}.png")
-
-    for image in images:
-        # Εικόνα για pos_a
-        handle_image(pos_a, 0, image, f"{path}/polar_chart_0.png")
-        # Εικόνα για pos_b
-        handle_image(pos_b, 1550, image, f"{path}/polar_chart_1.png")
+        for image in images:
+            # Εικόνα για pos_a
+            handle_image(pos_a, 0, image, f"{path}/polar_chart_0.png")
+            # Εικόνα για pos_b
+            handle_image(pos_b, 1550, image, f"{path}/polar_chart_1.png")
 
 
 def polar_chart(cards, receipts, file, title="ΠΟΣΟΣΤΟ ΣΥΝΑΛΛΑΓΩΝ ΜΕ ΚΑΡΤΑ"):
