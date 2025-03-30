@@ -33,9 +33,9 @@ def plot_run_mikrotik(i, pie_df, path_b, path,):
     _path = [0, f"{path}/fingerprint_1.png", f"{path}/fingerprint_2.png", f"{path}/fingerprint_3.png"]
     colors = [None, os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     mikrotik_app.plot_run(pie_df, f"{path}/pie.png", f"{path}/sankey.png", f"{path}/line.png",colors[i], i)
-    path_b = minimalist_write.paste_image(path_b,f"{path}/pie.png", (9500, 50), 2)
-    path_b = minimalist_write.paste_image(path_b, f"{path}/sankey.png", (9300, 1500))
-    path_b = minimalist_write.paste_image(path_b, _path[i], (10100, 700))
+    path_b = minimalist_write.paste_image(path_b,f"{path}/pie.png", (9500, 200), 2)
+    path_b = minimalist_write.paste_image(path_b, f"{path}/sankey.png", (9300, 2000))
+    path_b = minimalist_write.paste_image(path_b, _path[i], (10150, 850))
 
 
 def glue_image_general(path_a, path_b, box_, resize=1):
