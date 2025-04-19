@@ -305,6 +305,7 @@ def run(csv_file="emails_data.csv"):
             else:
                 print(f"CSV file {csv_file} does not exist. Returning empty DataFrame.", end="")
                 return pd.DataFrame()
+    return None
 
 
 def plot_run(df, path, sankey_path, line_path, color, loop_counter):
