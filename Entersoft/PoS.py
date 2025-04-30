@@ -19,11 +19,12 @@ def get_Pos(path, images, editables, font, multiple_data):
     df = fetch_data.get_sql_data(query[0])
     PDA_ID_A = "01655515"
     PDA_ID_B = "01655516"
+    PDA_ID_A_2 = "01655517"
     # Έλεγχος των συνθηκών για pos_a και pos_b
-    pos_a = df.loc[df["POSID"] == PDA_ID_A, "Status"].eq("Εκκρεμής").any()
+    pos_a = df.loc[df["POSID"].isin([PDA_ID_A, PDA_ID_A_2]), "Status"].eq("Εκκρεμής").any()
     pos_b = df.loc[df["POSID"] == PDA_ID_B, "Status"].eq("Εκκρεμής").any()
 
-    Card_Payments_A = df[(df["POSID"] == PDA_ID_A) & (df["Status"] == "Επιτυχημένη")].shape[0]
+    Card_Payments_A = df[(df["POSID"].isin([PDA_ID_A, PDA_ID_A_2])) & (df["Status"] == "Επιτυχημένη")].shape[0]
     Card_Payments_B = df[(df["POSID"] == PDA_ID_B) & (df["Status"] == "Επιτυχημένη")].shape[0]
     Card_Payments = [Card_Payments_A, Card_Payments_B]
 
@@ -35,7 +36,7 @@ def get_Pos(path, images, editables, font, multiple_data):
 
     if multiple_data == 3:
         # Στατιστικά για κάθε PoS
-        df_pos_a = df[df["POSID"] == PDA_ID_A]
+        df_pos_a = df[df["POSID"].isin([PDA_ID_A, PDA_ID_A_2])]
         data_to_text_pos_a = ""
         for status, count in zip(df_pos_a.Status.value_counts().index, df_pos_a.Status.value_counts()):
             data_to_text_pos_a = data_to_text_pos_a + f"{status[:2]}:{count} "
