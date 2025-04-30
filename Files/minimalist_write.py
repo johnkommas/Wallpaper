@@ -20,7 +20,7 @@ def offline(emoji, path, offline_path):
         overlay = Image.open(file)
         width, height = overlay.size
         overlay = overlay.resize((width // 3, height // 3))
-        my_image.paste(overlay, (10950, 6270), mask=overlay)
+        my_image.paste(overlay, (11000, 6975), mask=overlay)
         # image_editable = ImageDraw.Draw(my_image)
         my_image.save(f"{offline_path}/{dfile}")
     delete_all_files_inside_folder(path)
@@ -80,11 +80,13 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     print("🟢SETUP ONLINE BUTTON || ", end='')
     for image in images:
-        paste_image(image, f"{path}/switch-on.png", (10950, 6270), 3)
+        paste_image(image, f"{path}/switch-on.png", (11000, 6975), 3)
 
+    PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse, multiple_data=multiple_data)  # Entersoft PoS
+    print("🟢Entersoft PoS || ", end="")
     if multiple_data == 3:
-        PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
-        print("🟢Entersoft PoS || ", end="")
+        # PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
+        # print("🟢Entersoft PoS || ", end="")
         network_devices.run(images, path)
         entersoft_plot.plot_run_monthly_turnover(monthly_turnover_df, path, images)  # Entersoft Monthly TurnOver Donut
         print("🟢Entersoft Donut Monthly TurnOver || ", end='')
@@ -92,7 +94,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         print("🟢Entersoft Bar Plot Daily Turn Over|| ", end='')
         Online_Offline.online_offline(images, editables, status_users_elounda, path, timestamp_font_parse)  # ENTERSOFT ONLINE OFFLINE USERS
         print("🟢Entersoft Online Offline Users || ", end="")
-        PDA.run(f"{path}/sankey_pda.png", images)
+        # PDA.run(f"{path}/sankey_pda.png", images)
 
     if multiple_data in (0, 3):
         youtrack_df = youtrack_app.main()
@@ -116,7 +118,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
             vpn_X = 5600
             step = 200
-            vpn_Y = 200
+            vpn_Y = 350
             vpn_users = os.getenv("VPNUSERS").split(",")
 
             # Βρόχος για κάθε χρήστη

@@ -27,7 +27,7 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
         check_year += 1
 
     # write timestamp refreshed data
-    image_editable.text((10100, 6300), time, custom_color, font=timestamp_font_parse)
+    image_editable.text((10100, 7000), time, custom_color, font=timestamp_font_parse)
 
 
 def write_revenue_values(image_editable, data, number_font_parse, counter):

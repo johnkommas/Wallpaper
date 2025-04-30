@@ -38,25 +38,68 @@ def connect():
                 return open_vpn(sql_counter)
 
 
+# def open_vpn(sql_counter):
+#     load_dotenv()
+#
+#     EM_mode = os.system(f"ping -c 1  {os.getenv('IP_EM')} >/dev/null")
+#     if EM_mode == 0:
+#         print("\r🟢: (SQL) Elounda Market is UP, Trying to get VPN UP...", end='')
+#         call(["scutil", "--nc", "start", os.getenv('VPN_NAME'), '--secret', os.getenv('VPN_PWD')])
+#         time.sleep(5)
+#         Server_mode = os.system(f"ping -c 1  {os.getenv('IP_EM_ROUTER')} >/dev/null")
+#         if Server_mode == 0:
+#             print("\r🟢: (SQL) VPN IS UP", end='')
+#             return connect()
+#         else:
+#             sql_counter += 1
+#             print(f"\r🔴: (SQL) VPN IS STILL DOWN || Tries: {sql_counter}", end='')
+#             return open_vpn(sql_counter)
+#
+#     else:
+#         sql_counter += 1
+#         print(f"\r🔴: (SQL) Internet on Site Is Down || Tries: {sql_counter}", end='')
+#         return open_vpn(sql_counter)
+
 def open_vpn(sql_counter):
-    EM_mode = os.system(f"ping -c 1  {os.getenv('IP_EM')} >/dev/null")
+    load_dotenv()  # Φόρτωση μεταβλητών περιβάλλοντος από το .env αρχείο
+
+    # Έλεγχος αν το site (π.χ. Elounda Market) είναι προσβάσιμο
+    EM_mode = os.system(f"ping -c 1 {os.getenv('IP_EM')} >/dev/null")
     if EM_mode == 0:
         print("\r🟢: (SQL) Elounda Market is UP, Trying to get VPN UP...", end='')
-        call(["scutil", "--nc", "start", os.getenv('VPN_NAME'), '--secret', os.getenv('VPN_PWD')])
+
+        # Προσπάθεια σύνδεσης μέσω AppleScript
+        vpn_name = "Elounda Market"
+        apple_script = f"""
+        tell application "System Events"
+            tell current location of network preferences
+                if exists service "{vpn_name}" then
+                    connect service "{vpn_name}"
+                end if
+            end tell
+        end tell
+        """
+        os.system(f"osascript -e '{apple_script}'")
+
+        # Χρόνος αναμονής για να σταθεροποιηθεί η σύνδεση VPN
         time.sleep(5)
-        Server_mode = os.system(f"ping -c 1  {os.getenv('IP_EM_ROUTER')} >/dev/null")
+
+        # Έλεγχος εάν το VPN router είναι πλέον προσβάσιμο
+        Server_mode = os.system(f"ping -c 1 {os.getenv('IP_EM_ROUTER')} >/dev/null")
         if Server_mode == 0:
             print("\r🟢: (SQL) VPN IS UP", end='')
-            return connect()
+            return connect()  # Σύνδεση με τη βάση δεδομένων
         else:
             sql_counter += 1
             print(f"\r🔴: (SQL) VPN IS STILL DOWN || Tries: {sql_counter}", end='')
-            return open_vpn(sql_counter)
+            return open_vpn(sql_counter)  # Επανεκκίνηση της προσπάθειας για VPN
 
     else:
         sql_counter += 1
         print(f"\r🔴: (SQL) Internet on Site Is Down || Tries: {sql_counter}", end='')
-        return open_vpn(sql_counter)
+        time.sleep(10)  # Καθυστέρηση πριν την επόμενη προσπάθεια
+        return open_vpn(sql_counter)  # Επανεκκίνηση προσπάθειας
+
 
 
 def get_ip_address():

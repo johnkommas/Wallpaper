@@ -1,11 +1,9 @@
 import os
 from datetime import timedelta
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt, font_manager
 from scipy.ndimage import gaussian_filter1d
-from Files import plot
 from Files import minimalist_write
 
 
@@ -103,4 +101,4 @@ def run_daily_smooth(all_years, specific_day, path_a, path, images):
         img_file = f"{path_a}"
         plt.savefig(img_file, transparent=True)
         plt.close()
-        image = minimalist_write.paste_image(image, path_a, (100, 4200))
+        image = minimalist_write.paste_image(image, path_a, (100, 4850))

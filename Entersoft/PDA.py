@@ -1,6 +1,5 @@
 from SQL_FOLDER import fetch_data
 import os
-from Files import plot
 import pandas as pd
 import plotly.graph_objects as go
 

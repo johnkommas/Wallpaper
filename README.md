@@ -44,6 +44,8 @@
 
 ![2E13F2D1-9165-45DE-AAB6-C4D87B30C62E_1_105_c](https://github.com/user-attachments/assets/4cabed69-1cde-41d1-a588-09d7dfd62bbd)
 
+![IMG_2453](https://github.com/user-attachments/assets/abfe9f26-d6ac-462c-bb93-77e894ae7782)
+
 ## 🛠️ Tool Kit Color Pallete Examples
 ![1](https://github.com/user-attachments/assets/3b18ab72-562f-46ea-8a67-d643b52374d4)
 ![2](https://github.com/user-attachments/assets/3d30a5de-05a2-404a-b6cc-1ba34bcc9d83)

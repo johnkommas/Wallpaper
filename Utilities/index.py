@@ -494,10 +494,13 @@ def main_body(store_name, retail_point, complete_time):
                                     <td width="100%" align="center" valign="top" style="width: 100%;">
                                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
                                             <tr>
-                                                <td width="100%" valign="top" align="left" class="st-dynamic-999-2" style="width: 100%;">
-                                                 <p style="margin: 0px; text-align: center;">
-                                                                    <span style="font-size: 44px; line-height: 53px; color: red; ">E-PAY ERROR</span>
-                                                                </p>
+                                                <td width="100%" valign="top" align="left" style="width: 100%; padding-bottom: 20px;">
+                                                    <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/FT.png?raw=true" alt="FT Logo" style="width: 150px; height: 44px;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="100%" valign="top" align="center" class="st-dynamic-999-2" style="width: 100%;">
+                                                    <span style="font-size: 44px; line-height: 53px; color: red;">E-PAY ERROR</span>
                                                 </td>
                                             </tr>
                                         </table>
@@ -730,3 +733,7 @@ def main_body(store_name, retail_point, complete_time):
     html = html_start + html_head + html_body + html_end
     return html
 
+# test
+# https://github.com/johnkommas/Wallpaper/blob/master/images/FT.jpeg?raw=true
+# with open("test.html", "w") as f:
+#     f.write(main_body('Elounda Market', 'ΤΑΜΕΙΟ Α',"19.04.2025 13:41:12" ))
