@@ -498,11 +498,7 @@ def main_body(store_name, retail_point, complete_time):
                                                     <img src="https://github.com/johnkommas/Wallpaper/blob/master/images/FT.png?raw=true" alt="FT Logo" style="width: 150px; height: 44px;">
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td width="100%" valign="top" align="center" class="st-dynamic-999-2" style="width: 100%;">
-                                                    <span style="font-size: 44px; line-height: 53px; color: red;">E-PAY ERROR</span>
-                                                </td>
-                                            </tr>
+                                            
                                         </table>
                                     </td>
                                 </tr>
