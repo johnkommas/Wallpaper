@@ -9,7 +9,7 @@ from mikrotik import mikrotik_app
 from Youtrack import youtrack_app
 from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_bar_plot, PDA
 from MyNetwork import network_devices
-
+from dotenv import load_dotenv
 
 def offline(emoji, path, offline_path):
     delete_all_files_inside_folder(offline_path)
@@ -54,7 +54,7 @@ def paste_image(my_image, overlay_image, xy, resize=1):
 
 def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status_users_elounda, monthly_turnover_df):
     start = ctime.perf_counter()
-
+    load_dotenv()
     # SETUP FONTS
     title_font_year = ImageFont.truetype(os.getenv("FONT_AVENIR_NEXT"), 200)
     number_font_parse = ImageFont.truetype(os.getenv("FONT_DIN_CONDENSED_BOLD"), 250)
@@ -113,13 +113,16 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
             plot.plot_run_mikrotik(i, dataframe,
                                    path_b=image,
                                    path=path)
-            plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
-                                   path_b=image)
+            print("🟢Mikrotik Plotting || ", end="")
+            # plot.plot_run_youtrack(i, path, youtrack_df, youtrack_image,
+            #                        path_b=image)
+            # print("🟢Youtrack Plotting || ", end="")
 
             vpn_X = 5600
             step = 200
             vpn_Y = 350
             vpn_users = os.getenv("VPNUSERS").split(",")
+
 
             # Βρόχος για κάθε χρήστη
             for index, user in enumerate(vpn_users):
