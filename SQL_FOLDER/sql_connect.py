@@ -2,7 +2,6 @@
 
 # Make the Connection
 import pyodbc
-from subprocess import call
 import time
 import socket
 from sqlalchemy.engine import URL
@@ -38,27 +37,6 @@ def connect():
                 return open_vpn(sql_counter)
 
 
-# def open_vpn(sql_counter):
-#     load_dotenv()
-#
-#     EM_mode = os.system(f"ping -c 1  {os.getenv('IP_EM')} >/dev/null")
-#     if EM_mode == 0:
-#         print("\r🟢: (SQL) Elounda Market is UP, Trying to get VPN UP...", end='')
-#         call(["scutil", "--nc", "start", os.getenv('VPN_NAME'), '--secret', os.getenv('VPN_PWD')])
-#         time.sleep(5)
-#         Server_mode = os.system(f"ping -c 1  {os.getenv('IP_EM_ROUTER')} >/dev/null")
-#         if Server_mode == 0:
-#             print("\r🟢: (SQL) VPN IS UP", end='')
-#             return connect()
-#         else:
-#             sql_counter += 1
-#             print(f"\r🔴: (SQL) VPN IS STILL DOWN || Tries: {sql_counter}", end='')
-#             return open_vpn(sql_counter)
-#
-#     else:
-#         sql_counter += 1
-#         print(f"\r🔴: (SQL) Internet on Site Is Down || Tries: {sql_counter}", end='')
-#         return open_vpn(sql_counter)
 
 def open_vpn(sql_counter):
     load_dotenv()  # Φόρτωση μεταβλητών περιβάλλοντος από το .env αρχείο
