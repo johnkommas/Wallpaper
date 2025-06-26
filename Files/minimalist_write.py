@@ -52,7 +52,7 @@ def paste_image(my_image, overlay_image, xy, resize=1):
     return my_image
 
 
-def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status_users_elounda, monthly_turnover_df):
+def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status_users_elounda, monthly_turnover_df, df_customers):
     start = ctime.perf_counter()
     load_dotenv()
     # SETUP FONTS
@@ -84,6 +84,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
     PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse, multiple_data=multiple_data)  # Entersoft PoS
     print("🟢Entersoft PoS || ", end="")
+
     if multiple_data == 3:
         # PoS.get_Pos(path=path, images=images, editables=editables, font=dates_font_parse)  # Entersoft PoS
         # print("🟢Entersoft PoS || ", end="")
@@ -145,6 +146,9 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
                           time, number_font_parse)
         print("🟢Entersoft Compare Years|| ", end="")
+    if multiple_data == 2:
+        # Customers
+        compare_years.customers(specific_date, images,editables,df_customers, number_font_parse, title_font_year, dates_font_parse,timestamp_font_parse, time)
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
