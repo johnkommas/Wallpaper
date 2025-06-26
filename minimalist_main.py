@@ -101,7 +101,8 @@ SQL_FILES = [
     "ESFIItemEntry_ESFIItemPeriodics_a.sql",  # 0
     "ESFIItemEntry_ESFIItemPeriodics_c.sql",  # 1
     "ES00EventLog_a.sql",  # 2
-    "ESFIItemPeriodics_MonthlyTurnOver.sql"  # 3
+    "ESFIItemPeriodics_MonthlyTurnOver.sql",  # 3
+    "ESFIDocumentTrade_b.sql", #4
 ]
 
 
@@ -183,8 +184,10 @@ def run(temp_file, multiple_data):
     #
     if multiple_data >= 2:
         df_sales_elounda = fetch_data_with_params(SQL_FILES[0], params)
+        df_customers = fetch_data_with_params(SQL_FILES[4])
     else:
         df_sales_elounda = pd.DataFrame()
+        df_customers = pd.DataFrame()
 
     first_q_timer = time.perf_counter()
     wp_logger.info(f"DONE IN:{round(first_q_timer - start_)} sec DB YTD || ")
@@ -212,7 +215,7 @@ def run(temp_file, multiple_data):
     wp_logger.info(f"DONE MONTHLY TURNOVER || ")
     print(f"🟢DONE MONTHLY TURNOVER || ", end="")
 
-    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda, monthly_turnover_df)
+    minimalist_write.run(df_sales_elounda, path, path_2, temp_file, today, df, multiple_data, status_users_elounda, monthly_turnover_df, df_customers)
     stop_ = time.perf_counter()
     return start_, stop_
 
