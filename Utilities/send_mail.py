@@ -40,7 +40,7 @@ def send_mail(mail_lst, mail_names, word):
         raise ValueError("Οι λίστες mail_lst και mail_names πρέπει να έχουν ίδιο μήκος.")
 
     for email, name in zip(mail_lst, mail_names):
-        subject = f"S: {name}"  # Δημιουργία του subject για κάθε email
+        subject = f"💳 {name}"  # Δημιουργία του subject για κάθε email
         print(f"Αποστολή μηνύματος στον παραλήπτη ({email}) με θέμα: {subject}")
         a_gmail(email, subject, word)
 
