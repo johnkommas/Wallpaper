@@ -47,7 +47,7 @@ def open_vpn(sql_counter):
         print("\r🟢: (SQL) Elounda Market is UP, Trying to get VPN UP...", end='')
 
         # Προσπάθεια σύνδεσης μέσω AppleScript
-        vpn_name = "Elounda Market"
+        vpn_name = "VPN"
         apple_script = f"""
         tell application "System Events"
             tell current location of network preferences
