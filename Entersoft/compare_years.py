@@ -3,9 +3,8 @@ from dateutil.relativedelta import relativedelta
 
 
 def write_years_and_days(image_editable, df_years, specific_date, dates_for_every_year, title_font_year,
-                         dates_font_parse, timestamp_font_parse, time, counter):
+                         dates_font_parse, timestamp_font_parse, time, counter, c=1, x = 500):
     years = [str(i) for i in df_years]
-    x = 500
     check_year = specific_date.year - 5
     colors = [os.getenv("COLOR_A"), os.getenv("COLOR_B"), os.getenv("COLOR_C")]
     custom_color = colors[counter]
@@ -25,13 +24,12 @@ def write_years_and_days(image_editable, df_years, specific_date, dates_for_ever
         image_editable.text((x, 400), year, custom_color, font=title_font_year)
         x += 660
         check_year += 1
+    if c == 1:
+        # write timestamp refreshed data
+        image_editable.text((10100, 7000), time, custom_color, font=timestamp_font_parse)
 
-    # write timestamp refreshed data
-    image_editable.text((10100, 7000), time, custom_color, font=timestamp_font_parse)
 
-
-def write_revenue_values(image_editable, data, number_font_parse, counter):
-    x_offsets = [0, 310, 260, 215, 170, 120, 75]
+def write_revenue_values(image_editable, data, number_font_parse, counter, x_offsets):
     for i in data:
         revenue = str(int(i))
         if i == max(data) and counter == 2:
@@ -71,6 +69,7 @@ def run(specific_date, df, images, editables, title_font_year, dates_font_parse,
     counter = 0
     # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
     dates_for_every_year = get_date_for_every_year(specific_date)
+    x_offsets = [0, 310, 260, 215, 170, 120, 75]
 
     # LIST DATA
     data = list(df.TurnOver.values)
@@ -90,5 +89,34 @@ def run(specific_date, df, images, editables, title_font_year, dates_font_parse,
         )
 
         # WRITING REVENUE VALUES
-        write_revenue_values(editable, data, number_font_parse, counter)
+        write_revenue_values(editable, data, number_font_parse, counter, x_offsets)
         counter += 1
+
+
+def customers(specific_date, images, editables, df_cs, number_font_parse, title_font_year, dates_font_parse,timestamp_font_parse, time):
+    # WRITING CUSTOMERS DATA
+    x_offsets = [6700, 7010, 6960, 6915, 6870, 6820, 6775]
+    counter = 0
+    # ΠΡΟΣΘΕΤΩ ΤΙΣ ΗΜΕΡΕΣ ΓΙΑ ΚΑΘΕ ΧΡΟΝΟ
+    dates_for_every_year = get_date_for_every_year(specific_date)
+    data = list(df_cs.COUNT.values)
+    df_years = list(df_cs.YEAR.values)
+    for image, editable in zip(images, editables):
+        write_years_and_days(
+            image_editable=editable,
+            df_years=df_years,
+            specific_date=specific_date,
+            dates_for_every_year=dates_for_every_year,
+            title_font_year=title_font_year,
+            dates_font_parse=dates_font_parse,
+            timestamp_font_parse=timestamp_font_parse,
+            time=time,
+            counter=counter,
+            c =0,
+            x = 7200
+        )
+        # WRITING CUSTOMER VALUES
+        write_revenue_values(editable, data, number_font_parse, counter, x_offsets)
+        counter += 1
+
+    # END OF WRITING CUSTOMERS DATA
