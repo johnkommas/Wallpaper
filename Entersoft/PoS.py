@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import numpy as np
 from matplotlib import pyplot as plt
 from Utilities import imessage
@@ -146,3 +148,35 @@ def polar_chart(cards, receipts, file, title="ΠΟΣΟΣΤΟ ΣΥΝΑΛΛΑΓΩ�
     plt.cla()
     plt.close()
 
+def cancelled_transactions(images, editables, font, placement):
+    df = fetch_data.get_sql_data("POSFailedTransactions.sql")
+    # Αποθήκευση τιμών της πρώτης γραμμής
+    year = df['Year'].iloc[0]
+    total = df['TotalTransactions'].iloc[0]
+    canceled = df['CanceledTransactions'].iloc[0]
+    success = df['SuccededTransactions'].iloc[0]
+    percent = df['CanceledPercent'].iloc[0]
+    s_percent = df['SuccededPercent'].iloc[0]
+
+    # Φόρματ με τελεία για τα χιλιάδες
+    total_str = f"{total:,}".replace(",", ".")
+    canceled_str = f"{canceled:,}".replace(",", ".")
+    success_str = f"{success:,}".replace(",", ".")
+
+    for image, editable in zip(images, editables):
+        editable.text(placement, f"Card Transactions Attempts of: {year} | Total: {total_str} | Succeeded: {success_str} ({s_percent}%)| Failed: {canceled_str} ({percent}%)", os.getenv("COLOR_A"), font=font)
+
+def cash_credit(images, editables, font, placement):
+    df = fetch_data.get_sql_data("CashCredit.sql")
+    total = df['TotalCount'].iloc[0]
+    cash = df['CashCount'].iloc[0]
+    credit = df['CreditCount'].iloc[0]
+    cashP = df['CashPercent'].iloc[0]
+    creditP = df['CreditPercent'].iloc[0]
+
+    total_str = f"{total:,}".replace(",", ".")
+    cash_str = f"{cash:,}".replace(",", ".")
+    credit_str = f"{credit:,}".replace(",", ".")
+
+    for image, editable in zip(images, editables):
+        editable.text(placement, f"Retail Transactions of: {datetime.now().year} | Total: {total_str} | Cash: {cash_str} - ({cashP}%)  | Card: {credit_str} - ({creditP}%)", os.getenv("COLOR_A"), font=font)
