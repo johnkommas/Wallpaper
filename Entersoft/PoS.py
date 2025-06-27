@@ -179,4 +179,4 @@ def cash_credit(images, editables, font, placement):
     credit_str = f"{credit:,}".replace(",", ".")
 
     for image, editable in zip(images, editables):
-        editable.text(placement, f"Retail Transactions of: {datetime.now().year} | Total: {total_str} | Cash: {cash_str} - ({cashP}%)  | Card: {credit_str} - ({creditP}%)", os.getenv("COLOR_A"), font=font)
+        editable.text(placement, f"Retail Transactions of: {datetime.now().year} | Total: {total_str} | With Cash: {cash_str} - ({cashP}%)  | With Card: {credit_str} - ({creditP}%)", os.getenv("COLOR_A"), font=font)
