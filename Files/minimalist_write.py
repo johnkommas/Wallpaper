@@ -149,6 +149,8 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
     if multiple_data == 2:
         # Customers
         compare_years.customers(specific_date, images,editables,df_customers, number_font_parse, title_font_year, dates_font_parse,timestamp_font_parse, time)
+        PoS.cancelled_transactions(images=images, editables=editables, font=timestamp_font_parse, placement=(5_000, 7000))
+        PoS.cash_credit(images=images, editables=editables, font=timestamp_font_parse, placement=(1_50, 7000))
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
