@@ -146,11 +146,20 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         compare_years.run(specific_date, df, images, editables, title_font_year, dates_font_parse, timestamp_font_parse,
                           time, number_font_parse)
         print("🟢Entersoft Compare Years|| ", end="")
+        PoS.cancelled_transactions(images=images, editables=editables, font=timestamp_font_parse,
+                                   placement=(5_000, 7000))
+        PoS.cash_credit(images=images, editables=editables, font=timestamp_font_parse, placement=(1_50, 7000))
+        print("🟢Entersoft Credit Card Text|| ", end="")
+
+    if multiple_data == 3:
+        # Customers
+        compare_years.customers(specific_date, images, editables, df_customers, number_font_parse, title_font_year,
+                                dates_font_parse, timestamp_font_parse, time, [1700, 2010, 1960, 1915, 1870, 1820, 1775], y_offset=3000, x=2200)
+        print("🟢Entersoft Customers Compare|| ", end="")
     if multiple_data == 2:
         # Customers
-        compare_years.customers(specific_date, images,editables,df_customers, number_font_parse, title_font_year, dates_font_parse,timestamp_font_parse, time)
-        PoS.cancelled_transactions(images=images, editables=editables, font=timestamp_font_parse, placement=(5_000, 7000))
-        PoS.cash_credit(images=images, editables=editables, font=timestamp_font_parse, placement=(1_50, 7000))
+        compare_years.customers(specific_date, images,editables,df_customers, number_font_parse, title_font_year, dates_font_parse,timestamp_font_parse, time, [6700, 7010, 6960, 6915, 6870, 6820, 6775])
+        print("🟢Entersoft Customers Compare|| ", end="")
 
     time = datetime.now().strftime("%d%m%Y%H%M%S")
     my_image_1.save(f"{path}/TEMP/{file_in}_{time}_1.jpg")
