@@ -7,9 +7,10 @@ from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 from mikrotik import mikrotik_app
 from Youtrack import youtrack_app
-from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_bar_plot, PDA
+from Entersoft import PoS, Online_Offline, compare_years, entersoft_plot, daily_bar_plot, today_changes
 from MyNetwork import network_devices
 from dotenv import load_dotenv
+
 
 def offline(emoji, path, offline_path):
     delete_all_files_inside_folder(offline_path)
@@ -156,6 +157,10 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
         compare_years.customers(specific_date, images, editables, df_customers, number_font_parse, title_font_year,
                                 dates_font_parse, timestamp_font_parse, time, [1700, 2010, 1960, 1915, 1870, 1820, 1775], y_offset=3000, x=2200)
         print("🟢Entersoft Customers Compare|| ", end="")
+
+        # TODAY LIVE DATA ABOUT NEW ITEMS / ACTIVE PROMOTIONS / PRICE CHANGES / AND UNIQUE PRODUCTS SOLD
+        today_changes.set_today_changes(images=images, editables=editables, store_info=timestamp_font_parse)
+
     if multiple_data == 2:
         # Customers
         compare_years.customers(specific_date, images,editables,df_customers, number_font_parse, title_font_year, dates_font_parse,timestamp_font_parse, time, [6700, 7010, 6960, 6915, 6870, 6820, 6775])
