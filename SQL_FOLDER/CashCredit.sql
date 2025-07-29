@@ -27,7 +27,8 @@ DECLARE @EndDate   DATE = DATEADD(YEAR,       1, @StartDate);
         AND T.ADRegistrationDate <  @EndDate
         AND T.fTradeAccountGID IS NOT NULL
         AND DS.Description IN (
-            N'Δελτίο Αποστολής - Απόδειξη Λιανικής Πώλησης'
+            N'Δελτίο Αποστολής - Απόδειξη Λιανικής Πώλησης',
+                              N'Δελτίο Αποστολής - Τιμ.Πώλησης'
         )
     GROUP BY
         DS.Description
