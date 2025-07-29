@@ -179,15 +179,11 @@ def run(
         x = [y + 660 for y in x]
     image_editable.text((9400, 1000), "(R)", color, font=number_font_parse)
     # print("CHECK POINT ONE")
+
     pda_data_list = [
         {"pda_data": "ΑΓΟΡΕΣ", "x": 500, "y": 6300, "text_prefix": "Agores"},
         {"pda_data": "ΕΠΙΣΤΡΟΦΕΣ", "x": 2500, "y": 6300, "text_prefix": "Epistrofes"},
-        {
-            "pda_data": "ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ",
-            "x": 4600,
-            "y": 6300,
-            "text_prefix": "Endodiakinisi",
-        },
+        {"pda_data": "ΕΝΔΟΔΙΑΚΙΝΗΣΕΙΣ", "x": 4600, "y": 6300, "text_prefix": "Endodiakinisi"},
         {"pda_data": "ΠΑΡΑΓΓΕΛΙΕΣ", "x": 6600, "y": 6300, "text_prefix": "Paraggelia"},
         {"pda_data": "ΡΑΦΙ ΤΙΜΕΣ", "x": 9000, "y": 6300, "text_prefix": "Times Rafi"},
     ]
