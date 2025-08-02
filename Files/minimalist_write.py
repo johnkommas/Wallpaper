@@ -160,6 +160,7 @@ def run(df, path, path_2, file_in, specific_date, plot_df, multiple_data, status
 
         # TODAY LIVE DATA ABOUT NEW ITEMS / ACTIVE PROMOTIONS / PRICE CHANGES / AND UNIQUE PRODUCTS SOLD
         today_changes.set_today_changes(images=images, editables=editables, store_info=timestamp_font_parse)
+        print("🟢Entersoft LIVE DATA ABOUT NEW ITEMS / ACTIVE PROMOTIONS / PRICE CHANGES / AND UNIQUE PRODUCTS SOLD || ", end="")
 
     if multiple_data == 2:
         # Customers
